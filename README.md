@@ -11,10 +11,10 @@ Landing page oficial del programa de acompañamiento 1:1 de juanflopezzz.
 
 ## Personalizar
 
-- El link del CTA está en todos los botones como `href="#agenda"` — el botón final tiene `href="#"`: reemplázalo con tu link de Calendly
+- Todos los CTAs apuntan al Calendly: `https://calendly.com/juanfelipelopezlara3/30min`
 - El número de cupos disponibles está en el hero — actualízalo manualmente
-- Los precios están hardcoded — cámbialos si es necesario
-- La foto de Juan Felipe es un placeholder con gradiente — reemplaza el bloque `.about-avatar` con una `<img>` real
+- Precios: Elite Start desde $250 USD por los 3 meses (según el caso); Elite Growth negociable caso por caso
+- La foto está servida desde Cloudinary con `f_auto,q_auto` (optimización automática de formato y peso)
 
 ## Colores
 
