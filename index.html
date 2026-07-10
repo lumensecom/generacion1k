@@ -19,7 +19,7 @@
 
     <style>
         /* ============================================================
-           GENERACIÓN 1K ELITE — Design System v2
+           GENERACIÓN 1K ELITE — Design System v3
         ============================================================ */
         :root {
             --bg-primary:    #0A0A0A;
@@ -38,6 +38,13 @@
             --text-muted:    #75757F;
             --success:       #10B981;
             --danger:        #F87171;
+            /* tema claro */
+            --light-bg:      #F5F5F8;
+            --light-card:    #FFFFFF;
+            --light-border:  #E6E6EE;
+            --light-text:    #101016;
+            --light-text-2:  #4B4B58;
+            --light-muted:   #7A7A88;
             --font-display:  'Manrope', sans-serif;
             --font-body:     'Manrope', sans-serif;
             --font-serif:    'Playfair Display', Georgia, serif;
@@ -78,8 +85,9 @@
             padding: clamp(80px, 12vw, 130px) 0;
             overflow: hidden;
         }
+        section .container { position: relative; z-index: 2; }
 
-        /* ---------- Typography ---------- */
+        /* ---------- Tipografía ---------- */
         .eyebrow {
             font-family: var(--font-mono);
             font-size: 11px;
@@ -97,7 +105,6 @@
             letter-spacing: -0.02em;
         }
 
-        /* Acento serif premium (estilo e-masterproject) */
         .accent {
             font-family: var(--font-serif);
             font-style: italic;
@@ -108,7 +115,7 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
             color: transparent;
-            padding-right: 0.08em; /* la itálica no se corta en el borde del clip */
+            padding-right: 0.08em;
         }
 
         .section-sub {
@@ -120,15 +127,36 @@
             margin-top: 20px;
         }
 
-        .gradient-text {
-            background: linear-gradient(135deg, #fff 0%, var(--purple-light) 100%);
+        .section-head {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            margin-bottom: clamp(44px, 7vw, 64px);
+        }
+        .section-head .section-sub { margin-left: auto; margin-right: auto; }
+        .section-head .eyebrow + .h2 { margin-top: 18px; }
+        .head-beam {
+            width: 64px;
+            height: 3px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--purple), var(--pink));
+            margin: 24px auto 0;
+        }
+
+        /* ---------- TEMA CLARO (secciones alternas) ---------- */
+        .section-light { background: var(--light-bg); color: var(--light-text); }
+        .section-light .h2 { color: var(--light-text); }
+        .section-light .section-sub { color: var(--light-text-2); }
+        .section-light .eyebrow { color: var(--purple); }
+        .section-light .accent {
+            background: linear-gradient(120deg, var(--light-text) 5%, var(--purple) 50%, var(--pink) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            color: transparent;
         }
+        .section-light .orb { opacity: 0.5; }
 
-        /* ---------- Orbes animados de fondo ---------- */
+        /* ---------- Orbes animados ---------- */
         .orb {
             position: absolute;
             border-radius: 50%;
@@ -147,6 +175,30 @@
             100% { transform: translate(-30px, 30px) scale(0.95); }
         }
 
+        @keyframes floatY {
+            0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+            50%      { transform: translateY(-14px) rotate(var(--rot, 0deg)); }
+        }
+
+        /* ---------- Marca de agua decorativa ---------- */
+        .watermark {
+            position: absolute;
+            bottom: -0.12em;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: clamp(120px, 24vw, 300px);
+            line-height: 1;
+            letter-spacing: -0.04em;
+            color: rgba(255, 255, 255, 0.022);
+            white-space: nowrap;
+            pointer-events: none;
+            user-select: none;
+            z-index: 0;
+        }
+        .section-light .watermark { color: rgba(16, 16, 22, 0.028); }
+
         /* ---------- Botones ---------- */
         .btn-cta {
             display: inline-flex;
@@ -163,11 +215,12 @@
             min-height: 48px;
             transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
             white-space: nowrap;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.18);
         }
         .btn-cta:hover {
             transform: scale(1.02);
             background: var(--yellow-hover);
-            box-shadow: 0 0 34px rgba(245, 158, 11, 0.38);
+            box-shadow: 0 0 34px rgba(245, 158, 11, 0.4);
         }
         .btn-cta .arrow { transition: transform 0.25s ease; }
         .btn-cta:hover .arrow { transform: translateX(3px); }
@@ -178,8 +231,8 @@
             justify-content: center;
             gap: 8px;
             font-weight: 700;
-            font-size: 14px;
-            padding: 14px 26px;
+            font-size: 15px;
+            padding: 16px 28px;
             border-radius: 12px;
             min-height: 48px;
             border: 1px solid rgba(124, 58, 237, 0.45);
@@ -191,11 +244,7 @@
             box-shadow: 0 0 30px var(--purple-glow);
         }
 
-        .cta-note {
-            font-size: 12.5px;
-            color: var(--text-muted);
-            margin-top: 14px;
-        }
+        .cta-note { font-size: 12.5px; color: var(--text-muted); margin-top: 14px; }
 
         /* ---------- Scroll reveal ---------- */
         .reveal {
@@ -209,13 +258,13 @@
         .reveal-d3 { transition-delay: 300ms; }
 
         /* ============================================================
-           NAVBAR
+           NAVBAR + MENÚ MÓVIL
         ============================================================ */
         .navbar {
             position: fixed;
             top: 0; left: 0; right: 0;
             z-index: 100;
-            background: rgba(10, 10, 10, 0.72);
+            background: rgba(10, 10, 10, 0.78);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -226,7 +275,7 @@
             justify-content: space-between;
             height: 68px;
         }
-        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .logo-mark {
             width: 34px; height: 34px;
             background: linear-gradient(135deg, var(--purple), var(--pink));
@@ -244,7 +293,8 @@
             letter-spacing: -0.01em;
         }
         .logo-name span { color: var(--purple-light); }
-        .nav-links { display: none; align-items: center; gap: 32px; }
+
+        .nav-links { display: none; align-items: center; gap: 30px; }
         .nav-links a {
             font-size: 14px;
             font-weight: 600;
@@ -252,6 +302,8 @@
             transition: color 0.2s ease;
         }
         .nav-links a:hover { color: #fff; }
+
+        .nav-right { display: flex; align-items: center; gap: 10px; }
         .nav-cta {
             display: inline-flex;
             align-items: center;
@@ -259,14 +311,73 @@
             color: #000;
             font-weight: 800;
             font-size: 13px;
-            padding: 11px 20px;
+            padding: 11px 18px;
             border-radius: 10px;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            white-space: nowrap;
         }
-        .nav-cta:hover {
-            transform: scale(1.03);
-            box-shadow: 0 0 24px rgba(245, 158, 11, 0.3);
+        .nav-cta:hover { transform: scale(1.03); box-shadow: 0 0 24px rgba(245, 158, 11, 0.3); }
+
+        /* Hamburguesa */
+        .nav-toggle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
         }
+        .nav-toggle span {
+            display: block;
+            width: 18px;
+            height: 2px;
+            border-radius: 2px;
+            background: #fff;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-toggle.open span:nth-child(2) { opacity: 0; }
+        .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* Panel del menú móvil */
+        .mobile-menu {
+            position: fixed;
+            top: 68px;
+            left: 0; right: 0;
+            z-index: 99;
+            background: rgba(10, 10, 10, 0.97);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 24px 28px;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+        }
+        .mobile-menu.open { opacity: 1; visibility: visible; transform: translateY(0); }
+        .mobile-menu a:not(.btn-cta) {
+            padding: 16px 4px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mobile-menu a:not(.btn-cta)::after {
+            content: '→';
+            color: var(--purple-light);
+            font-weight: 400;
+        }
+        .mobile-menu .btn-cta { margin-top: 20px; width: 100%; }
 
         /* ============================================================
            HERO
@@ -300,9 +411,20 @@
         }
         .hero .container { position: relative; z-index: 2; }
 
-        .hero-eyebrow {
-            display: inline-block;
-            margin-bottom: 30px;
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 20px;
+            border-radius: 999px;
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            background: rgba(124, 58, 237, 0.10);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #C9A5F7;
+            margin-bottom: 32px;
             animation: heroFade 0.9s ease 0.1s both;
         }
         .hero h1 {
@@ -324,6 +446,13 @@
             animation: heroFade 0.9s ease 0.55s both;
         }
         .hero-cta-wrap { margin-top: 42px; animation: heroFade 0.9s ease 0.8s both; }
+        .hero-cta-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+        }
         @keyframes heroFade {
             from { opacity: 0; transform: translateY(18px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -338,12 +467,7 @@
             font-size: 13px;
             color: var(--text-secondary);
         }
-        .cupos-dot {
-            position: relative;
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: var(--success);
-        }
+        .cupos-dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
         .cupos-dot::after {
             content: '';
             position: absolute;
@@ -356,6 +480,64 @@
             0%   { transform: scale(1); opacity: 0.8; }
             100% { transform: scale(3); opacity: 0; }
         }
+
+        /* prueba social con foto */
+        .hero-proof {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 28px;
+            padding: 8px 18px 8px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .hero-proof img {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(168, 85, 247, 0.5);
+        }
+        .hero-proof span {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-align: left;
+            line-height: 1.4;
+        }
+        .hero-proof strong { color: #fff; font-weight: 700; }
+
+        /* objetos flotantes (desktop) */
+        .float-card {
+            position: absolute;
+            z-index: 3;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            background: rgba(22, 22, 28, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+            animation: floatY 7s ease-in-out infinite;
+        }
+        .fc-icon {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 19px;
+            flex-shrink: 0;
+        }
+        .fc-body { text-align: left; }
+        .fc-title { font-size: 13px; font-weight: 800; color: #fff; line-height: 1.35; }
+        .fc-sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+        .fc-1 { left: 3%; top: 42%; --rot: -5deg; }
+        .fc-1 .fc-icon { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .fc-2 { right: 3%; top: 30%; --rot: 4deg; animation-delay: -3.5s; }
+        .fc-2 .fc-icon { background: rgba(124, 58, 237, 0.18); border: 1px solid rgba(124, 58, 237, 0.35); }
+        .fc-3 { right: 8%; bottom: 24%; --rot: -3deg; animation-delay: -1.8s; }
+        .fc-3 .fc-icon { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); }
 
         .trust-row {
             display: flex;
@@ -379,12 +561,7 @@
             font-weight: 500;
             color: #fff;
         }
-        .trust-label {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 4px;
-            line-height: 1.4;
-        }
+        .trust-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
 
         .ticker {
             margin-top: 72px;
@@ -396,11 +573,7 @@
             position: relative;
             z-index: 2;
         }
-        .ticker-track {
-            display: flex;
-            width: max-content;
-            animation: marquee 32s linear infinite;
-        }
+        .ticker-track { display: flex; width: max-content; animation: marquee 32s linear infinite; }
         .ticker-track span {
             font-family: var(--font-mono);
             font-size: 11px;
@@ -416,20 +589,11 @@
         }
 
         /* ============================================================
-           SECCIÓN 2 — PROBLEMA
+           SECCIÓN — PROBLEMA
         ============================================================ */
         .section-dark { background: var(--bg-secondary); }
 
-        .section-head { position: relative; z-index: 2; text-align: center; margin-bottom: clamp(44px, 7vw, 64px); }
-        .section-head .section-sub { margin-left: auto; margin-right: auto; }
-        .section-head .eyebrow + .h2 { margin-top: 18px; }
-        section .container { position: relative; z-index: 2; }
-
-        .pain-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
-        }
+        .pain-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
         .pain-card {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
@@ -440,20 +604,16 @@
             display: flex;
             align-items: flex-start;
             gap: 16px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
             transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
         .pain-card:hover {
             transform: translateY(-3px);
             border-color: rgba(124, 58, 237, 0.5);
-            box-shadow: 0 0 30px var(--purple-glow);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 30px var(--purple-glow);
         }
         .pain-icon { font-size: 26px; line-height: 1.3; }
-        .pain-card p {
-            font-weight: 600;
-            font-size: 15px;
-            line-height: 1.55;
-            color: var(--text-primary);
-        }
+        .pain-card p { font-weight: 600; font-size: 15px; line-height: 1.55; color: var(--text-primary); }
 
         .pain-close {
             text-align: center;
@@ -466,13 +626,9 @@
         .pain-close strong { color: #fff; font-weight: 700; }
 
         /* ============================================================
-           SECCIÓN 3 — TRANSFORMACIÓN
+           SECCIÓN — TRANSFORMACIÓN
         ============================================================ */
-        .transform-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-        }
+        .transform-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
         .transform-col { border-radius: 22px; padding: 38px 30px; }
         .transform-col.before {
             background: rgba(255, 255, 255, 0.02);
@@ -481,7 +637,7 @@
         .transform-col.after {
             background: linear-gradient(180deg, rgba(124, 58, 237, 0.12) 0%, rgba(236, 72, 153, 0.04) 100%);
             border: 1px solid rgba(124, 58, 237, 0.35);
-            box-shadow: 0 0 50px rgba(124, 58, 237, 0.08);
+            box-shadow: 0 0 50px rgba(124, 58, 237, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
         .transform-tag {
             display: inline-block;
@@ -509,53 +665,46 @@
         .mark-v { color: var(--success); font-weight: 700; flex-shrink: 0; }
 
         /* ============================================================
-           SECCIÓN — ¿QUÉ ES DROPSHIPPING?
+           SECCIÓN — ¿QUÉ ES DROPSHIPPING? (CLARA)
         ============================================================ */
-        .drop-flow {
-            position: relative;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 18px;
-        }
+        .drop-flow { position: relative; display: grid; grid-template-columns: 1fr; gap: 18px; }
         .drop-step {
             position: relative;
             z-index: 2;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
+            background: var(--light-card);
+            border: 1px solid var(--light-border);
             border-radius: 20px;
             padding: 30px 24px;
             text-align: center;
+            box-shadow: 0 10px 26px rgba(20, 20, 60, 0.06);
             transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
-        .drop-step:hover { transform: translateY(-3px); }
-        .drop-step:nth-child(1):hover { border-color: rgba(124, 58, 237, 0.5); box-shadow: 0 0 30px rgba(124, 58, 237, 0.15); }
-        .drop-step:nth-child(2):hover { border-color: rgba(34, 211, 238, 0.5);  box-shadow: 0 0 30px rgba(34, 211, 238, 0.12); }
-        .drop-step:nth-child(3):hover { border-color: rgba(236, 72, 153, 0.5);  box-shadow: 0 0 30px rgba(236, 72, 153, 0.12); }
-        .drop-step:nth-child(4):hover { border-color: rgba(245, 158, 11, 0.5);  box-shadow: 0 0 30px rgba(245, 158, 11, 0.12); }
+        .drop-step:hover { transform: translateY(-4px); }
+        .drop-step:nth-child(1):hover { border-color: rgba(124, 58, 237, 0.5); box-shadow: 0 16px 36px rgba(124, 58, 237, 0.14); }
+        .drop-step:nth-child(2):hover { border-color: rgba(34, 211, 238, 0.55);  box-shadow: 0 16px 36px rgba(34, 211, 238, 0.14); }
+        .drop-step:nth-child(3):hover { border-color: rgba(236, 72, 153, 0.5);  box-shadow: 0 16px 36px rgba(236, 72, 153, 0.13); }
+        .drop-step:nth-child(4):hover { border-color: rgba(245, 158, 11, 0.55);  box-shadow: 0 16px 36px rgba(245, 158, 11, 0.15); }
 
         .drop-icon {
-            width: 60px; height: 60px;
+            width: 62px; height: 62px;
             margin: 0 auto 18px;
             border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
+            font-size: 27px;
+            animation: floatY 6s ease-in-out infinite;
         }
-        .drop-step:nth-child(1) .drop-icon { background: linear-gradient(135deg, rgba(124,58,237,0.25), rgba(124,58,237,0.08)); border: 1px solid rgba(124,58,237,0.35); }
-        .drop-step:nth-child(2) .drop-icon { background: linear-gradient(135deg, rgba(34,211,238,0.22), rgba(34,211,238,0.06)); border: 1px solid rgba(34,211,238,0.3); }
-        .drop-step:nth-child(3) .drop-icon { background: linear-gradient(135deg, rgba(236,72,153,0.22), rgba(236,72,153,0.06)); border: 1px solid rgba(236,72,153,0.3); }
-        .drop-step:nth-child(4) .drop-icon { background: linear-gradient(135deg, rgba(245,158,11,0.22), rgba(245,158,11,0.06)); border: 1px solid rgba(245,158,11,0.3); }
+        .drop-step:nth-child(1) .drop-icon { background: linear-gradient(135deg, rgba(124,58,237,0.16), rgba(124,58,237,0.05)); border: 1px solid rgba(124,58,237,0.3); }
+        .drop-step:nth-child(2) .drop-icon { background: linear-gradient(135deg, rgba(34,211,238,0.16), rgba(34,211,238,0.05)); border: 1px solid rgba(34,211,238,0.35); animation-delay: -1.5s; }
+        .drop-step:nth-child(3) .drop-icon { background: linear-gradient(135deg, rgba(236,72,153,0.14), rgba(236,72,153,0.04)); border: 1px solid rgba(236,72,153,0.3); animation-delay: -3s; }
+        .drop-step:nth-child(4) .drop-icon { background: linear-gradient(135deg, rgba(245,158,11,0.16), rgba(245,158,11,0.05)); border: 1px solid rgba(245,158,11,0.35); animation-delay: -4.5s; }
 
-        .drop-step-num {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 0.15em;
-        }
-        .drop-step:nth-child(1) .drop-step-num { color: var(--purple-light); }
-        .drop-step:nth-child(2) .drop-step-num { color: var(--cyan); }
+        .drop-step-num { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.15em; }
+        .drop-step:nth-child(1) .drop-step-num { color: var(--purple); }
+        .drop-step:nth-child(2) .drop-step-num { color: #0891B2; }
         .drop-step:nth-child(3) .drop-step-num { color: var(--pink); }
-        .drop-step:nth-child(4) .drop-step-num { color: var(--yellow); }
+        .drop-step:nth-child(4) .drop-step-num { color: #D97706; }
 
         .drop-step h3 {
             font-family: var(--font-display);
@@ -563,12 +712,9 @@
             font-weight: 800;
             margin: 10px 0 8px;
             letter-spacing: -0.01em;
+            color: var(--light-text);
         }
-        .drop-step p {
-            font-size: 13.5px;
-            line-height: 1.6;
-            color: var(--text-secondary);
-        }
+        .drop-step p { font-size: 13.5px; line-height: 1.6; color: var(--light-text-2); }
         .drop-money {
             display: inline-block;
             margin-top: 16px;
@@ -576,25 +722,25 @@
             font-size: 12.5px;
             padding: 6px 14px;
             border-radius: 999px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
+            background: var(--light-bg);
+            border: 1px solid var(--light-border);
+            color: var(--light-text-2);
         }
-        .drop-money strong { color: #fff; font-weight: 500; }
+        .drop-money strong { color: var(--light-text); font-weight: 500; }
 
         /* línea de flujo animada (desktop) */
         .drop-flow::before {
             content: '';
             display: none;
             position: absolute;
-            top: 62px;
+            top: 64px;
             left: 8%;
             right: 8%;
             height: 2px;
             background: linear-gradient(90deg, var(--purple), var(--cyan), var(--pink), var(--yellow), var(--purple));
             background-size: 250% 100%;
             animation: flowLine 6s linear infinite;
-            opacity: 0.55;
+            opacity: 0.5;
             z-index: 1;
         }
         @keyframes flowLine {
@@ -602,10 +748,9 @@
             to   { background-position: 250% 0; }
         }
 
-        /* ecuación de ganancia */
         .drop-math {
             margin: 44px auto 0;
-            max-width: 640px;
+            max-width: 660px;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
@@ -613,38 +758,32 @@
             gap: 12px;
             font-family: var(--font-mono);
             font-size: clamp(14px, 2.4vw, 17px);
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border);
+            background: var(--light-card);
+            border: 1px solid var(--light-border);
             border-radius: 18px;
             padding: 22px 28px;
+            box-shadow: 0 10px 26px rgba(20, 20, 60, 0.06);
         }
-        .drop-math .op { color: var(--text-muted); }
-        .drop-math .venta    { color: var(--cyan); }
+        .drop-math .op { color: var(--light-muted); }
+        .drop-math .venta    { color: #0891B2; }
         .drop-math .costo    { color: var(--pink); }
-        .drop-math .ganancia { color: var(--success); font-weight: 500; }
+        .drop-math .ganancia { color: #059669; font-weight: 500; }
 
-        /* chips de beneficios */
-        .drop-chips {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 32px;
-        }
+        .drop-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 32px; }
         .drop-chip {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             padding: 9px 18px;
             border-radius: 999px;
-            border: 1px solid rgba(124, 58, 237, 0.3);
-            background: rgba(124, 58, 237, 0.08);
-            color: var(--text-secondary);
+            border: 1px solid rgba(124, 58, 237, 0.25);
+            background: rgba(124, 58, 237, 0.06);
+            color: var(--light-text-2);
         }
         .drop-chip .dot { width: 6px; height: 6px; border-radius: 50%; }
-        .drop-chip:nth-child(1) .dot { background: var(--purple-light); }
+        .drop-chip:nth-child(1) .dot { background: var(--purple); }
         .drop-chip:nth-child(2) .dot { background: var(--cyan); }
         .drop-chip:nth-child(3) .dot { background: var(--pink); }
         .drop-chip:nth-child(4) .dot { background: var(--yellow); }
@@ -655,18 +794,25 @@
             margin: 36px auto 0;
             font-size: 15px;
             line-height: 1.75;
-            color: var(--text-secondary);
+            color: var(--light-text-2);
         }
-        .drop-note strong { color: #fff; font-weight: 700; }
+        .drop-note strong { color: var(--light-text); font-weight: 800; }
 
         /* ============================================================
-           SECCIÓN 4 — EL PROGRAMA
+           SECCIÓN — EL PROGRAMA + PLANES
         ============================================================ */
-        .timeline {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
+        .timeline-line {
+            height: 2px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--purple), var(--pink), var(--yellow));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+            margin-bottom: 28px;
         }
+        .timeline-line.visible { transform: scaleX(1); }
+
+        .timeline { display: grid; grid-template-columns: 1fr; gap: 20px; }
         .month-card {
             position: relative;
             background: var(--bg-card);
@@ -674,12 +820,13 @@
             border-radius: 22px;
             padding: 38px 30px;
             overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 14px 34px rgba(0, 0, 0, 0.3);
             transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
         .month-card:hover {
             transform: translateY(-3px);
             border-color: rgba(124, 58, 237, 0.4);
-            box-shadow: 0 0 30px var(--purple-glow);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 30px var(--purple-glow);
         }
         .month-num {
             position: absolute;
@@ -695,12 +842,7 @@
         .month-card:nth-child(1) .month-num { color: rgba(124, 58, 237, 0.12); }
         .month-card:nth-child(2) .month-num { color: rgba(236, 72, 153, 0.10); }
         .month-card:nth-child(3) .month-num { color: rgba(245, 158, 11, 0.10); }
-        .month-label {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-        }
+        .month-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; }
         .month-card:nth-child(1) .month-label { color: var(--purple-light); }
         .month-card:nth-child(2) .month-label { color: var(--pink); }
         .month-card:nth-child(3) .month-label { color: var(--yellow); }
@@ -711,22 +853,26 @@
             margin: 10px 0 18px;
             letter-spacing: -0.01em;
         }
-        .month-card li {
-            color: var(--text-secondary);
-            font-size: 14.5px;
-            padding: 5px 0;
-            display: flex;
-            gap: 10px;
-        }
+        .month-card li { color: var(--text-secondary); font-size: 14.5px; padding: 5px 0; display: flex; gap: 10px; }
         .month-card li::before { content: '+'; color: var(--purple-light); font-weight: 700; }
 
-        /* modalidades */
-        .plans {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-            margin-top: 72px;
+        /* planes */
+        .plans-head { text-align: center; margin: 88px 0 44px; }
+        .plans-head h3 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: clamp(24px, 3.6vw, 34px);
+            letter-spacing: -0.02em;
         }
+        .plans-head p {
+            color: var(--text-secondary);
+            font-size: 15.5px;
+            max-width: 560px;
+            margin: 14px auto 0;
+            line-height: 1.7;
+        }
+
+        .plans { display: grid; grid-template-columns: 1fr; gap: 24px; }
         .plan {
             position: relative;
             background: var(--bg-card);
@@ -735,12 +881,16 @@
             padding: 42px 32px;
             display: flex;
             flex-direction: column;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 14px 34px rgba(0, 0, 0, 0.3);
             transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
-        .plan:hover { transform: translateY(-3px); box-shadow: 0 0 30px var(--purple-glow); }
+        .plan:hover { transform: translateY(-3px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 0 34px var(--purple-glow); }
         .plan.featured {
-            border: 1px solid rgba(124, 58, 237, 0.6);
-            box-shadow: 0 0 50px rgba(124, 58, 237, 0.12);
+            border: 1px solid transparent;
+            background:
+                linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+                linear-gradient(135deg, rgba(124, 58, 237, 0.9), rgba(236, 72, 153, 0.7), rgba(245, 158, 11, 0.55)) border-box;
+            box-shadow: 0 0 50px rgba(124, 58, 237, 0.14);
         }
         .plan-badge {
             position: absolute;
@@ -762,16 +912,25 @@
             font-weight: 800;
             letter-spacing: 0.01em;
         }
-        .plan-duration { color: var(--text-secondary); font-size: 14px; margin-top: 6px; }
-        .plan-price {
-            font-family: var(--font-mono);
-            font-size: 28px;
-            font-weight: 500;
-            margin: 24px 0 4px;
+        .plan-for {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-style: italic;
         }
+        .plan-duration { color: var(--text-secondary); font-size: 14px; margin-top: 12px; }
+        .plan-price { font-family: var(--font-mono); font-size: 26px; font-weight: 500; margin: 20px 0 4px; }
         .plan-price span { font-size: 14px; color: var(--text-muted); }
         .plan-price-alt { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); }
-        .plan-divider { height: 1px; background: var(--border); margin: 26px 0; }
+        .plan-divider { height: 1px; background: var(--border); margin: 24px 0 18px; }
+        .plan-includes {
+            font-family: var(--font-mono);
+            font-size: 10.5px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
         .plan li {
             display: flex;
             gap: 12px;
@@ -781,16 +940,36 @@
             color: var(--text-secondary);
         }
         .plan li .mark-v { margin-top: 1px; }
-        .plan .btn-ghost, .plan .btn-cta { margin-top: 32px; text-align: center; }
+        .plan .btn-ghost, .plan .btn-cta { margin-top: auto; text-align: center; }
+        .plan ul { margin-bottom: 32px; }
+
+        /* garantía honesta */
+        .honest-box {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+            margin: 40px auto 0;
+            max-width: 900px;
+            background: linear-gradient(180deg, rgba(124, 58, 237, 0.08), rgba(124, 58, 237, 0.02));
+            border: 1px solid rgba(124, 58, 237, 0.25);
+            border-radius: 20px;
+            padding: 30px 32px;
+        }
+        .honest-box .hb-icon { font-size: 28px; }
+        .honest-box h4 {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+        }
+        .honest-box p { font-size: 14.5px; line-height: 1.75; color: var(--text-secondary); }
+        .honest-box strong { color: #fff; font-weight: 700; }
 
         /* ============================================================
-           SECCIÓN 5 — FASES
+           SECCIÓN — FASES
         ============================================================ */
-        .phases-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
-        }
+        .phases-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
         .phase-card {
             position: relative;
             background: rgba(255, 255, 255, 0.03);
@@ -800,12 +979,13 @@
             border-radius: 18px;
             padding: 34px 28px;
             overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
             transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
         .phase-card:hover {
             transform: translateY(-3px);
             border-color: rgba(124, 58, 237, 0.45);
-            box-shadow: 0 0 30px var(--purple-glow);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 30px var(--purple-glow);
         }
         .phase-num {
             position: absolute;
@@ -824,12 +1004,7 @@
         .phase-card:nth-child(4) .phase-num { color: rgba(245, 158, 11, 0.10); }
         .phase-card:nth-child(5) .phase-num { color: rgba(16, 185, 129, 0.10); }
         .phase-card:nth-child(6) .phase-num { color: rgba(168, 85, 247, 0.12); }
-        .phase-label {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-        }
+        .phase-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; }
         .phase-card:nth-child(1) .phase-label { color: var(--purple-light); }
         .phase-card:nth-child(2) .phase-label { color: var(--cyan); }
         .phase-card:nth-child(3) .phase-label { color: var(--pink); }
@@ -846,21 +1021,22 @@
         .phase-card p { font-size: 14px; line-height: 1.65; color: var(--text-secondary); }
 
         /* ============================================================
-           SECCIÓN 6 — COMPARATIVA
+           SECCIÓN — COMPARATIVA (CLARA)
         ============================================================ */
         .compare-wrap {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             border-radius: 22px;
-            border: 1px solid var(--border);
-            background: var(--bg-card);
+            border: 1px solid var(--light-border);
+            background: var(--light-card);
+            box-shadow: 0 14px 34px rgba(20, 20, 60, 0.07);
         }
         .compare { width: 100%; min-width: 640px; border-collapse: collapse; }
         .compare th, .compare td {
             padding: 18px 22px;
             text-align: center;
             font-size: 14px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(16, 16, 22, 0.06);
         }
         .compare tr:last-child td { border-bottom: none; }
         .compare th {
@@ -869,33 +1045,24 @@
             letter-spacing: 0.1em;
             text-transform: uppercase;
             font-weight: 500;
-            color: var(--text-muted);
+            color: var(--light-muted);
         }
         .compare td:first-child, .compare th:first-child {
             text-align: left;
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-        .compare .col-elite {
-            background: rgba(124, 58, 237, 0.10);
-            color: var(--purple-light);
+            color: var(--light-text-2);
             font-weight: 700;
         }
-        .compare th.col-elite { color: var(--purple-light); }
-        .compare .no  { color: var(--text-muted); }
-        .compare .yes { color: var(--success); font-weight: 700; }
-        .compare .col-elite .yes { color: var(--purple-light); }
-        .compare .partial { color: var(--text-secondary); font-size: 13px; }
+        .compare .col-elite { background: rgba(124, 58, 237, 0.08); color: var(--purple); font-weight: 700; }
+        .compare th.col-elite { color: var(--purple); }
+        .compare .no  { color: #B4B4C0; }
+        .compare .yes { color: #059669; font-weight: 700; }
+        .compare .col-elite .yes { color: var(--purple); }
+        .compare .partial { color: var(--light-muted); font-size: 13px; }
 
         /* ============================================================
-           SECCIÓN 7 — SOBRE JUAN FELIPE
+           SECCIÓN — SOBRE JUAN FELIPE
         ============================================================ */
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 48px;
-            align-items: start;
-        }
+        .about-grid { display: grid; grid-template-columns: 1fr; gap: 48px; align-items: start; }
         .about-photo {
             position: relative;
             width: 100%;
@@ -904,14 +1071,9 @@
             border-radius: 26px;
             overflow: hidden;
             border: 1px solid rgba(124, 58, 237, 0.35);
-            box-shadow: 0 0 60px rgba(124, 58, 237, 0.12);
+            box-shadow: 0 0 60px rgba(124, 58, 237, 0.12), 0 24px 48px rgba(0, 0, 0, 0.4);
         }
-        .about-photo img {
-            width: 100%;
-            aspect-ratio: 4 / 5;
-            object-fit: cover;
-            display: block;
-        }
+        .about-photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; }
         .about-photo::after {
             content: '';
             position: absolute;
@@ -930,12 +1092,7 @@
             color: rgba(255, 255, 255, 0.85);
             z-index: 2;
         }
-        .about-name {
-            font-family: var(--font-display);
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: -0.01em;
-        }
+        .about-name { font-family: var(--font-display); font-size: 26px; font-weight: 800; letter-spacing: -0.01em; }
         .about-handle {
             font-family: var(--font-mono);
             font-size: 12px;
@@ -963,33 +1120,26 @@
             margin-top: 36px;
         }
         .about-metric { background: var(--bg-card); padding: 24px 20px; }
-        .about-metric .num {
-            font-family: var(--font-mono);
-            font-size: clamp(18px, 2.4vw, 22px);
-            color: #fff;
-        }
+        .about-metric .num { font-family: var(--font-mono); font-size: clamp(18px, 2.4vw, 22px); color: #fff; }
         .about-metric .label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
         /* ============================================================
-           SECCIÓN 8 — PROCESO
+           SECCIÓN — PROCESO (CLARA)
         ============================================================ */
-        .steps {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
+        .steps { display: grid; grid-template-columns: 1fr; gap: 20px; }
         .step {
             position: relative;
             padding: 30px 26px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
+            background: var(--light-card);
+            border: 1px solid var(--light-border);
             border-radius: 18px;
+            box-shadow: 0 10px 26px rgba(20, 20, 60, 0.06);
             transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
         .step:hover {
-            transform: translateY(-3px);
+            transform: translateY(-4px);
             border-color: rgba(124, 58, 237, 0.4);
-            box-shadow: 0 0 30px var(--purple-glow);
+            box-shadow: 0 16px 36px rgba(124, 58, 237, 0.12);
         }
         .step-num {
             font-family: var(--font-display);
@@ -1006,24 +1156,20 @@
             font-weight: 800;
             margin: 12px 0 8px;
             letter-spacing: -0.01em;
+            color: var(--light-text);
         }
-        .step p { font-size: 14px; line-height: 1.65; color: var(--text-secondary); }
+        .step p { font-size: 14px; line-height: 1.65; color: var(--light-text-2); }
 
         /* ============================================================
-           SECCIÓN 9 — FAQ
+           SECCIÓN — FAQ
         ============================================================ */
-        .faq-list {
-            max-width: 740px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        .faq-list { max-width: 740px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
         .faq-item {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 16px;
             overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
             transition: border-color 0.25s ease;
         }
         .faq-item.open { border-color: rgba(124, 58, 237, 0.4); }
@@ -1052,21 +1198,12 @@
         }
         .faq-item.open .faq-icon { transform: rotate(45deg); }
         .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
-        .faq-a p {
-            padding: 0 24px 24px;
-            font-size: 14.5px;
-            line-height: 1.75;
-            color: var(--text-secondary);
-        }
+        .faq-a p { padding: 0 24px 24px; font-size: 14.5px; line-height: 1.75; color: var(--text-secondary); }
 
         /* ============================================================
-           SECCIÓN 10 — CTA FINAL
+           SECCIÓN — CTA FINAL
         ============================================================ */
-        .final-cta {
-            text-align: center;
-            padding: clamp(110px, 16vw, 160px) 0;
-            overflow: hidden;
-        }
+        .final-cta { text-align: center; padding: clamp(110px, 16vw, 160px) 0; overflow: hidden; }
         .final-cta::before {
             content: '';
             position: absolute;
@@ -1103,12 +1240,7 @@
         }
         footer .logo { justify-content: center; opacity: 0.65; margin-bottom: 20px; }
         footer p { font-size: 13px; color: var(--text-muted); }
-        footer .disclaimer {
-            font-size: 11.5px;
-            line-height: 1.7;
-            max-width: 560px;
-            margin: 12px auto 0;
-        }
+        footer .disclaimer { font-size: 11.5px; line-height: 1.7; max-width: 560px; margin: 12px auto 0; }
         footer .ig {
             display: inline-block;
             margin-top: 18px;
@@ -1129,10 +1261,13 @@
             .about-metrics { grid-template-columns: repeat(4, 1fr); }
             .steps { grid-template-columns: repeat(2, 1fr); }
             .drop-flow { grid-template-columns: repeat(2, 1fr); }
+            .honest-box { flex-direction: row; align-items: center; gap: 24px; }
         }
 
         @media (min-width: 768px) {
             .nav-links { display: flex; }
+            .nav-toggle { display: none; }
+            .mobile-menu { display: none; }
             .transform-grid { grid-template-columns: 1fr 1fr; }
             .timeline { grid-template-columns: repeat(3, 1fr); }
             .plans { grid-template-columns: 1fr 1fr; max-width: 900px; margin-left: auto; margin-right: auto; }
@@ -1149,9 +1284,14 @@
             .drop-flow::before { display: block; }
         }
 
-        /* En móvil los blurs grandes cuestan GPU: orbes más pequeños y menos blur */
+        @media (min-width: 1100px) {
+            .float-card { display: flex; }
+        }
+
+        /* móvil: blurs más ligeros */
         @media (max-width: 767px) {
             .orb { filter: blur(60px); opacity: 0.8; }
+            .section-light .orb { opacity: 0.4; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1161,6 +1301,7 @@
                 transition-duration: 0.01ms !important;
             }
             .reveal { opacity: 1; transform: none; }
+            .timeline-line { transform: scaleX(1); }
         }
     </style>
 </head>
@@ -1180,19 +1321,61 @@
                 <a href="#sobre-mi">Sobre mí</a>
                 <a href="#faq">FAQ</a>
             </div>
-            <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="nav-cta">Agendar llamada</a>
+            <div class="nav-right">
+                <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="nav-cta">Agendar llamada</a>
+                <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
         </div>
     </nav>
 
-    <!-- ============ SECCIÓN 1 · HERO ============ -->
+    <!-- Menú móvil -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#modelo">El modelo</a>
+        <a href="#programa">El programa</a>
+        <a href="#fases">Fases</a>
+        <a href="#sobre-mi">Sobre mí</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-cta">
+            Agenda tu llamada gratuita <span class="arrow">→</span>
+        </a>
+    </div>
+
+    <!-- ============ HERO ============ -->
     <header class="hero">
         <div class="grain"></div>
         <div class="orb orb-purple" style="top: 6%; left: 12%; width: 420px; height: 420px;"></div>
         <div class="orb orb-pink" style="top: 22%; right: 6%; width: 340px; height: 340px;"></div>
         <div class="orb orb-amber" style="bottom: 14%; left: 4%; width: 260px; height: 260px;"></div>
 
+        <!-- Objetos flotantes -->
+        <div class="float-card fc-1" aria-hidden="true">
+            <span class="fc-icon">🛒</span>
+            <span class="fc-body">
+                <span class="fc-title">Nueva venta · $47.900</span>
+                <span class="fc-sub">hace 2 min · contra entrega</span>
+            </span>
+        </div>
+        <div class="float-card fc-2" aria-hidden="true">
+            <span class="fc-icon">🎯</span>
+            <span class="fc-body">
+                <span class="fc-title">Objetivo: $1.000 USD</span>
+                <span class="fc-sub">mes 3 · plan claro</span>
+            </span>
+        </div>
+        <div class="float-card fc-3" aria-hidden="true">
+            <span class="fc-icon">🚀</span>
+            <span class="fc-body">
+                <span class="fc-title">Tienda publicada ✓</span>
+                <span class="fc-sub">semana 3 · Shopify</span>
+            </span>
+        </div>
+
         <div class="container">
-            <span class="eyebrow hero-eyebrow">Generación 1K Elite · Programa 1:1 · Colombia &amp; Latam</span>
+            <span class="hero-badge">
+                ⚡ Programa 1:1 · Cupos limitados · Colombia &amp; Latam
+            </span>
 
             <h1>
                 Tu primer $1.000 USD<br>
@@ -1207,9 +1390,12 @@
             </p>
 
             <div class="hero-cta-wrap">
-                <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-cta">
-                    Agenda tu llamada gratuita <span class="arrow">→</span>
-                </a>
+                <div class="hero-cta-row">
+                    <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-cta">
+                        Agenda tu llamada gratuita <span class="arrow">→</span>
+                    </a>
+                    <a href="#modelo" class="btn-ghost">Ver cómo funciona ↓</a>
+                </div>
                 <p class="cta-note">Sin compromiso · 30-40 minutos · Solo si es para ti</p>
 
                 <!-- Elemento firma: cupos disponibles (actualizar el número manualmente) -->
@@ -1217,15 +1403,22 @@
                     <span class="cupos-dot"></span>
                     <span>2 cupos disponibles este mes</span>
                 </div>
+
+                <br>
+                <div class="hero-proof">
+                    <img src="https://res.cloudinary.com/dss3b02ao/image/upload/f_auto,q_auto,w_120/v1783628255/WhatsApp_Image_2026-07-09_at_15.16.58_dq91vg.jpg"
+                         alt="Juan Felipe López" loading="lazy" decoding="async">
+                    <span>Te acompaña <strong>Juan Felipe</strong> · @juanflopezzz<br>Construye ecommerce en público.</span>
+                </div>
             </div>
 
             <div class="trust-row">
                 <div class="trust-item">
-                    <div class="trust-num">+40</div>
+                    <div class="trust-num" data-count="40" data-prefix="+">+40</div>
                     <div class="trust-label">personas en primera edición</div>
                 </div>
                 <div class="trust-item">
-                    <div class="trust-num">$20K+ USD</div>
+                    <div class="trust-num" data-count="20" data-prefix="$" data-suffix="K+ USD">$20K+ USD</div>
                     <div class="trust-label">facturados por el fundador</div>
                 </div>
                 <div class="trust-item">
@@ -1248,11 +1441,12 @@
         </div>
     </header>
 
-    <!-- ============ SECCIÓN 2 · EL PROBLEMA ============ -->
+    <!-- ============ EL PROBLEMA ============ -->
     <section class="section-dark">
         <div class="container">
             <div class="section-head reveal">
                 <h2 class="h2">¿Te suena <span class="accent">alguna</span> de estas?</h2>
+                <div class="head-beam"></div>
             </div>
 
             <div class="pain-grid">
@@ -1289,12 +1483,13 @@
         </div>
     </section>
 
-    <!-- ============ SECCIÓN 3 · LA TRANSFORMACIÓN ============ -->
+    <!-- ============ LA TRANSFORMACIÓN ============ -->
     <section>
         <div class="orb orb-purple" style="top: 30%; right: -6%; width: 380px; height: 380px;"></div>
         <div class="container">
             <div class="section-head reveal">
                 <h2 class="h2">Lo que cambia cuando tienes<br><span class="accent">acompañamiento real</span></h2>
+                <div class="head-beam"></div>
             </div>
 
             <div class="transform-grid">
@@ -1324,17 +1519,18 @@
         </div>
     </section>
 
-    <!-- ============ SECCIÓN · ¿QUÉ ES DROPSHIPPING? ============ -->
-    <section id="modelo" class="section-dark">
-        <div class="orb orb-cyan" style="top: 10%; left: -6%; width: 360px; height: 360px;"></div>
+    <!-- ============ ¿QUÉ ES DROPSHIPPING? (SECCIÓN CLARA) ============ -->
+    <section id="modelo" class="section-light">
+        <div class="orb orb-purple" style="top: 8%; left: -6%; width: 360px; height: 360px;"></div>
         <div class="orb orb-pink" style="bottom: 8%; right: -4%; width: 320px; height: 320px;"></div>
+        <span class="watermark" aria-hidden="true">MODELO</span>
 
         <div class="container">
             <div class="section-head reveal">
                 <span class="eyebrow">El modelo</span>
                 <h2 class="h2">¿Qué es <span class="accent">dropshipping</span>?</h2>
                 <p class="section-sub">
-                    Es el modelo con el que empiezas a vender online <strong style="color:#fff;">sin comprar inventario, sin bodega y sin local físico</strong>.
+                    Es el modelo con el que empiezas a vender online <strong>sin comprar inventario, sin bodega y sin local físico</strong>.
                     Tú vendes, tu proveedor envía, y tu ganancia es el margen. Así funciona:
                 </p>
             </div>
@@ -1392,9 +1588,11 @@
         </div>
     </section>
 
-    <!-- ============ SECCIÓN 4 · EL PROGRAMA ============ -->
+    <!-- ============ EL PROGRAMA + PLANES ============ -->
     <section id="programa">
         <div class="orb orb-purple" style="top: 4%; left: 40%; width: 400px; height: 400px;"></div>
+        <span class="watermark" aria-hidden="true">ELITE</span>
+
         <div class="container">
             <div class="section-head reveal">
                 <span class="eyebrow">El programa</span>
@@ -1405,6 +1603,7 @@
                 </p>
             </div>
 
+            <div class="timeline-line reveal-line"></div>
             <div class="timeline">
                 <div class="month-card reveal">
                     <span class="month-num">01</span>
@@ -1438,20 +1637,28 @@
                 </div>
             </div>
 
-            <!-- Modalidades -->
+            <!-- Planes -->
+            <div class="plans-head reveal">
+                <h3>Elige tu nivel de <span class="accent">acompañamiento</span></h3>
+                <p>Ambos planes incluyen el sistema completo y trabajo 1:1 directo con Juan Felipe. La diferencia es cuánto tiempo caminamos juntos.</p>
+            </div>
+
             <div class="plans">
                 <div class="plan reveal">
                     <span class="plan-name">ELITE START</span>
+                    <p class="plan-for">Para lanzar tu negocio desde cero y lograr tus primeras ventas.</p>
                     <span class="plan-duration">3 meses de acompañamiento</span>
                     <div class="plan-price">Desde $250 USD <span>· por los 3 meses</span></div>
                     <span class="plan-price-alt">el precio final depende de tu caso</span>
                     <div class="plan-divider"></div>
+                    <p class="plan-includes">Incluye</p>
                     <ul>
                         <li><span class="mark-v">✓</span> Reuniones 1:1 semanales</li>
-                        <li><span class="mark-v">✓</span> Revisión constante de tienda</li>
+                        <li><span class="mark-v">✓</span> Revisión constante de tu tienda</li>
                         <li><span class="mark-v">✓</span> WhatsApp directo con Juan Felipe</li>
                         <li><span class="mark-v">✓</span> Las 6 fases completas</li>
-                        <li><span class="mark-v">✓</span> Auditorías y correcciones</li>
+                        <li><span class="mark-v">✓</span> Auditorías y correcciones sobre tu negocio</li>
+                        <li><span class="mark-v">✓</span> Plantillas y checklists de cada fase</li>
                     </ul>
                     <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-ghost">Agenda una llamada</a>
                 </div>
@@ -1459,29 +1666,45 @@
                 <div class="plan featured reveal reveal-d1">
                     <span class="plan-badge">Más elegido</span>
                     <span class="plan-name">ELITE GROWTH</span>
+                    <p class="plan-for">Para construir un negocio sólido y escalarlo en serio.</p>
                     <span class="plan-duration">6 meses de acompañamiento</span>
                     <div class="plan-price">Negociable <span>· según tu caso</span></div>
                     <span class="plan-price-alt">lo definimos juntos en la llamada</span>
                     <div class="plan-divider"></div>
+                    <p class="plan-includes">Incluye</p>
                     <ul>
                         <li><span class="mark-v">✓</span> Todo lo de Elite Start</li>
-                        <li><span class="mark-v">✓</span> Mayor tiempo para escalar</li>
-                        <li><span class="mark-v">✓</span> Seguimiento del negocio a largo plazo</li>
+                        <li><span class="mark-v">✓</span> 3 meses extra para estabilizar y escalar</li>
                         <li><span class="mark-v">✓</span> Plan de crecimiento mes 4-6</li>
+                        <li><span class="mark-v">✓</span> Seguimiento del negocio a largo plazo</li>
+                        <li><span class="mark-v">✓</span> Prioridad en agenda y soporte</li>
                         <li><span class="mark-v">✓</span> Mejores condiciones por mayor compromiso</li>
                     </ul>
                     <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-cta">Agenda una llamada</a>
                 </div>
             </div>
+
+            <div class="honest-box reveal">
+                <span class="hb-icon">🛡️</span>
+                <div>
+                    <h4>Filtro honesto</h4>
+                    <p>
+                        La llamada es un <strong>diagnóstico, no una venta</strong>. Si vemos que el programa no es para ti,
+                        te lo decimos de frente — y de todas formas sales con claridad sobre tu situación y tu siguiente paso.
+                        <strong>La llamada cuesta $0.</strong>
+                    </p>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- ============ SECCIÓN 5 · LAS 6 FASES ============ -->
+    <!-- ============ LAS 6 FASES ============ -->
     <section id="fases" class="section-dark">
         <div class="container">
             <div class="section-head reveal">
                 <span class="eyebrow">Qué incluye</span>
                 <h2 class="h2">Las 6 fases del <span class="accent">acompañamiento</span></h2>
+                <div class="head-beam"></div>
             </div>
 
             <div class="phases-grid">
@@ -1525,12 +1748,13 @@
         </div>
     </section>
 
-    <!-- ============ SECCIÓN 6 · DIFERENCIAL ============ -->
-    <section>
+    <!-- ============ DIFERENCIAL (SECCIÓN CLARA) ============ -->
+    <section class="section-light">
         <div class="orb orb-pink" style="top: 20%; left: -8%; width: 340px; height: 340px;"></div>
         <div class="container">
             <div class="section-head reveal">
                 <h2 class="h2">No es <span class="accent">otro curso</span> más.</h2>
+                <div class="head-beam"></div>
             </div>
 
             <div class="compare-wrap reveal">
@@ -1592,13 +1816,14 @@
         </div>
     </section>
 
-    <!-- ============ SECCIÓN 7 · SOBRE JUAN FELIPE ============ -->
+    <!-- ============ SOBRE JUAN FELIPE ============ -->
     <section id="sobre-mi" class="section-dark">
         <div class="orb orb-purple" style="bottom: 6%; right: -6%; width: 380px; height: 380px;"></div>
         <div class="container">
             <div class="section-head reveal">
                 <span class="eyebrow">Sobre mí</span>
                 <h2 class="h2">¿Quién te <span class="accent">acompaña</span>?</h2>
+                <div class="head-beam"></div>
             </div>
 
             <div class="about-grid">
@@ -1621,19 +1846,19 @@
 
                     <div class="about-metrics">
                         <div class="about-metric">
-                            <div class="num">$20K+ USD</div>
+                            <div class="num" data-count="20" data-prefix="$" data-suffix="K+ USD">$20K+ USD</div>
                             <div class="label">facturados</div>
                         </div>
                         <div class="about-metric">
-                            <div class="num">40</div>
+                            <div class="num" data-count="40">40</div>
                             <div class="label">personas primera edición</div>
                         </div>
                         <div class="about-metric">
-                            <div class="num">3+ años</div>
+                            <div class="num" data-count="3" data-suffix="+ años">3+ años</div>
                             <div class="label">emprendiendo</div>
                         </div>
                         <div class="about-metric">
-                            <div class="num">18 años</div>
+                            <div class="num" data-count="18" data-suffix=" años">18 años</div>
                             <div class="label">fundador</div>
                         </div>
                     </div>
@@ -1642,11 +1867,14 @@
         </div>
     </section>
 
-    <!-- ============ SECCIÓN 8 · EL PROCESO ============ -->
-    <section>
+    <!-- ============ EL PROCESO (SECCIÓN CLARA) ============ -->
+    <section class="section-light">
+        <div class="orb orb-cyan" style="top: 16%; right: -6%; width: 320px; height: 320px;"></div>
         <div class="container">
             <div class="section-head reveal">
+                <span class="eyebrow">El proceso</span>
                 <h2 class="h2">¿Cómo <span class="accent">empezamos</span>?</h2>
+                <div class="head-beam"></div>
             </div>
 
             <div class="steps">
@@ -1674,11 +1902,12 @@
         </div>
     </section>
 
-    <!-- ============ SECCIÓN 9 · FAQ ============ -->
+    <!-- ============ FAQ ============ -->
     <section id="faq" class="section-dark">
         <div class="container">
             <div class="section-head reveal">
                 <h2 class="h2">Preguntas <span class="accent">frecuentes</span></h2>
+                <div class="head-beam"></div>
             </div>
 
             <div class="faq-list reveal">
@@ -1755,7 +1984,7 @@
         </div>
     </section>
 
-    <!-- ============ SECCIÓN 10 · CTA FINAL ============ -->
+    <!-- ============ CTA FINAL ============ -->
     <section id="agenda" class="final-cta">
         <div class="container">
             <div class="reveal">
@@ -1792,7 +2021,26 @@
     </footer>
 
     <script>
-        // ---------- Scroll reveal (IntersectionObserver) ----------
+        // ---------- Menú móvil ----------
+        const navToggle = document.getElementById('navToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        navToggle.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.toggle('open');
+            navToggle.classList.toggle('open', isOpen);
+            navToggle.setAttribute('aria-expanded', isOpen);
+            navToggle.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
+        });
+
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                navToggle.classList.remove('open');
+                navToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        // ---------- Scroll reveal ----------
         const observer = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -1802,7 +2050,40 @@
             });
         }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        document.querySelectorAll('.reveal, .reveal-line, .timeline-line').forEach(el => observer.observe(el));
+
+        // ---------- Contadores animados ----------
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function countUp(el) {
+            const target = parseInt(el.dataset.count, 10);
+            const prefix = el.dataset.prefix || '';
+            const suffix = el.dataset.suffix || '';
+            if (reducedMotion) {
+                el.textContent = prefix + target + suffix;
+                return;
+            }
+            const duration = 1400;
+            const start = performance.now();
+            function tick(now) {
+                const p = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - p, 3);
+                el.textContent = prefix + Math.round(target * eased) + suffix;
+                if (p < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+
+        const countObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    countUp(entry.target);
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el));
 
         // ---------- FAQ accordion ----------
         document.querySelectorAll('.faq-q').forEach(btn => {
@@ -1811,7 +2092,6 @@
                 const answer = item.querySelector('.faq-a');
                 const isOpen = item.classList.contains('open');
 
-                // cerrar todos
                 document.querySelectorAll('.faq-item.open').forEach(openItem => {
                     openItem.classList.remove('open');
                     openItem.querySelector('.faq-a').style.maxHeight = null;
