@@ -18,7 +18,7 @@ Landing page oficial del programa de acompañamiento 1:1 de juanflopezzz.
 
 - Todos los CTAs apuntan al Calendly: `https://calendly.com/juanfelipelopezlara3/30min`
 - El número de cupos disponibles está en el hero — actualízalo manualmente
-- En `/programa`: reemplazar los 3 placeholders de screenshots (TikTok Ads), los 3 testimonios, el número de WhatsApp (`wa.me/573000000000`) y la fecha de la próxima generación en el FAQ
+- En `/programa`: planes Personalizado (desde $250 USD) e Intensivo ($450 USD), con duraciones de 3/6/12 meses definidas por llamada. WhatsApp: +57 312 592 3915. Pendiente: fecha de la próxima generación en el FAQ
 - Precios: Elite Start desde $250 USD por los 3 meses (según el caso); Elite Growth negociable caso por caso
 - La foto está servida desde Cloudinary con `f_auto,q_auto` (optimización automática de formato y peso)
 
