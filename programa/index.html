@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0A0A0A">
+    <title>De $0 a $1.000 USD — Programa Premium | Generación 1K Elite</title>
+    <meta name="description" content="3 meses de acompañamiento real para construir tu negocio de ecommerce PCE en Colombia y facturar tus primeros $1.000 USD. $250 USD · cupos limitados.">
+
+    <meta property="og:title" content="De $0 a $1.000 USD — Programa Premium | juanflopezzz">
+    <meta property="og:description" content="El único programa donde construyes tu ecommerce PCE paso a paso, con acompañamiento real, hasta facturar tus primeros $1.000 USD.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://res.cloudinary.com/dss3b02ao/image/upload/f_auto,q_auto,w_1200/v1783628255/WhatsApp_Image_2026-07-09_at_15.16.58_dq91vg.jpg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@1,500;1,600;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================================
+           PROGRAMA PREMIUM — mismo design system de Generación 1K
+        ============================================================ */
+        :root {
+            --bg-primary:    #0A0A0A;
+            --bg-secondary:  #101014;
+            --bg-card:       #16161C;
+            --border:        #26262E;
+            --purple:        #7C3AED;
+            --purple-light:  #A855F7;
+            --purple-glow:   rgba(124, 58, 237, 0.15);
+            --pink:          #EC4899;
+            --cyan:          #22D3EE;
+            --yellow:        #F59E0B;
+            --yellow-hover:  #FBBF24;
+            --text-primary:  #FFFFFF;
+            --text-secondary:#B4B4BE;
+            --text-muted:    #75757F;
+            --success:       #10B981;
+            --danger:        #F87171;
+            --light-bg:      #F5F5F8;
+            --light-card:    #FFFFFF;
+            --light-border:  #E6E6EE;
+            --light-text:    #101016;
+            --light-text-2:  #4B4B58;
+            --light-muted:   #7A7A88;
+            --font-display:  'Manrope', sans-serif;
+            --font-body:     'Manrope', sans-serif;
+            --font-serif:    'Playfair Display', Georgia, serif;
+            --font-mono:     'JetBrains Mono', monospace;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            overflow-x: hidden;
+        }
+        ::selection { background: var(--purple); color: #fff; }
+        img { max-width: 100%; display: block; }
+        a { color: inherit; text-decoration: none; }
+        ul { list-style: none; }
+        button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+        .container { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 32px); }
+        section { position: relative; padding: clamp(80px, 12vw, 130px) 0; overflow: hidden; }
+        section .container { position: relative; z-index: 2; }
+
+        .eyebrow {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--purple-light);
+        }
+        .h2 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: clamp(30px, 4.6vw, 46px);
+            line-height: 1.12;
+            letter-spacing: -0.02em;
+        }
+        .accent {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 600;
+            background: linear-gradient(120deg, #fff 10%, var(--purple-light) 55%, var(--pink) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            padding-right: 0.08em;
+        }
+        .section-sub {
+            color: var(--text-secondary);
+            font-size: clamp(16px, 2vw, 18px);
+            line-height: 1.75;
+            max-width: 640px;
+            margin-top: 20px;
+        }
+        .section-head { position: relative; z-index: 2; text-align: center; margin-bottom: clamp(44px, 7vw, 64px); }
+        .section-head .section-sub { margin-left: auto; margin-right: auto; }
+        .section-head .eyebrow + .h2 { margin-top: 18px; }
+        .head-beam {
+            width: 64px; height: 3px; border-radius: 3px;
+            background: linear-gradient(90deg, var(--purple), var(--pink));
+            margin: 24px auto 0;
+        }
+
+        .section-light { background: var(--light-bg); color: var(--light-text); }
+        .section-light .h2 { color: var(--light-text); }
+        .section-light .section-sub { color: var(--light-text-2); }
+        .section-light .eyebrow { color: var(--purple); }
+        .section-light .accent {
+            background: linear-gradient(120deg, var(--light-text) 5%, var(--purple) 50%, var(--pink) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .section-light .orb { opacity: 0.5; }
+        .section-dark { background: var(--bg-secondary); }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0;
+            animation: orbFloat 16s ease-in-out infinite alternate;
+        }
+        .orb-purple { background: rgba(124, 58, 237, 0.28); }
+        .orb-pink   { background: rgba(236, 72, 153, 0.18); animation-duration: 20s; animation-delay: -6s; }
+        .orb-amber  { background: rgba(245, 158, 11, 0.14); animation-duration: 18s; animation-delay: -3s; }
+        @keyframes orbFloat {
+            0%   { transform: translate(0, 0) scale(1); }
+            50%  { transform: translate(50px, -35px) scale(1.15); }
+            100% { transform: translate(-30px, 30px) scale(0.95); }
+        }
+
+        .watermark {
+            position: absolute;
+            bottom: -0.12em;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: clamp(120px, 24vw, 300px);
+            line-height: 1;
+            letter-spacing: -0.04em;
+            color: rgba(255, 255, 255, 0.022);
+            white-space: nowrap;
+            pointer-events: none;
+            user-select: none;
+            z-index: 0;
+        }
+        .section-light .watermark { color: rgba(16, 16, 22, 0.028); }
+
+        .btn-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--yellow);
+            color: #000;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 16px;
+            padding: 17px 34px;
+            border-radius: 12px;
+            min-height: 48px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+            white-space: nowrap;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.18);
+        }
+        .btn-cta:hover {
+            transform: translateY(-2px) scale(1.02);
+            background: var(--yellow-hover);
+            box-shadow: 0 0 34px rgba(245, 158, 11, 0.4);
+        }
+        .btn-cta .arrow { transition: transform 0.25s ease; }
+        .btn-cta:hover .arrow { transform: translateX(3px); }
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 15px;
+            padding: 16px 28px;
+            border-radius: 12px;
+            min-height: 48px;
+            border: 1px solid rgba(124, 58, 237, 0.45);
+            color: var(--text-primary);
+            transition: all 0.25s ease;
+        }
+        .btn-ghost:hover { border-color: var(--purple-light); box-shadow: 0 0 30px var(--purple-glow); transform: translateY(-2px); }
+        .cta-note { font-size: 12.5px; color: var(--text-muted); margin-top: 14px; }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-d1 { transition-delay: 100ms; }
+        .reveal-d2 { transition-delay: 200ms; }
+        .reveal-d3 { transition-delay: 300ms; }
+
+        /* ============================================================
+           NAV STICKY (aparece al scrollear)
+        ============================================================ */
+        .pnav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            transform: translateY(-100%);
+            transition: transform 0.35s ease;
+        }
+        .pnav.show { transform: translateY(0); }
+        .pnav-inner { display: flex; align-items: center; justify-content: space-between; height: 62px; }
+        .logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+        .logo-mark {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 12px;
+            color: #fff;
+        }
+        .logo-name { font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: -0.01em; }
+        .logo-name span { color: var(--purple-light); }
+        .pnav-right { display: flex; align-items: center; gap: 14px; }
+        .pnav-back { font-size: 13px; font-weight: 600; color: var(--text-secondary); transition: color 0.2s; display: none; }
+        .pnav-back:hover { color: #fff; }
+        .pnav-cta {
+            display: inline-flex;
+            align-items: center;
+            background: var(--yellow);
+            color: #000;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 11px 20px;
+            border-radius: 10px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            white-space: nowrap;
+        }
+        .pnav-cta:hover { transform: scale(1.03); box-shadow: 0 0 24px rgba(245, 158, 11, 0.3); }
+        @media (min-width: 640px) { .pnav-back { display: inline; } }
+
+        /* ============================================================
+           1 · HERO INMERSIVO
+        ============================================================ */
+        .phero {
+            position: relative;
+            min-height: 100svh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 110px 0 90px;
+            overflow: hidden;
+        }
+        .phero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(168, 85, 247, 0.10) 1px, transparent 1px);
+            background-size: 32px 32px;
+            mask-image: linear-gradient(to bottom, black 30%, transparent 90%);
+            -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 90%);
+            pointer-events: none;
+        }
+        .grain {
+            position: absolute;
+            inset: 0;
+            opacity: 0.035;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        .phero .container { position: relative; z-index: 2; }
+        @keyframes heroFade {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .phero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 20px;
+            border-radius: 999px;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            background: rgba(245, 158, 11, 0.08);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--yellow);
+            margin-bottom: 32px;
+            animation: heroFade 0.9s ease 0.1s both;
+        }
+        .phero h1 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: clamp(46px, 9vw, 92px);
+            line-height: 1.02;
+            letter-spacing: -0.035em;
+            animation: heroFade 0.9s ease 0.3s both;
+        }
+        .phero .subtitle {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 600;
+            font-size: clamp(20px, 3.4vw, 30px);
+            margin-top: 14px;
+            background: linear-gradient(120deg, #fff 10%, var(--purple-light) 60%, var(--pink) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: heroFade 0.9s ease 0.45s both;
+        }
+        .phero-desc {
+            margin: 28px auto 0;
+            max-width: 560px;
+            font-size: clamp(16px, 2.2vw, 18px);
+            color: var(--text-secondary);
+            line-height: 1.75;
+            animation: heroFade 0.9s ease 0.6s both;
+        }
+        .phero-price {
+            margin-top: 36px;
+            animation: heroFade 0.9s ease 0.75s both;
+        }
+        .phero-price .price {
+            font-family: var(--font-mono);
+            font-size: clamp(38px, 6vw, 56px);
+            font-weight: 500;
+            color: var(--yellow);
+            line-height: 1;
+        }
+        .phero-price .price-note {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+        .phero-cta { margin-top: 36px; animation: heroFade 0.9s ease 0.9s both; }
+        .phero-cta .btn-cta { font-size: 17px; padding: 19px 42px; }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            z-index: 2;
+            animation: heroFade 0.9s ease 1.2s both;
+        }
+        .scroll-hint .chev {
+            font-size: 18px;
+            color: var(--purple-light);
+            animation: bounceDown 1.8s ease-in-out infinite;
+        }
+        @keyframes bounceDown {
+            0%, 100% { transform: translateY(0); opacity: 0.6; }
+            50%      { transform: translateY(8px); opacity: 1; }
+        }
+
+        /* ============================================================
+           2 · EL PROBLEMA (clara)
+        ============================================================ */
+        .prob-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        .prob-card {
+            background: var(--light-card);
+            border: 1px solid var(--light-border);
+            border-radius: 18px;
+            padding: 28px 26px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            box-shadow: 0 10px 26px rgba(20, 20, 60, 0.06);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .prob-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(248, 113, 113, 0.45);
+            box-shadow: 0 16px 36px rgba(248, 113, 113, 0.1);
+        }
+        .prob-icon {
+            width: 46px; height: 46px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 21px;
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.25);
+        }
+        .prob-card p { font-weight: 700; font-size: 15px; line-height: 1.6; color: var(--light-text); }
+
+        /* ============================================================
+           3 · LA SOLUCIÓN — MODELO PCE
+        ============================================================ */
+        .pce-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .pce-card {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 38px 30px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 14px 34px rgba(0, 0, 0, 0.3);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .pce-card:hover { transform: translateY(-3px); }
+        .pce-card:nth-child(1):hover { border-color: rgba(245, 158, 11, 0.5); box-shadow: 0 0 30px rgba(245, 158, 11, 0.12); }
+        .pce-card:nth-child(2):hover { border-color: rgba(124, 58, 237, 0.5); box-shadow: 0 0 30px var(--purple-glow); }
+        .pce-card:nth-child(3):hover { border-color: rgba(16, 185, 129, 0.5); box-shadow: 0 0 30px rgba(16, 185, 129, 0.12); }
+        .pce-icon {
+            width: 56px; height: 56px;
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 25px;
+            margin-bottom: 22px;
+            animation: floatY 6s ease-in-out infinite;
+        }
+        @keyframes floatY {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-10px); }
+        }
+        .pce-card:nth-child(1) .pce-icon { background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .pce-card:nth-child(2) .pce-icon { background: rgba(124, 58, 237, 0.15); border: 1px solid rgba(124, 58, 237, 0.35); animation-delay: -2s; }
+        .pce-card:nth-child(3) .pce-icon { background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); animation-delay: -4s; }
+        .pce-card h3 {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            letter-spacing: 0.14em;
+            margin-bottom: 12px;
+        }
+        .pce-card:nth-child(1) h3 { color: var(--yellow); }
+        .pce-card:nth-child(2) h3 { color: var(--purple-light); }
+        .pce-card:nth-child(3) h3 { color: var(--success); }
+        .pce-card p { font-size: 15px; line-height: 1.75; color: var(--text-secondary); }
+        .pce-card p strong { color: #fff; font-weight: 700; }
+
+        /* ============================================================
+           4 · RESULTADOS REALES
+        ============================================================ */
+        .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .metric-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(124, 58, 237, 0.22);
+            border-radius: 18px;
+            padding: 30px 22px;
+            text-align: center;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(124, 58, 237, 0.5);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 30px var(--purple-glow);
+        }
+        .metric-num {
+            font-family: var(--font-mono);
+            font-size: clamp(26px, 4.5vw, 38px);
+            font-weight: 500;
+            color: var(--yellow);
+            line-height: 1.1;
+        }
+        .metric-label { font-size: 12.5px; color: var(--text-muted); margin-top: 10px; line-height: 1.5; }
+
+        .shots-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 44px; }
+        .shot-ph {
+            aspect-ratio: 16 / 10;
+            border: 2px dashed rgba(124, 58, 237, 0.35);
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(124, 58, 237, 0.04);
+            color: var(--text-muted);
+            font-size: 13px;
+            text-align: center;
+            padding: 20px;
+        }
+        .shot-ph .shot-icon { font-size: 30px; }
+        .shot-ph strong { color: var(--text-secondary); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+        /* ============================================================
+           5 · LOS 3 MESES (timeline vertical)
+        ============================================================ */
+        .vtimeline { position: relative; max-width: 760px; margin: 0 auto; }
+        .vtimeline::before {
+            content: '';
+            position: absolute;
+            top: 8px; bottom: 8px;
+            left: 21px;
+            width: 2px;
+            background: linear-gradient(180deg, var(--purple), var(--pink), var(--yellow));
+            opacity: 0.5;
+        }
+        .vt-item { position: relative; padding: 0 0 44px 66px; }
+        .vt-item:last-child { padding-bottom: 0; }
+        .vt-dot {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 15px;
+            background: var(--bg-card);
+            border: 2px solid var(--purple);
+            color: var(--purple-light);
+            z-index: 2;
+        }
+        .vt-item:nth-child(2) .vt-dot { border-color: var(--pink); color: var(--pink); }
+        .vt-item:nth-child(3) .vt-dot { border-color: var(--yellow); color: var(--yellow); }
+        .vt-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px 28px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 14px 34px rgba(0, 0, 0, 0.3);
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .vt-card:hover { transform: translateY(-3px); border-color: rgba(124, 58, 237, 0.4); box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 0 30px var(--purple-glow); }
+        .vt-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--purple-light); }
+        .vt-item:nth-child(2) .vt-label { color: var(--pink); }
+        .vt-item:nth-child(3) .vt-label { color: var(--yellow); }
+        .vt-card h3 { font-family: var(--font-display); font-size: 22px; font-weight: 800; margin: 8px 0 12px; letter-spacing: -0.01em; }
+        .vt-card p { font-size: 15px; line-height: 1.75; color: var(--text-secondary); }
+        .vt-card p strong { color: #fff; font-weight: 700; }
+
+        /* ============================================================
+           6 · QUÉ INCLUYE (clara)
+        ============================================================ */
+        .includes-list { max-width: 760px; margin: 0 auto; display: grid; gap: 12px; }
+        .inc-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: var(--light-card);
+            border: 1px solid var(--light-border);
+            border-radius: 16px;
+            padding: 18px 22px;
+            box-shadow: 0 8px 20px rgba(20, 20, 60, 0.05);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .inc-item:hover { transform: translateX(4px); border-color: rgba(245, 158, 11, 0.5); }
+        .inc-check {
+            flex-shrink: 0;
+            width: 26px; height: 26px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(245, 158, 11, 0.14);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #B45309;
+            font-size: 14px;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+        .inc-item p { font-size: 15px; line-height: 1.6; color: var(--light-text); font-weight: 600; }
+        .inc-item p span { color: var(--light-text-2); font-weight: 400; }
+
+        .bonus-box {
+            max-width: 760px;
+            margin: 32px auto 0;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(236, 72, 153, 0.06));
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            border-radius: 20px;
+            padding: 28px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 14px 34px rgba(245, 158, 11, 0.08);
+        }
+        .bonus-tag {
+            align-self: flex-start;
+            font-family: var(--font-mono);
+            font-size: 10.5px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: var(--yellow);
+            color: #000;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 999px;
+        }
+        .bonus-box p { font-size: 15.5px; line-height: 1.7; color: var(--light-text); font-weight: 600; }
+
+        /* ============================================================
+           7 · POR QUÉ CONMIGO
+        ============================================================ */
+        .who-grid { display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center; }
+        .who-photo {
+            position: relative;
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto;
+            border-radius: 26px;
+            overflow: hidden;
+            border: 1px solid rgba(124, 58, 237, 0.35);
+            box-shadow: 0 0 60px rgba(124, 58, 237, 0.12), 0 24px 48px rgba(0, 0, 0, 0.4);
+        }
+        .who-photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+        .who-photo::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(10, 10, 10, 0.55) 0%, transparent 40%);
+            pointer-events: none;
+        }
+        .who-text p {
+            color: var(--text-secondary);
+            font-size: clamp(15px, 1.9vw, 16.5px);
+            line-height: 1.8;
+            margin-bottom: 18px;
+            max-width: 580px;
+        }
+        .who-text p strong { color: #fff; font-weight: 700; }
+        .who-sign {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            letter-spacing: 0.1em;
+            color: var(--purple-light);
+            margin-top: 8px;
+        }
+
+        /* ============================================================
+           8 · PARA QUIÉN ES (clara)
+        ============================================================ */
+        .fit-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+        .fit-col { border-radius: 22px; padding: 36px 30px; }
+        .fit-col.yes {
+            background: var(--light-card);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            box-shadow: 0 14px 34px rgba(16, 185, 129, 0.08);
+        }
+        .fit-col.no {
+            background: var(--light-card);
+            border: 1px solid rgba(248, 113, 113, 0.4);
+            box-shadow: 0 14px 34px rgba(248, 113, 113, 0.07);
+        }
+        .fit-tag {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 7px 15px;
+            border-radius: 999px;
+            margin-bottom: 24px;
+        }
+        .fit-col.yes .fit-tag { background: rgba(16, 185, 129, 0.12); color: #047857; }
+        .fit-col.no .fit-tag  { background: rgba(248, 113, 113, 0.12); color: #B91C1C; }
+        .fit-col li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 9px 0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--light-text);
+            font-weight: 600;
+        }
+        .fit-col.no li { color: var(--light-text-2); font-weight: 500; }
+        .fit-mark { flex-shrink: 0; font-weight: 800; }
+        .fit-col.yes .fit-mark { color: #059669; }
+        .fit-col.no .fit-mark  { color: #DC2626; }
+
+        /* ============================================================
+           9 · TESTIMONIOS
+        ============================================================ */
+        .testi-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .testi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px 28px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 14px 34px rgba(0, 0, 0, 0.3);
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+        .testi-card:hover { transform: translateY(-3px); border-color: rgba(124, 58, 237, 0.4); }
+        .testi-quote { font-size: 15px; line-height: 1.75; color: var(--text-secondary); font-style: italic; }
+        .testi-person { display: flex; align-items: center; gap: 14px; margin-top: 24px; }
+        .testi-avatar {
+            width: 46px; height: 46px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 15px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            flex-shrink: 0;
+        }
+        .testi-name { font-weight: 800; font-size: 14.5px; color: #fff; }
+        .testi-city { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+
+        /* ============================================================
+           10 · FAQ
+        ============================================================ */
+        .faq-list { max-width: 740px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            transition: border-color 0.25s ease;
+        }
+        .faq-item.open { border-color: rgba(124, 58, 237, 0.4); }
+        .faq-q {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            text-align: left;
+            padding: 22px 24px;
+            font-weight: 700;
+            font-size: 15.5px;
+            line-height: 1.5;
+            color: var(--text-primary);
+            min-height: 48px;
+        }
+        .faq-icon {
+            flex-shrink: 0;
+            width: 24px; height: 24px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--purple-light);
+            font-size: 19px;
+            transition: transform 0.3s ease;
+        }
+        .faq-item.open .faq-icon { transform: rotate(45deg); }
+        .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+        .faq-a p { padding: 0 24px 24px; font-size: 14.5px; line-height: 1.75; color: var(--text-secondary); }
+
+        /* ============================================================
+           11 · CTA FINAL
+        ============================================================ */
+        .final-cta {
+            min-height: 90svh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            padding: clamp(110px, 16vw, 160px) 0;
+            overflow: hidden;
+        }
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 860px;
+            height: 640px;
+            background: radial-gradient(ellipse at center, rgba(124, 58, 237, 0.26) 0%, rgba(245, 158, 11, 0.07) 45%, transparent 70%);
+            pointer-events: none;
+            animation: breathe 7s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.75; }
+            50%      { transform: translate(-50%, -50%) scale(1.14); opacity: 1; }
+        }
+        .final-cta .container { position: relative; z-index: 2; width: 100%; }
+        .final-cta h2 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: clamp(44px, 8vw, 84px);
+            line-height: 1.05;
+            letter-spacing: -0.035em;
+        }
+        .final-cta .section-sub { margin: 24px auto 0; max-width: 480px; text-align: center; }
+        .final-price {
+            font-family: var(--font-mono);
+            font-size: clamp(26px, 4.5vw, 38px);
+            color: var(--yellow);
+            margin-top: 36px;
+        }
+        .final-cta .btn-cta { margin-top: 32px; font-size: 18px; padding: 21px 48px; }
+        .wa-line { margin-top: 24px; font-size: 14px; color: var(--text-muted); }
+        .wa-line a { color: var(--success); font-weight: 700; transition: color 0.2s; }
+        .wa-line a:hover { color: #34D399; }
+
+        /* ============================================================
+           FOOTER
+        ============================================================ */
+        footer { border-top: 1px solid rgba(255, 255, 255, 0.06); padding: 44px 0; text-align: center; }
+        footer p { font-size: 13px; color: var(--text-muted); }
+        footer .back-home {
+            display: inline-block;
+            margin-top: 14px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--purple-light);
+            letter-spacing: 0.08em;
+        }
+        footer .back-home:hover { color: #fff; }
+
+        /* ============================================================
+           RESPONSIVE
+        ============================================================ */
+        @media (min-width: 640px) {
+            .prob-grid { grid-template-columns: repeat(2, 1fr); }
+            .shots-grid { grid-template-columns: repeat(3, 1fr); }
+            .bonus-box { flex-direction: row; align-items: center; gap: 22px; }
+            .bonus-tag { flex-shrink: 0; }
+        }
+        @media (min-width: 768px) {
+            .pce-grid { grid-template-columns: repeat(3, 1fr); }
+            .metrics-grid { grid-template-columns: repeat(4, 1fr); }
+            .fit-grid { grid-template-columns: 1fr 1fr; }
+            .testi-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (min-width: 1024px) {
+            .who-grid { grid-template-columns: 360px 1fr; gap: 72px; }
+            .who-photo { margin: 0; }
+        }
+        @media (max-width: 767px) {
+            .orb { filter: blur(60px); opacity: 0.8; }
+            .section-light .orb { opacity: 0.4; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .reveal { opacity: 1; transform: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============ NAV STICKY (aparece al scrollear) ============ -->
+    <nav class="pnav" id="pnav">
+        <div class="container pnav-inner">
+            <a href="/" class="logo" aria-label="Volver a Generación 1K Elite">
+                <span class="logo-mark">1K</span>
+                <span class="logo-name">Generación<span>Elite</span></span>
+            </a>
+            <div class="pnav-right">
+                <a href="/" class="pnav-back">← Volver al inicio</a>
+                <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="pnav-cta">Aplicar</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============ 1 · HERO INMERSIVO ============ -->
+    <header class="phero">
+        <div class="grain"></div>
+        <div class="orb orb-purple" style="top: 8%; left: 10%; width: 440px; height: 440px;"></div>
+        <div class="orb orb-amber" style="top: 30%; right: 5%; width: 360px; height: 360px;"></div>
+        <div class="orb orb-pink" style="bottom: 12%; left: 20%; width: 280px; height: 280px;"></div>
+
+        <div class="container">
+            <span class="phero-badge">⚡ Programa Premium · Cupos limitados</span>
+
+            <h1>De $0 a<br>$1.000 USD</h1>
+            <p class="subtitle">en 3 meses de acompañamiento real</p>
+
+            <p class="phero-desc">
+                El único programa en Colombia donde construyes tu negocio de ecommerce
+                <strong style="color:#fff;">PCE (pago contra entrega)</strong> conmigo, paso a paso,
+                hasta facturar tus primeros $1.000 USD.
+            </p>
+
+            <div class="phero-price">
+                <div class="price">$250 USD</div>
+                <div class="price-note">3 meses de acompañamiento completo</div>
+            </div>
+
+            <div class="phero-cta">
+                <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-cta">
+                    Aplicar al programa <span class="arrow">→</span>
+                </a>
+                <p class="cta-note">Cupos limitados por generación · aplicación con llamada previa</p>
+            </div>
+        </div>
+
+        <div class="scroll-hint" aria-hidden="true">
+            <span>Descubre cómo</span>
+            <span class="chev">↓</span>
+        </div>
+    </header>
+
+    <!-- ============ 2 · EL PROBLEMA (clara) ============ -->
+    <section class="section-light">
+        <div class="orb orb-purple" style="top: 10%; right: -6%; width: 320px; height: 320px;"></div>
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">El problema</span>
+                <h2 class="h2">¿Por qué el 90% <span class="accent">falla</span> intentando esto solo?</h2>
+                <div class="head-beam"></div>
+            </div>
+
+            <div class="prob-grid">
+                <div class="prob-card reveal">
+                    <span class="prob-icon">📚</span>
+                    <p>Cursos genéricos que no aplican a Colombia</p>
+                </div>
+                <div class="prob-card reveal reveal-d1">
+                    <span class="prob-icon">📺</span>
+                    <p>YouTube te da información, no ejecución</p>
+                </div>
+                <div class="prob-card reveal reveal-d2">
+                    <span class="prob-icon">🤷</span>
+                    <p>No hay a quién preguntarle cuando algo falla</p>
+                </div>
+                <div class="prob-card reveal reveal-d3">
+                    <span class="prob-icon">⏰</span>
+                    <p>Sin mentor, gastas 6 meses cometiendo los mismos errores que yo ya cometí</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 3 · LA SOLUCIÓN — MODELO PCE ============ -->
+    <section>
+        <div class="orb orb-purple" style="top: 20%; left: -8%; width: 400px; height: 400px;"></div>
+        <span class="watermark" aria-hidden="true">PCE</span>
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">La solución</span>
+                <h2 class="h2">El modelo que <span class="accent">sí funciona</span> en Colombia</h2>
+                <div class="head-beam"></div>
+            </div>
+
+            <div class="pce-grid">
+                <div class="pce-card reveal">
+                    <div class="pce-icon">💵</div>
+                    <h3>PAGO CONTRA ENTREGA</h3>
+                    <p>El cliente paga cuando recibe. <strong>Sin tarjetas de crédito. Sin pasarelas. Sin fricción.</strong></p>
+                </div>
+                <div class="pce-card reveal reveal-d1">
+                    <div class="pce-icon">📦</div>
+                    <h3>SIN INVENTARIO</h3>
+                    <p>Dropi despacha por ti. Tú no tocas producto. <strong>No hay bodega, no hay logística</strong> que manejar.</p>
+                </div>
+                <div class="pce-card reveal reveal-d2">
+                    <div class="pce-icon">🚀</div>
+                    <h3>$100 USD PARA EMPEZAR</h3>
+                    <p>No necesitas capital grande. <strong>Con menos de medio salario mínimo</strong> lanzas tu primer producto.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 4 · RESULTADOS REALES ============ -->
+    <section class="section-dark">
+        <div class="orb orb-purple" style="top: 24%; right: -6%; width: 400px; height: 400px;"></div>
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">Proof</span>
+                <h2 class="h2">Esto ya funciona.<br><span class="accent">Aquí están las pruebas.</span></h2>
+                <div class="head-beam"></div>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card reveal">
+                    <div class="metric-num" data-count="80" data-prefix="+">+80</div>
+                    <div class="metric-label">pedidos · mi tienda LUMENS · mayo 2026</div>
+                </div>
+                <div class="metric-card reveal reveal-d1">
+                    <div class="metric-num" data-count="8.4" data-decimals="1" data-suffix="x">8.4x</div>
+                    <div class="metric-label">ROAS en TikTok Ads</div>
+                </div>
+                <div class="metric-card reveal reveal-d2">
+                    <div class="metric-num" data-count="9285" data-prefix="$" data-suffix=" COP">$9.285 COP</div>
+                    <div class="metric-label">CPA promedio</div>
+                </div>
+                <div class="metric-card reveal reveal-d3">
+                    <div class="metric-num" data-count="1000" data-prefix="+$" data-suffix=" USD">+$1.000 USD</div>
+                    <div class="metric-label">facturados en la primera semana</div>
+                </div>
+            </div>
+
+            <!-- Screenshots reales: reemplazar cada placeholder por <img src="..."> del Ads Manager -->
+            <div class="shots-grid">
+                <div class="shot-ph reveal">
+                    <span class="shot-icon">📊</span>
+                    <strong>Screenshot · TikTok Ads Manager</strong>
+                    <span>Reemplazar por captura real de campañas</span>
+                </div>
+                <div class="shot-ph reveal reveal-d1">
+                    <span class="shot-icon">📈</span>
+                    <strong>Screenshot · Métricas de la tienda</strong>
+                    <span>Reemplazar por captura real de Shopify/Dropi</span>
+                </div>
+                <div class="shot-ph reveal reveal-d2">
+                    <span class="shot-icon">💰</span>
+                    <strong>Screenshot · Facturación</strong>
+                    <span>Reemplazar por captura real de resultados</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 5 · LOS 3 MESES ============ -->
+    <section>
+        <div class="orb orb-pink" style="top: 30%; left: -8%; width: 340px; height: 340px;"></div>
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">La transformación</span>
+                <h2 class="h2">Los 3 meses <span class="accent">transformadores</span></h2>
+                <div class="head-beam"></div>
+            </div>
+
+            <div class="vtimeline">
+                <div class="vt-item reveal">
+                    <span class="vt-dot">M1</span>
+                    <div class="vt-card">
+                        <span class="vt-label">Mes 1</span>
+                        <h3>Fundamentos</h3>
+                        <p>
+                            Mentalidad de emprendedor real. Escoges tu producto ganador con mi guía directa.
+                            Montas tu tienda Shopify. Configuras Dropi y ReleaseIt.
+                            <strong>Terminas el mes con tu tienda LISTA para vender.</strong>
+                        </p>
+                    </div>
+                </div>
+                <div class="vt-item reveal reveal-d1">
+                    <span class="vt-dot">M2</span>
+                    <div class="vt-card">
+                        <span class="vt-label">Mes 2</span>
+                        <h3>Lanzamiento</h3>
+                        <p>
+                            Creas creativos que convierten con los 6 ángulos validados que uso yo.
+                            Lanzas tu primera campaña en TikTok Ads conmigo en vivo. Analizamos métricas juntos.
+                            <strong>Terminas el mes con tus primeras 10-20 ventas.</strong>
+                        </p>
+                    </div>
+                </div>
+                <div class="vt-item reveal reveal-d2">
+                    <span class="vt-dot">M3</span>
+                    <div class="vt-card">
+                        <span class="vt-label">Mes 3</span>
+                        <h3>Escala</h3>
+                        <p>
+                            Optimizamos lo que funciona. Aprendes cómo escalar sin romper campañas.
+                            Manejamos devoluciones. Automatizas procesos.
+                            <strong>Terminas el mes facturando tus primeros $1.000 USD.</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 6 · QUÉ INCLUYE (clara) ============ -->
+    <section class="section-light">
+        <div class="orb orb-amber" style="top: 12%; left: -6%; width: 300px; height: 300px;"></div>
+        <span class="watermark" aria-hidden="true">INCLUYE</span>
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">Qué incluye</span>
+                <h2 class="h2">Todo lo que recibes por <span class="accent">$250 USD</span></h2>
+                <div class="head-beam"></div>
+            </div>
+
+            <div class="includes-list">
+                <div class="inc-item reveal"><span class="inc-check">✓</span><p>12 sesiones grupales en vivo <span>(Lun-Mié-Jue 7-9pm)</span></p></div>
+                <div class="inc-item reveal"><span class="inc-check">✓</span><p>3 masterclasses con invitados especiales <span>(ADMA, Ronhal de Dropi, Jorge Arias de EAN)</span></p></div>
+                <div class="inc-item reveal"><span class="inc-check">✓</span><p>Grupo WhatsApp privado <span>con acceso directo a mí</span></p></div>
+                <div class="inc-item reveal"><span class="inc-check">✓</span><p>Grabaciones de todas las sesiones</p></div>
+                <div class="inc-item reveal"><span class="inc-check">✓</span><p>Plantillas de landings <span>que usan mis productos</span></p></div>
+                <div class="inc-item reveal"><span class="inc-check">✓</span><p>Guiones de creativos ganadores <span>comprobados</span></p></div>
+                <div class="inc-item reveal"><span class="inc-check">✓</span><p>Acceso a mi sistema LUMENS OS <span>(herramientas internas de análisis y calculadoras)</span></p></div>
+                <div class="inc-item reveal"><span class="inc-check">✓</span><p>5 sesiones 1:1 exclusivas <span>para los más comprometidos</span></p></div>
+                <div class="inc-item reveal"><span class="inc-check">✓</span><p>Comunidad de estudiantes serios <span>(no gente que solo mira)</span></p></div>
+            </div>
+
+            <div class="bonus-box reveal">
+                <span class="bonus-tag">Bonus</span>
+                <p>Acceso al proceso exacto que uso yo diariamente para tomar decisiones en campañas de +$1.000 USD/día.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 7 · POR QUÉ CONMIGO ============ -->
+    <section class="section-dark">
+        <div class="orb orb-purple" style="bottom: 10%; right: -6%; width: 380px; height: 380px;"></div>
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">Por qué conmigo</span>
+                <h2 class="h2">No soy un guru.<br><span class="accent">Soy alguien en el proceso.</span></h2>
+                <div class="head-beam"></div>
+            </div>
+
+            <div class="who-grid">
+                <div class="who-photo reveal">
+                    <img src="https://res.cloudinary.com/dss3b02ao/image/upload/f_auto,q_auto,w_800/v1783628255/WhatsApp_Image_2026-07-09_at_15.16.58_dq91vg.jpg"
+                         alt="Juan Felipe López, fundador de Generación 1K"
+                         loading="lazy" decoding="async">
+                </div>
+                <div class="who-text reveal reveal-d1">
+                    <p>
+                        Empecé desde cero. Sin capital, sin mentor, solo con hambre de aprender y ejecutar.
+                        Hoy facturo <strong>$1.000 USD por semana con LUMENS Colombia</strong>.
+                    </p>
+                    <p>
+                        No te voy a enseñar teoría. Te voy a mostrar <strong>exactamente lo que hago yo, todos los días</strong>,
+                        para que lo repliques con tu propio producto.
+                    </p>
+                    <p>
+                        Este no es un curso más. Son 3 meses donde vamos a <strong>construir tu negocio JUNTOS</strong>.
+                    </p>
+                    <p class="who-sign">— @juanflopezzz</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 8 · PARA QUIÉN ES (clara) ============ -->
+    <section class="section-light">
+        <div class="orb orb-purple" style="top: 16%; right: -6%; width: 320px; height: 320px;"></div>
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">Filtro</span>
+                <h2 class="h2">Este programa es <span class="accent">para ti</span> si...</h2>
+                <div class="head-beam"></div>
+            </div>
+
+            <div class="fit-grid">
+                <div class="fit-col yes reveal">
+                    <span class="fit-tag">✅ Es para ti si</span>
+                    <ul>
+                        <li><span class="fit-mark">✓</span> Estás listo para trabajar duro 3 meses</li>
+                        <li><span class="fit-mark">✓</span> Tienes $100-200 USD para invertir en tu negocio</li>
+                        <li><span class="fit-mark">✓</span> Quieres construir algo real, no un side hustle</li>
+                        <li><span class="fit-mark">✓</span> Vas a ejecutar lo que aprendas, no solo mirar</li>
+                        <li><span class="fit-mark">✓</span> Estás dispuesto a fallar rápido y aprender más rápido</li>
+                    </ul>
+                </div>
+                <div class="fit-col no reveal reveal-d1">
+                    <span class="fit-tag">❌ No es para ti si</span>
+                    <ul>
+                        <li><span class="fit-mark">✗</span> Buscas dinero fácil o pasivo</li>
+                        <li><span class="fit-mark">✗</span> No quieres invertir capital para operar</li>
+                        <li><span class="fit-mark">✗</span> Vas a poner excusas por qué "no funciona en Colombia"</li>
+                        <li><span class="fit-mark">✗</span> Solo quieres ver clases sin ejecutar</li>
+                        <li><span class="fit-mark">✗</span> Esperas resultados en 2 semanas sin esfuerzo real</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 9 · TESTIMONIOS (placeholder) ============ -->
+    <section>
+        <div class="orb orb-pink" style="top: 24%; left: -8%; width: 320px; height: 320px;"></div>
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">Testimonios</span>
+                <h2 class="h2">Lo que dicen los <span class="accent">estudiantes</span></h2>
+                <div class="head-beam"></div>
+            </div>
+
+            <!-- Reemplazar cada card con testimonios reales de la primera edición -->
+            <div class="testi-grid">
+                <div class="testi-card reveal">
+                    <p class="testi-quote">"[Testimonio placeholder — reemplazar con la experiencia real del estudiante: qué logró, cómo fue el acompañamiento y qué le sorprendió del programa.]"</p>
+                    <div class="testi-person">
+                        <span class="testi-avatar">A</span>
+                        <div>
+                            <div class="testi-name">Nombre Apellido</div>
+                            <div class="testi-city">Bogotá, Colombia</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testi-card reveal reveal-d1">
+                    <p class="testi-quote">"[Testimonio placeholder — reemplazar con la experiencia real del estudiante: primeras ventas, qué aprendió y a quién se lo recomendaría.]"</p>
+                    <div class="testi-person">
+                        <span class="testi-avatar">B</span>
+                        <div>
+                            <div class="testi-name">Nombre Apellido</div>
+                            <div class="testi-city">Medellín, Colombia</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testi-card reveal reveal-d2">
+                    <p class="testi-quote">"[Testimonio placeholder — reemplazar con la experiencia real del estudiante: su punto de partida, el proceso y el resultado que obtuvo.]"</p>
+                    <div class="testi-person">
+                        <span class="testi-avatar">C</span>
+                        <div>
+                            <div class="testi-name">Nombre Apellido</div>
+                            <div class="testi-city">Cali, Colombia</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 10 · FAQ ============ -->
+    <section class="section-dark">
+        <div class="container">
+            <div class="section-head reveal">
+                <h2 class="h2">Preguntas <span class="accent">frecuentes</span></h2>
+                <div class="head-beam"></div>
+            </div>
+
+            <div class="faq-list reveal">
+                <div class="faq-item">
+                    <button class="faq-q" aria-expanded="false">
+                        ¿Los $250 USD se pueden pagar en cuotas?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        <p>Sí. Puedes pagar $100 USD al inicio y $150 USD al segundo mes. También aceptamos transferencia bancaria en pesos colombianos.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-q" aria-expanded="false">
+                        ¿Qué necesito para empezar?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        <p>Un computador o móvil, conexión a internet, $100-200 USD para invertir en tu propio negocio (publicidad + herramientas), y compromiso real de 3 meses.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-q" aria-expanded="false">
+                        ¿Las sesiones son en vivo o grabadas?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        <p>Todas las sesiones son EN VIVO por Google Meet. Se graban y las tienes disponibles para siempre en tu grupo privado.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-q" aria-expanded="false">
+                        ¿Qué pasa si no llego a $1.000 USD en 3 meses?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        <p>El programa no garantiza resultados específicos porque dependen 100% de tu ejecución. Lo que sí garantizo es el sistema exacto, mi acompañamiento directo, y todo lo que necesitas para lograrlo.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-q" aria-expanded="false">
+                        ¿Cuántos cupos hay?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        <p>Limitado a 25 estudiantes por generación para poder darle atención personal a cada uno.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-q" aria-expanded="false">
+                        ¿Cuándo empieza la próxima generación?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        <!-- Actualizar la fecha cuando esté definida -->
+                        <p>Estamos abriendo cupos ahora. La próxima generación arranca pronto (fecha por definir). Te avisamos por correo cuando aplicas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 11 · CTA FINAL ============ -->
+    <section class="final-cta">
+        <div class="orb orb-purple" style="top: 10%; left: 8%; width: 420px; height: 420px;"></div>
+        <div class="orb orb-amber" style="bottom: 12%; right: 6%; width: 360px; height: 360px;"></div>
+        <div class="orb orb-pink" style="top: 40%; right: 20%; width: 260px; height: 260px;"></div>
+
+        <div class="container">
+            <div class="reveal">
+                <h2>¿Estás <span class="accent">listo</span>?</h2>
+                <p class="section-sub">
+                    Los cupos se agotan rápido. Si esperas, otro toma tu lugar.
+                </p>
+
+                <div class="final-price">$250 USD · 3 meses</div>
+
+                <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-cta">
+                    Aplicar ahora <span class="arrow">→</span>
+                </a>
+
+                <!-- Reemplazar el número de WhatsApp en el enlace y en el texto -->
+                <p class="wa-line">
+                    O escríbeme directo al
+                    <a href="https://wa.me/573000000000" target="_blank" rel="noopener">WhatsApp → +57 (tu número)</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Generación 1K · Juan Felipe López. Todos los derechos reservados.</p>
+            <p style="font-size: 11.5px; margin-top: 10px; max-width: 560px; margin-left: auto; margin-right: auto; line-height: 1.7;">
+                No prometemos hacerte millonario ni ingresos garantizados. Tus resultados dependen de tu esfuerzo y ejecución.
+            </p>
+            <a href="/" class="back-home">← Volver a Generación 1K Elite</a>
+        </div>
+    </footer>
+
+    <script>
+        // ---------- Nav sticky: aparece al scrollear hacia abajo ----------
+        const pnav = document.getElementById('pnav');
+        const showAt = () => window.innerHeight * 0.55;
+        window.addEventListener('scroll', () => {
+            pnav.classList.toggle('show', window.scrollY > showAt());
+        }, { passive: true });
+
+        // ---------- Scroll reveal ----------
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // ---------- Contadores animados (soporta decimales y miles) ----------
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function fmt(n, decimals) {
+            const s = decimals > 0 ? n.toFixed(decimals) : Math.round(n).toString();
+            const parts = s.split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            return parts.length > 1 ? parts[0] + '.' + parts[1] : parts[0];
+        }
+
+        function countUp(el) {
+            const target = parseFloat(el.dataset.count);
+            const decimals = parseInt(el.dataset.decimals || '0', 10);
+            const prefix = el.dataset.prefix || '';
+            const suffix = el.dataset.suffix || '';
+            if (reducedMotion) {
+                el.textContent = prefix + fmt(target, decimals) + suffix;
+                return;
+            }
+            const duration = 1500;
+            const start = performance.now();
+            function tick(now) {
+                const p = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - p, 3);
+                el.textContent = prefix + fmt(target * eased, decimals) + suffix;
+                if (p < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+
+        const countObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    countUp(entry.target);
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el));
+
+        // ---------- FAQ accordion (primero abierto por defecto) ----------
+        function closeAll() {
+            document.querySelectorAll('.faq-item.open').forEach(openItem => {
+                openItem.classList.remove('open');
+                openItem.querySelector('.faq-a').style.maxHeight = null;
+                openItem.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+            });
+        }
+
+        function openItem(item) {
+            const answer = item.querySelector('.faq-a');
+            item.classList.add('open');
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+            item.querySelector('.faq-q').setAttribute('aria-expanded', 'true');
+        }
+
+        document.querySelectorAll('.faq-q').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const item = btn.parentElement;
+                const isOpen = item.classList.contains('open');
+                closeAll();
+                if (!isOpen) openItem(item);
+            });
+        });
+
+        // primer FAQ abierto al cargar
+        const firstFaq = document.querySelector('.faq-item');
+        if (firstFaq) openItem(firstFaq);
+    </script>
+</body>
+</html>
