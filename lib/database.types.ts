@@ -1,0 +1,413 @@
+// Generado automáticamente desde el esquema real de Supabase (proyecto
+// "LMS", hignsutxlgbzyisqqgpy) vía generate_typescript_types. No editar a
+// mano — si cambia el esquema, regenerar. Los tipos de dominio con formas
+// más específicas (TheoryBlock[], etc.) viven en lib/types.ts y se castean
+// desde estos Row/Insert/Update en la capa de datos (lib/portal-data.ts).
+
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+
+export type Database = {
+  __InternalSupabase: {
+    PostgrestVersion: '14.5';
+  };
+  public: {
+    Tables: {
+      activity_log: {
+        Row: {
+          action: string;
+          created_at: string;
+          id: string;
+          metadata: Json | null;
+          student_id: string;
+        };
+        Insert: {
+          action: string;
+          created_at?: string;
+          id?: string;
+          metadata?: Json | null;
+          student_id: string;
+        };
+        Update: {
+          action?: string;
+          created_at?: string;
+          id?: string;
+          metadata?: Json | null;
+          student_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'activity_log_student_id_fkey';
+            columns: ['student_id'];
+            isOneToOne: false;
+            referencedRelation: 'students';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      mentors: {
+        Row: {
+          bio: string | null;
+          companies: string | null;
+          id: string;
+          name: string;
+          order_index: number;
+          photo_url: string | null;
+          role: string;
+          session_date: string | null;
+          session_loom_url: string | null;
+          slug: string;
+          years_experience: string | null;
+        };
+        Insert: {
+          bio?: string | null;
+          companies?: string | null;
+          id?: string;
+          name: string;
+          order_index?: number;
+          photo_url?: string | null;
+          role: string;
+          session_date?: string | null;
+          session_loom_url?: string | null;
+          slug: string;
+          years_experience?: string | null;
+        };
+        Update: {
+          bio?: string | null;
+          companies?: string | null;
+          id?: string;
+          name?: string;
+          order_index?: number;
+          photo_url?: string | null;
+          role?: string;
+          session_date?: string | null;
+          session_loom_url?: string | null;
+          slug?: string;
+          years_experience?: string | null;
+        };
+        Relationships: [];
+      };
+      module_resources: {
+        Row: {
+          created_at: string;
+          file_type: string | null;
+          file_url: string;
+          id: string;
+          module_id: string;
+          name: string;
+          size_bytes: number | null;
+        };
+        Insert: {
+          created_at?: string;
+          file_type?: string | null;
+          file_url: string;
+          id?: string;
+          module_id: string;
+          name: string;
+          size_bytes?: number | null;
+        };
+        Update: {
+          created_at?: string;
+          file_type?: string | null;
+          file_url?: string;
+          id?: string;
+          module_id?: string;
+          name?: string;
+          size_bytes?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'module_resources_module_id_fkey';
+            columns: ['module_id'];
+            isOneToOne: false;
+            referencedRelation: 'modules';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      modules: {
+        Row: {
+          created_at: string;
+          id: string;
+          is_locked: boolean;
+          loom_url: string | null;
+          order_index: number;
+          practice_checklist: Json;
+          slug: string;
+          subtitle: string | null;
+          theory_content: Json;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          is_locked?: boolean;
+          loom_url?: string | null;
+          order_index: number;
+          practice_checklist?: Json;
+          slug: string;
+          subtitle?: string | null;
+          theory_content?: Json;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          is_locked?: boolean;
+          loom_url?: string | null;
+          order_index?: number;
+          practice_checklist?: Json;
+          slug?: string;
+          subtitle?: string | null;
+          theory_content?: Json;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      portal_config: {
+        Row: {
+          id: string;
+          key: string;
+          updated_at: string;
+          value: string | null;
+        };
+        Insert: {
+          id?: string;
+          key: string;
+          updated_at?: string;
+          value?: string | null;
+        };
+        Update: {
+          id?: string;
+          key?: string;
+          updated_at?: string;
+          value?: string | null;
+        };
+        Relationships: [];
+      };
+      profiles: {
+        Row: {
+          credits: number | null;
+          email: string | null;
+          id: string;
+        };
+        Insert: {
+          credits?: number | null;
+          email?: string | null;
+          id: string;
+        };
+        Update: {
+          credits?: number | null;
+          email?: string | null;
+          id?: string;
+        };
+        Relationships: [];
+      };
+      student_checkins: {
+        Row: {
+          created_at: string;
+          date: string;
+          id: string;
+          notes: string | null;
+          student_id: string;
+          worked_today: boolean;
+        };
+        Insert: {
+          created_at?: string;
+          date: string;
+          id?: string;
+          notes?: string | null;
+          student_id: string;
+          worked_today?: boolean;
+        };
+        Update: {
+          created_at?: string;
+          date?: string;
+          id?: string;
+          notes?: string | null;
+          student_id?: string;
+          worked_today?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'student_checkins_student_id_fkey';
+            columns: ['student_id'];
+            isOneToOne: false;
+            referencedRelation: 'students';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      student_intake: {
+        Row: {
+          biggest_fear: string | null;
+          completed_at: string;
+          daily_hours: string | null;
+          economic_situation: string | null;
+          id: string;
+          income_goal: string | null;
+          investment_capital: string | null;
+          occupation: string | null;
+          student_id: string;
+          why_chose_program: string | null;
+        };
+        Insert: {
+          biggest_fear?: string | null;
+          completed_at?: string;
+          daily_hours?: string | null;
+          economic_situation?: string | null;
+          id?: string;
+          income_goal?: string | null;
+          investment_capital?: string | null;
+          occupation?: string | null;
+          student_id: string;
+          why_chose_program?: string | null;
+        };
+        Update: {
+          biggest_fear?: string | null;
+          completed_at?: string;
+          daily_hours?: string | null;
+          economic_situation?: string | null;
+          id?: string;
+          income_goal?: string | null;
+          investment_capital?: string | null;
+          occupation?: string | null;
+          student_id?: string;
+          why_chose_program?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'student_intake_student_id_fkey';
+            columns: ['student_id'];
+            isOneToOne: true;
+            referencedRelation: 'students';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      student_progress: {
+        Row: {
+          id: string;
+          module_completed: boolean;
+          module_completed_at: string | null;
+          module_id: string;
+          practice_checked_items: Json;
+          practice_completed: boolean;
+          practice_completed_at: string | null;
+          student_id: string;
+          student_notes: string | null;
+          updated_at: string;
+          video_watched: boolean;
+          video_watched_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          module_completed?: boolean;
+          module_completed_at?: string | null;
+          module_id: string;
+          practice_checked_items?: Json;
+          practice_completed?: boolean;
+          practice_completed_at?: string | null;
+          student_id: string;
+          student_notes?: string | null;
+          updated_at?: string;
+          video_watched?: boolean;
+          video_watched_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          module_completed?: boolean;
+          module_completed_at?: string | null;
+          module_id?: string;
+          practice_checked_items?: Json;
+          practice_completed?: boolean;
+          practice_completed_at?: string | null;
+          student_id?: string;
+          student_notes?: string | null;
+          updated_at?: string;
+          video_watched?: boolean;
+          video_watched_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'student_progress_module_id_fkey';
+            columns: ['module_id'];
+            isOneToOne: false;
+            referencedRelation: 'modules';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'student_progress_student_id_fkey';
+            columns: ['student_id'];
+            isOneToOne: false;
+            referencedRelation: 'students';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      students: {
+        Row: {
+          age: number | null;
+          city: string | null;
+          email: string;
+          first_login_at: string | null;
+          full_name: string;
+          id: string;
+          invited_at: string;
+          is_active: boolean;
+          last_login_at: string | null;
+          personal_notes: string | null;
+          phone: string | null;
+          role: string;
+        };
+        Insert: {
+          age?: number | null;
+          city?: string | null;
+          email: string;
+          first_login_at?: string | null;
+          full_name: string;
+          id?: string;
+          invited_at?: string;
+          is_active?: boolean;
+          last_login_at?: string | null;
+          personal_notes?: string | null;
+          phone?: string | null;
+          role?: string;
+        };
+        Update: {
+          age?: number | null;
+          city?: string | null;
+          email?: string;
+          first_login_at?: string | null;
+          full_name?: string;
+          id?: string;
+          invited_at?: string;
+          is_active?: boolean;
+          last_login_at?: string | null;
+          personal_notes?: string | null;
+          phone?: string | null;
+          role?: string;
+        };
+        Relationships: [];
+      };
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      add_credits: {
+        Args: { amount: number; user_id: string };
+        Returns: undefined;
+      };
+      deduct_credit: { Args: { user_id: string }; Returns: undefined };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
+};

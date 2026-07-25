@@ -2,3 +2,14 @@
 node_modules/
 .vercel
 *.log
+
+# Next.js
+.next/
+out/
+build/
+next-env.d.ts
+
+# Env
+.env
+.env.local
+.env.*.local
