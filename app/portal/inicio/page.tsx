@@ -6,19 +6,29 @@ import { ModuleCard } from '@/components/portal/ModuleCard';
 import { Progress } from '@/components/ui/progress';
 import { RevealCard } from '@/components/animated/RevealCard';
 import { AnimatedNumber } from '@/components/animated/AnimatedNumber';
-import { getModules, getStudentProgress, computeProgressStats, getMentors } from '@/lib/portal-data';
+import {
+  getModules,
+  getStudentProgress,
+  computeProgressStats,
+  getMentors,
+  getTestAttempts,
+  getPassedModuleIds,
+  isModuleUnlocked,
+} from '@/lib/portal-data';
 
 export const metadata = { title: 'Inicio | Portal Generación 1K' };
 
 export default async function InicioPage() {
   const session = await requireSession();
-  const [modules, progress, mentors] = await Promise.all([
+  const [modules, progress, mentors, attempts] = await Promise.all([
     getModules(),
     getStudentProgress(session.sid),
     getMentors(),
+    getTestAttempts(session.sid),
   ]);
 
-  const stats = computeProgressStats(modules, progress);
+  const passedModuleIds = getPassedModuleIds(attempts);
+  const stats = computeProgressStats(modules, progress, passedModuleIds);
   const firstName = session.name.split(' ')[0];
   const recentModules = modules.slice(0, 3);
 
@@ -102,6 +112,7 @@ export default async function InicioPage() {
               index={m.order_index}
               videoWatched={Boolean(stats.byModule.get(m.id)?.video_watched)}
               completed={Boolean(stats.byModule.get(m.id)?.module_completed)}
+              unlocked={isModuleUnlocked(modules, i, passedModuleIds)}
               delay={i * 0.08}
             />
           ))}

@@ -392,6 +392,60 @@ export type Database = {
         };
         Relationships: [];
       };
+      test_attempts: {
+        Row: {
+          answers: Json;
+          attempt_number: number;
+          completed_at: string;
+          duration_seconds: number | null;
+          id: string;
+          module_id: string;
+          passed: boolean;
+          score: number;
+          student_id: string;
+          total_questions: number;
+        };
+        Insert: {
+          answers?: Json;
+          attempt_number?: number;
+          completed_at?: string;
+          duration_seconds?: number | null;
+          id?: string;
+          module_id: string;
+          passed?: boolean;
+          score: number;
+          student_id: string;
+          total_questions?: number;
+        };
+        Update: {
+          answers?: Json;
+          attempt_number?: number;
+          completed_at?: string;
+          duration_seconds?: number | null;
+          id?: string;
+          module_id?: string;
+          passed?: boolean;
+          score?: number;
+          student_id?: string;
+          total_questions?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'test_attempts_module_id_fkey';
+            columns: ['module_id'];
+            isOneToOne: false;
+            referencedRelation: 'modules';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'test_attempts_student_id_fkey';
+            columns: ['student_id'];
+            isOneToOne: false;
+            referencedRelation: 'students';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;

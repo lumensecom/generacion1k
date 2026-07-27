@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, CheckCircle2, XCircle } from 'lucide-react';
 import { requireSession } from '@/app/portal/actions';
 import { PortalShell } from '@/components/portal/PortalShell';
 import { StudentActiveToggle } from '@/components/portal/admin/StudentActiveToggle';
 import { Button } from '@/components/ui/button';
+import { getModuleContent } from '@/lib/modules-content';
+import type { TestAnswerValue } from '@/lib/modules-content';
 import {
   getStudentById,
   getStudentIntake,
@@ -12,6 +14,7 @@ import {
   getStudentProgress,
   computeProgressStats,
   getStudentActivity,
+  getTestAttempts,
 } from '@/lib/portal-data';
 
 export const metadata = { title: 'Perfil de estudiante | Admin' };
@@ -36,22 +39,40 @@ const activityLabels: Record<string, string> = {
   practice_completed: 'Completó una práctica',
   module_completed: 'Completó un módulo',
   intake_completed: 'Completó el cuestionario inicial',
+  test_passed: 'Aprobó un test',
+  test_failed: 'No aprobó un test',
 };
+
+function answerLabel(question: { type: string; options?: string[] }, value: TestAnswerValue): string {
+  if (value === null || value === undefined) return '(sin responder)';
+  if (question.type === 'single' && typeof value === 'number') return question.options?.[value] ?? String(value);
+  if (question.type === 'multiple' && Array.isArray(value)) {
+    return value.map((i) => question.options?.[i] ?? i).join(', ') || '(ninguna opción)';
+  }
+  if (typeof value === 'string') return value || '(vacío)';
+  return String(value);
+}
 
 export default async function AdminStudentDetailPage({ params }: { params: { id: string } }) {
   const session = await requireSession();
-  const [student, intake, modules, progress, activity] = await Promise.all([
+  const [student, intake, modules, progress, activity, testAttempts] = await Promise.all([
     getStudentById(params.id),
     getStudentIntake(params.id),
     getModules(),
     getStudentProgress(params.id),
     getStudentActivity(params.id),
+    getTestAttempts(params.id),
   ]);
 
   if (!student) notFound();
 
   const stats = computeProgressStats(modules, progress);
   const waLink = student.phone ? `https://wa.me/${student.phone.replace(/[^0-9]/g, '')}` : null;
+
+  const latestAttemptByModule = new Map<string, (typeof testAttempts)[number]>();
+  for (const a of testAttempts) {
+    if (!latestAttemptByModule.has(a.module_id)) latestAttemptByModule.set(a.module_id, a);
+  }
 
   return (
     <PortalShell session={session}>
@@ -133,6 +154,62 @@ export default async function AdminStudentDetailPage({ params }: { params: { id:
                     Completado {p?.module_completed ? '✓' : '—'}
                   </span>
                 </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="mb-10">
+        <h2 className="mb-4 font-display text-lg font-extrabold">Resultados de tests</h2>
+        <div className="space-y-4">
+          {modules.map((m) => {
+            const attempt = latestAttemptByModule.get(m.id);
+            const content = getModuleContent(m.slug);
+            if (!attempt) {
+              return (
+                <div key={m.id} className="rounded-xl border border-border/60 bg-bg-card px-5 py-3 text-sm text-text-muted">
+                  {m.title} — sin intentos todavía
+                </div>
+              );
+            }
+            return (
+              <div key={m.id} className="rounded-xl border border-border bg-bg-card p-5">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                  <span className="font-semibold text-white">{m.title}</span>
+                  <span
+                    className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold ${
+                      attempt.passed ? 'bg-brand-success/12 text-brand-success' : 'bg-brand-danger/12 text-brand-danger'
+                    }`}
+                  >
+                    {attempt.passed ? <CheckCircle2 className="h-3.5 w-3.5" /> : <XCircle className="h-3.5 w-3.5" />}
+                    {attempt.score}/{attempt.total_questions} · intento #{attempt.attempt_number}
+                  </span>
+                </div>
+
+                {content && (
+                  <div className="space-y-2.5">
+                    {content.test.map((q, i) => {
+                      const value = (attempt.answers as TestAnswerValue[])[i] ?? null;
+                      const correct =
+                        q.type === 'single'
+                          ? value === q.correctIndex
+                          : q.type === 'multiple'
+                            ? Array.isArray(value) &&
+                              [...value].sort().join(',') === [...q.correctIndices].sort().join(',')
+                            : null;
+                      return (
+                        <div key={i} className="border-t border-border/60 pt-2.5 text-xs">
+                          <p className="mb-1 text-text-muted">{q.question}</p>
+                          <p className={correct === false ? 'text-brand-danger' : 'text-text-secondary'}>
+                            {answerLabel(q, value)}
+                            {correct !== null && (correct ? ' ✓' : ' ✗')}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             );
           })}

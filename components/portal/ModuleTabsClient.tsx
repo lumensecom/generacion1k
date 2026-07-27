@@ -4,14 +4,27 @@ import { useEffect, useRef, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { CheckCircle2, Circle, Download, FileText, Link2, PlayCircle, Video as VideoIcon } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  BookOpen,
+  CheckCircle2,
+  ClipboardCheck,
+  FileText,
+  Download,
+  Link2,
+  PlayCircle,
+  Rocket,
+  Video as VideoIcon,
+} from 'lucide-react';
+import { TabsAnimated, TabPanel } from '@/components/animated/TabsAnimated';
+import { InteractiveChecklist } from '@/components/animated/InteractiveChecklist';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { TheoryRenderer } from '@/components/portal/TheoryRenderer';
+import { TheoryRendererV2 } from '@/components/portal/TheoryRendererV2';
+import { TestFlow } from '@/components/portal/TestFlow';
 import { markVideoWatched, togglePracticeItem, saveNotes, markModuleCompleted } from '@/app/portal/modulos/actions';
-import { cn } from '@/lib/utils';
-import type { ModuleResource, ModuleRow, StudentProgress, TheoryBlock } from '@/lib/types';
+import type { ModuleResource, ModuleRow, StudentProgress, TestAttemptRow, TheoryBlock } from '@/lib/types';
+import type { ModuleContent } from '@/lib/modules-content';
 
 function loomEmbedUrl(url: string | null): string | null {
   if (!url) return null;
@@ -22,30 +35,37 @@ function loomEmbedUrl(url: string | null): string | null {
 
 export function ModuleTabsClient({
   module: mod,
+  content,
   resources,
   progress,
+  latestAttempt,
   prevSlug,
   nextSlug,
 }: {
   module: ModuleRow;
+  content: ModuleContent | null;
   resources: ModuleResource[];
   progress: StudentProgress | null;
+  latestAttempt: TestAttemptRow | null;
   prevSlug: string | null;
   nextSlug: string | null;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const [tab, setTab] = useState('intro');
   const [videoWatched, setVideoWatched] = useState(Boolean(progress?.video_watched));
   const [checked, setChecked] = useState<Set<number>>(
     new Set(((progress?.practice_checked_items as unknown as number[]) ?? []))
   );
   const [completed, setCompleted] = useState(Boolean(progress?.module_completed));
   const [notes, setNotes] = useState(progress?.student_notes ?? '');
+  const [retaking, setRetaking] = useState(!latestAttempt);
   const notesTimer = useRef<ReturnType<typeof setTimeout>>();
 
-  const checklist = (mod.practice_checklist as unknown as string[]) ?? [];
+  const accentColor = content?.accentColor ?? '#7C3AED';
+  const checklist = content?.practiceChecklist ?? ((mod.practice_checklist as unknown as string[]) ?? []);
   const embedUrl = loomEmbedUrl(mod.loom_url);
-  const theoryBlocks = (mod.theory_content as unknown as TheoryBlock[]) ?? [];
+  const legacyTheoryBlocks = (mod.theory_content as unknown as TheoryBlock[]) ?? [];
 
   function handleNotesChange(value: string) {
     setNotes(value);
@@ -86,129 +106,150 @@ export function ModuleTabsClient({
     });
   }
 
+  const tabs = [
+    { value: 'intro', label: 'Introducción', icon: <Rocket className="h-3.5 w-3.5" /> },
+    { value: 'teoria', label: 'Teoría', icon: <BookOpen className="h-3.5 w-3.5" /> },
+    { value: 'video', label: 'Video', icon: <VideoIcon className="h-3.5 w-3.5" /> },
+    { value: 'practica', label: 'Práctica', icon: <ClipboardCheck className="h-3.5 w-3.5" /> },
+    ...(content ? [{ value: 'test', label: 'Test', icon: <CheckCircle2 className="h-3.5 w-3.5" /> }] : []),
+    { value: 'recursos', label: 'Recursos', icon: <FileText className="h-3.5 w-3.5" /> },
+  ];
+
   return (
     <div>
-      <Tabs defaultValue="teoria">
-        <TabsList className="mb-8 flex-wrap">
-          <TabsTrigger value="teoria">Teoría</TabsTrigger>
-          <TabsTrigger value="video">Video</TabsTrigger>
-          <TabsTrigger value="practica">Práctica</TabsTrigger>
-          <TabsTrigger value="recursos">Recursos</TabsTrigger>
-        </TabsList>
+      <TabsAnimated tabs={tabs} active={tab} onChange={setTab} accentColor={accentColor} className="mb-8" />
 
-        <TabsContent value="teoria">
-          <TheoryRenderer blocks={theoryBlocks} />
-        </TabsContent>
-
-        <TabsContent value="video">
-          <div className="aspect-video w-full overflow-hidden rounded-2xl border border-border bg-bg-card">
-            {embedUrl ? (
-              <iframe
-                src={embedUrl}
-                frameBorder="0"
-                allowFullScreen
-                className="h-full w-full"
-                title={mod.title}
-              />
-            ) : (
-              <div className="flex h-full flex-col items-center justify-center gap-2 text-text-muted">
-                <VideoIcon className="h-8 w-8" />
-                <p className="text-sm">Video en camino — Juan lo está grabando.</p>
-              </div>
-            )}
-          </div>
-
-          <Button
-            type="button"
-            variant={videoWatched ? 'subtle' : 'primary'}
-            className="mt-5"
-            onClick={handleMarkVideo}
-            disabled={videoWatched || pending}
-          >
-            {videoWatched ? (
-              <>
-                <CheckCircle2 className="h-4 w-4 text-brand-success" /> Video visto
-              </>
-            ) : (
-              <>
-                <PlayCircle className="h-4 w-4" /> Marcar video como visto
-              </>
-            )}
+      <TabPanel value="intro" active={tab}>
+        <div className="rounded-2xl border border-border bg-bg-card p-8 text-center sm:p-12">
+          <p className="mb-3 font-mono text-xs uppercase tracking-widest text-text-muted">
+            Antes de empezar
+          </p>
+          <h2 className="font-display text-2xl font-extrabold text-white sm:text-3xl">
+            {content?.introLine1 ?? mod.title}
+          </h2>
+          {content?.introLine2 && <p className="mt-3 text-text-secondary">{content.introLine2}</p>}
+          <Button type="button" size="lg" className="mt-8" onClick={() => setTab('teoria')}>
+            Comenzar el módulo
           </Button>
+        </div>
+      </TabPanel>
 
-          <div className="mt-8">
-            <p className="mb-2 text-sm font-bold text-text-secondary">Tus notas (privadas, solo tú y Juan)</p>
-            <Textarea
-              value={notes}
-              onChange={(e) => handleNotesChange(e.target.value)}
-              placeholder="Escribe lo que quieras recordar de este módulo…"
-            />
-          </div>
-        </TabsContent>
+      <TabPanel value="teoria" active={tab}>
+        {content ? (
+          <TheoryRendererV2 blocks={content.theory} accentColor={accentColor} />
+        ) : (
+          <TheoryRenderer blocks={legacyTheoryBlocks} />
+        )}
+      </TabPanel>
 
-        <TabsContent value="practica">
-          {checklist.length === 0 ? (
-            <p className="text-sm text-text-secondary">Este módulo todavía no tiene práctica asignada.</p>
+      <TabPanel value="video" active={tab}>
+        <div className="aspect-video w-full overflow-hidden rounded-2xl border border-border bg-bg-card">
+          {embedUrl ? (
+            <iframe src={embedUrl} frameBorder="0" allowFullScreen className="h-full w-full" title={mod.title} />
           ) : (
-            <div className="space-y-3">
-              {checklist.map((item, idx) => {
-                const isChecked = checked.has(idx);
-                return (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => handleToggleItem(idx)}
-                    className={cn(
-                      'flex w-full items-start gap-3 rounded-xl border px-5 py-4 text-left text-sm transition-colors',
-                      isChecked
-                        ? 'border-brand-success/40 bg-brand-success/8 text-white'
-                        : 'border-border bg-bg-card text-text-secondary hover:border-brand-purple/40'
-                    )}
-                  >
-                    {isChecked ? (
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-brand-success" />
-                    ) : (
-                      <Circle className="mt-0.5 h-5 w-5 flex-shrink-0 text-text-muted" />
-                    )}
-                    {item}
-                  </button>
-                );
-              })}
-              <p className="pt-2 text-xs text-text-muted">
-                {checked.size} de {checklist.length} completados
+            <div className="flex h-full flex-col items-center justify-center gap-2 text-text-muted">
+              <VideoIcon className="h-8 w-8" />
+              <p className="text-sm">Video en camino — Juan lo está grabando.</p>
+            </div>
+          )}
+        </div>
+
+        <Button
+          type="button"
+          variant={videoWatched ? 'subtle' : 'primary'}
+          className="mt-5"
+          onClick={handleMarkVideo}
+          disabled={videoWatched || pending}
+        >
+          {videoWatched ? (
+            <>
+              <CheckCircle2 className="h-4 w-4 text-brand-success" /> Video visto
+            </>
+          ) : (
+            <>
+              <PlayCircle className="h-4 w-4" /> Marcar video como visto
+            </>
+          )}
+        </Button>
+
+        <div className="mt-8">
+          <p className="mb-2 text-sm font-bold text-text-secondary">Tus notas (privadas, solo tú y Juan)</p>
+          <Textarea
+            value={notes}
+            onChange={(e) => handleNotesChange(e.target.value)}
+            placeholder="Escribe lo que quieras recordar de este módulo…"
+          />
+        </div>
+      </TabPanel>
+
+      <TabPanel value="practica" active={tab}>
+        {checklist.length === 0 ? (
+          <p className="text-sm text-text-secondary">Este módulo todavía no tiene práctica asignada.</p>
+        ) : (
+          <InteractiveChecklist items={checklist} checked={checked} onToggle={handleToggleItem} accentColor={accentColor} />
+        )}
+      </TabPanel>
+
+      {content && (
+        <TabPanel value="test" active={tab}>
+          {!retaking && latestAttempt ? (
+            <div className="rounded-2xl border border-border bg-bg-card p-8 text-center">
+              <div
+                className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border-4 font-mono text-lg font-medium text-white"
+                style={{ borderColor: latestAttempt.passed ? '#10B981' : accentColor }}
+              >
+                {latestAttempt.score}/{latestAttempt.total_questions}
+              </div>
+              <h3 className="font-display text-xl font-extrabold text-white">
+                {latestAttempt.passed ? 'Ya aprobaste este test' : 'Todavía no aprobaste este test'}
+              </h3>
+              <p className="mt-2 text-sm text-text-secondary">
+                Intento #{latestAttempt.attempt_number} ·{' '}
+                {new Date(latestAttempt.completed_at).toLocaleDateString('es-CO', { day: '2-digit', month: 'short' })}
               </p>
+              <Button type="button" variant="ghost" className="mt-6" onClick={() => setRetaking(true)}>
+                Volver a intentar
+              </Button>
             </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="recursos">
-          {resources.length === 0 ? (
-            <p className="text-sm text-text-secondary">Todavía no hay recursos para este módulo.</p>
           ) : (
-            <div className="space-y-3">
-              {resources.map((r) => (
-                <a
-                  key={r.id}
-                  href={r.file_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between rounded-xl border border-border bg-bg-card px-5 py-4 transition-colors hover:border-brand-purple/40"
-                >
-                  <span className="flex items-center gap-3 text-sm font-semibold">
-                    {r.file_type === 'link' ? (
-                      <Link2 className="h-4 w-4 text-brand-purpleLight" />
-                    ) : (
-                      <FileText className="h-4 w-4 text-brand-purpleLight" />
-                    )}
-                    {r.name}
-                  </span>
-                  <Download className="h-4 w-4 text-text-muted" />
-                </a>
-              ))}
-            </div>
+            <TestFlow
+              slug={mod.slug}
+              questions={content.test}
+              accentColor={accentColor}
+              nextSlug={nextSlug}
+              onReviewTheory={() => setTab('teoria')}
+            />
           )}
-        </TabsContent>
-      </Tabs>
+        </TabPanel>
+      )}
+
+      <TabPanel value="recursos" active={tab}>
+        {resources.length === 0 ? (
+          <p className="text-sm text-text-secondary">Todavía no hay recursos para este módulo.</p>
+        ) : (
+          <div className="space-y-3">
+            {resources.map((r) => (
+              <a
+                key={r.id}
+                href={r.file_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between rounded-xl border border-border bg-bg-card px-5 py-4 transition-colors hover:border-brand-purple/40"
+              >
+                <span className="flex items-center gap-3 text-sm font-semibold">
+                  {r.file_type === 'link' ? (
+                    <Link2 className="h-4 w-4 text-brand-purpleLight" />
+                  ) : (
+                    <FileText className="h-4 w-4 text-brand-purpleLight" />
+                  )}
+                  {r.name}
+                </span>
+                <Download className="h-4 w-4 text-text-muted" />
+              </a>
+            ))}
+          </div>
+        )}
+      </TabPanel>
 
       <div className="mt-12 flex items-center justify-between gap-4 border-t border-border pt-8">
         {prevSlug ? (

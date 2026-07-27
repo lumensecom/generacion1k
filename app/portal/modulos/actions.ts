@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { getSession } from '@/lib/session';
 import { supabaseAdmin } from '@/lib/supabase/admin';
-import { getModuleBySlug, getProgressForModule, logActivity } from '@/lib/portal-data';
+import { getModuleBySlug, getProgressForModule, logActivity, insertTestAttempt } from '@/lib/portal-data';
 
 async function ensureProgressRow(studentId: string, moduleId: string) {
   const admin = supabaseAdmin();
@@ -109,4 +109,52 @@ export async function markModuleCompleted(slug: string) {
   revalidatePath('/portal/inicio');
   revalidatePath('/portal/mi-progreso');
   return {};
+}
+
+export interface SubmitTestInput {
+  score: number;
+  totalQuestions: number;
+  answers: unknown[];
+  durationSeconds?: number;
+}
+
+/**
+ * El puntaje se calcula en el cliente (las respuestas correctas ya viajan
+ * en el bundle vía lib/modules-content.tsx, así que no hay nada real que
+ * proteger validándolo de nuevo en servidor para un portal de práctica
+ * interno). El servidor solo persiste el intento y aplica el gate de
+ * desbloqueo, que se computa on-the-fly desde test_attempts en cada carga
+ * de página (ver isModuleUnlocked en lib/portal-data.ts).
+ */
+export async function submitTest(slug: string, input: SubmitTestInput) {
+  const session = await getSession();
+  if (!session) return { error: 'Sesión expirada.' };
+
+  const mod = await getModuleBySlug(slug);
+  if (!mod) return { error: 'Módulo no encontrado.' };
+
+  const passed = input.score >= 4;
+
+  await insertTestAttempt({
+    studentId: session.sid,
+    moduleId: mod.id,
+    score: input.score,
+    totalQuestions: input.totalQuestions,
+    answers: input.answers,
+    passed,
+    durationSeconds: input.durationSeconds,
+  });
+
+  await logActivity(session.sid, passed ? 'test_passed' : 'test_failed', {
+    module_slug: slug,
+    score: input.score,
+    total: input.totalQuestions,
+  });
+
+  revalidatePath(`/portal/modulos/${slug}`);
+  revalidatePath('/portal/modulos');
+  revalidatePath('/portal/inicio');
+  revalidatePath('/portal/mi-progreso');
+
+  return { passed };
 }

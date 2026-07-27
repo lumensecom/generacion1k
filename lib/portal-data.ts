@@ -10,6 +10,7 @@ import type {
   StudentCheckin,
   StudentIntake,
   StudentProgress,
+  TestAttemptRow,
 } from '@/lib/types';
 
 // Capa de acceso a datos. Todo corre en el servidor con la service_role key
@@ -70,15 +71,22 @@ export async function getProgressForModule(studentId: string, moduleId: string):
   return (data as unknown as StudentProgress) ?? null;
 }
 
-export function computeProgressStats(modules: ModuleRow[], progress: StudentProgress[]) {
+export function computeProgressStats(
+  modules: ModuleRow[],
+  progress: StudentProgress[],
+  passedModuleIds?: Set<string>
+) {
   const byModule = new Map(progress.map((p) => [p.module_id, p]));
   const totalModules = modules.length;
   const completedModules = modules.filter((m) => byModule.get(m.id)?.module_completed).length;
   const videosWatched = modules.filter((m) => byModule.get(m.id)?.video_watched).length;
   const percent = totalModules === 0 ? 0 : Math.round((completedModules / totalModules) * 100);
 
-  const currentModule =
-    modules.find((m) => !byModule.get(m.id)?.module_completed && !m.is_locked) ?? modules[modules.length - 1];
+  const currentModule = passedModuleIds
+    ? modules.find(
+        (m, i) => !byModule.get(m.id)?.module_completed && isModuleUnlocked(modules, i, passedModuleIds)
+      ) ?? modules[modules.length - 1]
+    : modules.find((m) => !byModule.get(m.id)?.module_completed && !m.is_locked) ?? modules[modules.length - 1];
 
   return { totalModules, completedModules, videosWatched, percent, currentModule, byModule };
 }
@@ -143,6 +151,78 @@ export function computeStreak(checkins: StudentCheckin[]): number {
     }
   }
   return streak;
+}
+
+// ---------- Tests por módulo ----------
+// Desbloqueo secuencial: el módulo en `modules[i]` solo está disponible si
+// (a) el admin no lo bloqueó manualmente (is_locked) y (b) es el primer
+// módulo, o el estudiante ya aprobó el test del módulo anterior. Esto es
+// ADITIVO al `is_locked` que ya existía — is_locked sigue siendo un
+// override manual del admin ("todavía no publico este módulo"), y ahora
+// además hay una segunda condición automática basada en tests.
+
+export async function getTestAttempts(studentId: string): Promise<TestAttemptRow[]> {
+  const { data } = await supabaseAdmin()
+    .from('test_attempts')
+    .select('*')
+    .eq('student_id', studentId)
+    .order('completed_at', { ascending: false });
+  return (data as unknown as TestAttemptRow[]) ?? [];
+}
+
+export async function getAttemptsForModule(studentId: string, moduleId: string): Promise<TestAttemptRow[]> {
+  const { data } = await supabaseAdmin()
+    .from('test_attempts')
+    .select('*')
+    .eq('student_id', studentId)
+    .eq('module_id', moduleId)
+    .order('attempt_number', { ascending: false });
+  return (data as unknown as TestAttemptRow[]) ?? [];
+}
+
+export function getPassedModuleIds(attempts: TestAttemptRow[]): Set<string> {
+  return new Set(attempts.filter((a) => a.passed).map((a) => a.module_id));
+}
+
+/** true si el módulo en `modules[index]` está efectivamente disponible para el estudiante. */
+export function isModuleUnlocked(modules: ModuleRow[], index: number, passedModuleIds: Set<string>): boolean {
+  const mod = modules[index];
+  if (!mod) return false;
+  if (mod.is_locked) return false;
+  if (index === 0) return true;
+  const prev = modules[index - 1];
+  return prev ? passedModuleIds.has(prev.id) : true;
+}
+
+export async function insertTestAttempt(input: {
+  studentId: string;
+  moduleId: string;
+  score: number;
+  totalQuestions: number;
+  answers: unknown[];
+  passed: boolean;
+  durationSeconds?: number;
+}): Promise<void> {
+  const previous = await getAttemptsForModule(input.studentId, input.moduleId);
+  const attemptNumber = (previous[0]?.attempt_number ?? 0) + 1;
+
+  await supabaseAdmin()
+    .from('test_attempts')
+    .insert({
+      student_id: input.studentId,
+      module_id: input.moduleId,
+      score: input.score,
+      total_questions: input.totalQuestions,
+      answers: input.answers as unknown as Json,
+      passed: input.passed,
+      attempt_number: attemptNumber,
+      duration_seconds: input.durationSeconds ?? null,
+    });
+}
+
+export async function getAllTestAttempts(): Promise<TestAttemptRow[]> {
+  const { data } = await supabaseAdmin().from('test_attempts').select('*').order('completed_at', { ascending: false });
+  return (data as unknown as TestAttemptRow[]) ?? [];
 }
 
 // ---------- Admin ----------

@@ -100,9 +100,29 @@ export interface PortalConfig {
 export interface ActivityLogRow {
   id: string;
   student_id: string;
-  action: 'login' | 'video_watched' | 'practice_completed' | 'module_completed' | 'intake_completed';
+  action:
+    | 'login'
+    | 'video_watched'
+    | 'practice_completed'
+    | 'module_completed'
+    | 'intake_completed'
+    | 'test_passed'
+    | 'test_failed';
   metadata: Record<string, unknown> | null;
   created_at: string;
+}
+
+export interface TestAttemptRow {
+  id: string;
+  student_id: string;
+  module_id: string;
+  score: number;
+  total_questions: number;
+  answers: unknown[];
+  passed: boolean;
+  attempt_number: number;
+  duration_seconds: number | null;
+  completed_at: string;
 }
 
 export interface Mentor {

@@ -6,8 +6,8 @@ import type { ModuleRow } from '@/lib/types';
 
 type ModuleStatus = 'locked' | 'available' | 'in_progress' | 'completed';
 
-function statusOf(m: ModuleRow, videoWatched: boolean, completed: boolean): ModuleStatus {
-  if (m.is_locked) return 'locked';
+function statusOf(unlocked: boolean, videoWatched: boolean, completed: boolean): ModuleStatus {
+  if (!unlocked) return 'locked';
   if (completed) return 'completed';
   if (videoWatched) return 'in_progress';
   return 'available';
@@ -33,6 +33,7 @@ export function ModuleCard({
   index,
   videoWatched,
   completed,
+  unlocked = !m.is_locked,
   delay = 0,
   theme = 'dark',
 }: {
@@ -40,11 +41,13 @@ export function ModuleCard({
   index: number;
   videoWatched: boolean;
   completed: boolean;
+  /** Bloqueo secuencial + override manual del admin. Por defecto respeta solo is_locked. */
+  unlocked?: boolean;
   delay?: number;
   theme?: 'dark' | 'light';
 }) {
   const light = theme === 'light';
-  const status = statusOf(m, videoWatched, completed);
+  const status = statusOf(unlocked, videoWatched, completed);
   const meta = statusMeta[status];
   const Icon = meta.icon;
   const locked = status === 'locked';

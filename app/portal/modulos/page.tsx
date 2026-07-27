@@ -2,14 +2,26 @@ import { requireSession } from '@/app/portal/actions';
 import { PortalShell } from '@/components/portal/PortalShell';
 import { ModuleCard } from '@/components/portal/ModuleCard';
 import { AnimatedDivider } from '@/components/animated/AnimatedDivider';
-import { getModules, getStudentProgress, computeProgressStats } from '@/lib/portal-data';
+import {
+  getModules,
+  getStudentProgress,
+  computeProgressStats,
+  getTestAttempts,
+  getPassedModuleIds,
+  isModuleUnlocked,
+} from '@/lib/portal-data';
 
 export const metadata = { title: 'Módulos | Portal Generación 1K' };
 
 export default async function ModulosPage() {
   const session = await requireSession();
-  const [modules, progress] = await Promise.all([getModules(), getStudentProgress(session.sid)]);
+  const [modules, progress, attempts] = await Promise.all([
+    getModules(),
+    getStudentProgress(session.sid),
+    getTestAttempts(session.sid),
+  ]);
   const stats = computeProgressStats(modules, progress);
+  const passedModuleIds = getPassedModuleIds(attempts);
 
   return (
     <PortalShell session={session} theme="light">
@@ -29,6 +41,7 @@ export default async function ModulosPage() {
             index={m.order_index}
             videoWatched={Boolean(stats.byModule.get(m.id)?.video_watched)}
             completed={Boolean(stats.byModule.get(m.id)?.module_completed)}
+            unlocked={isModuleUnlocked(modules, i, passedModuleIds)}
             delay={(i % 3) * 0.08}
             theme="light"
           />

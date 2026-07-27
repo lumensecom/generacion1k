@@ -123,7 +123,10 @@ create table if not exists activity_log (
   id uuid primary key default gen_random_uuid(),
   student_id uuid not null references students(id) on delete cascade,
   action text not null check (
-    action in ('login', 'video_watched', 'practice_completed', 'module_completed', 'intake_completed')
+    action in (
+      'login', 'video_watched', 'practice_completed', 'module_completed',
+      'intake_completed', 'test_passed', 'test_failed'
+    )
   ),
   metadata jsonb,
   created_at timestamptz not null default now()
@@ -150,6 +153,26 @@ drop trigger if exists trg_student_progress_updated_at on student_progress;
 create trigger trg_student_progress_updated_at before update on student_progress
   for each row execute function set_updated_at();
 
+-- Intentos de test por módulo (ver migration_002_test_attempts.sql para el
+-- historial — esta definición vive aquí también para que schema.sql sea
+-- la fuente de verdad completa en despliegues nuevos desde cero).
+create table if not exists test_attempts (
+  id uuid primary key default gen_random_uuid(),
+  student_id uuid not null references students(id) on delete cascade,
+  module_id uuid not null references modules(id) on delete cascade,
+  score integer not null,
+  total_questions integer not null default 5,
+  answers jsonb not null default '[]'::jsonb,
+  passed boolean not null default false,
+  attempt_number integer not null default 1,
+  duration_seconds integer,
+  completed_at timestamptz not null default now()
+);
+
+create index if not exists idx_test_attempts_student on test_attempts(student_id);
+create index if not exists idx_test_attempts_module on test_attempts(module_id);
+create index if not exists idx_test_attempts_student_module on test_attempts(student_id, module_id);
+
 -- ============================================================
 -- Row Level Security — default deny para anon/authenticated.
 -- service_role (usado por el servidor de Next.js) ignora RLS siempre.
@@ -163,3 +186,4 @@ alter table student_checkins enable row level security;
 alter table mentors enable row level security;
 alter table portal_config enable row level security;
 alter table activity_log enable row level security;
+alter table test_attempts enable row level security;
