@@ -12,11 +12,11 @@ export default async function ModulosPage() {
   const stats = computeProgressStats(modules, progress);
 
   return (
-    <PortalShell session={session}>
+    <PortalShell session={session} theme="light">
       <div className="mb-10">
-        <span className="font-mono text-[11px] uppercase tracking-widest text-brand-purpleLight">El programa</span>
-        <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Todos los <span className="accent-text">módulos</span>
+        <span className="font-mono text-[11px] uppercase tracking-widest text-brand-purple">El programa</span>
+        <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight text-light-text sm:text-4xl">
+          Todos los <span className="accent-text-light">módulos</span>
         </h1>
         <AnimatedDivider className="mt-4" />
       </div>
@@ -30,6 +30,7 @@ export default async function ModulosPage() {
             videoWatched={Boolean(stats.byModule.get(m.id)?.video_watched)}
             completed={Boolean(stats.byModule.get(m.id)?.module_completed)}
             delay={(i % 3) * 0.08}
+            theme="light"
           />
         ))}
       </div>

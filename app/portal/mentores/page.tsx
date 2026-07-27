@@ -19,13 +19,13 @@ export default async function MentoresPage() {
   const mentors = await getMentors();
 
   return (
-    <PortalShell session={session}>
+    <PortalShell session={session} theme="light">
       <div className="mb-10">
-        <span className="font-mono text-[11px] uppercase tracking-widest text-brand-purpleLight">
+        <span className="font-mono text-[11px] uppercase tracking-widest text-brand-purple">
           Mentores invitados
         </span>
-        <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Aprende de <span className="accent-text">quienes ya lo hicieron</span>
+        <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight text-light-text sm:text-4xl">
+          Aprende de <span className="accent-text-light">quienes ya lo hicieron</span>
         </h1>
         <AnimatedDivider className="mt-4" />
       </div>
@@ -34,10 +34,10 @@ export default async function MentoresPage() {
         {mentors.map((mentor, i) => {
           const embedUrl = loomEmbedUrl(mentor.session_loom_url);
           return (
-            <RevealCard key={mentor.id} delay={i * 0.08} hover={false} className="overflow-hidden">
+            <RevealCard key={mentor.id} variant="light" delay={i * 0.08} hover={false} className="overflow-hidden">
               <div className="grid grid-cols-1 gap-0 md:grid-cols-[280px_1fr]">
                 <div className="flex flex-col justify-center gap-4 p-8">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-purple/30 to-brand-pink/15 font-display text-xl font-extrabold text-white">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-purple/25 to-brand-pink/15 font-display text-xl font-extrabold text-brand-purple">
                     {mentor.name
                       .split(' ')
                       .map((w) => w[0])
@@ -45,11 +45,13 @@ export default async function MentoresPage() {
                       .slice(0, 2)}
                   </div>
                   <div>
-                    <h2 className="font-display text-xl font-extrabold tracking-tight">{mentor.name}</h2>
-                    <p className="mt-1 text-sm font-semibold text-brand-purpleLight">{mentor.role}</p>
+                    <h2 className="font-display text-xl font-extrabold tracking-tight text-light-text">
+                      {mentor.name}
+                    </h2>
+                    <p className="mt-1 text-sm font-semibold text-brand-purple">{mentor.role}</p>
                   </div>
-                  {mentor.bio && <p className="text-sm leading-relaxed text-text-secondary">{mentor.bio}</p>}
-                  <div className="flex flex-wrap gap-4 pt-2 text-xs text-text-muted">
+                  {mentor.bio && <p className="text-sm leading-relaxed text-light-text2">{mentor.bio}</p>}
+                  <div className="flex flex-wrap gap-4 pt-2 text-xs text-light-muted">
                     {mentor.years_experience && <span>{mentor.years_experience}</span>}
                     {mentor.companies && <span>{mentor.companies}</span>}
                     {mentor.session_date && (

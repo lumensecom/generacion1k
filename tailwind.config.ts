@@ -32,6 +32,14 @@ const config: Config = {
           secondary: '#B4B4BE',
           muted: '#75757F',
         },
+        light: {
+          bg: '#F5F5F8',
+          card: '#FFFFFF',
+          border: '#E6E6EE',
+          text: '#101016',
+          text2: '#4B4B58',
+          muted: '#7A7A88',
+        },
       },
       fontFamily: {
         display: ['var(--font-manrope)', 'sans-serif'],

@@ -12,11 +12,14 @@ export function CheckinWidget({
   streak,
   checkedInToday,
   last30: initialLast30,
+  theme = 'dark',
 }: {
   streak: number;
   checkedInToday: boolean;
   last30: { date: string; worked: boolean }[];
+  theme?: 'dark' | 'light';
 }) {
+  const light = theme === 'light';
   const [done, setDone] = useState(checkedInToday);
   const [last30, setLast30] = useState(initialLast30);
   const [pending, startTransition] = useTransition();
@@ -35,13 +38,20 @@ export function CheckinWidget({
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-bg-card p-6">
+    <div
+      className={cn(
+        'rounded-2xl border p-6',
+        light
+          ? 'border-light-border bg-light-card shadow-[0_10px_26px_rgba(20,20,60,0.06)]'
+          : 'border-border bg-bg-card'
+      )}
+    >
       <div className="mb-5 flex items-center justify-between">
         <div>
           <p className="mb-1 flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest text-brand-yellow">
             <Flame className="h-3.5 w-3.5" /> Racha actual
           </p>
-          <p className="font-display text-3xl font-extrabold">
+          <p className={cn('font-display text-3xl font-extrabold', light && 'text-light-text')}>
             {streak} {streak === 1 ? 'día' : 'días'}
           </p>
         </div>
@@ -57,12 +67,15 @@ export function CheckinWidget({
             initial={{ opacity: 0, scale: 0.6 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: i * 0.008 }}
-            className={cn('aspect-square rounded-[3px]', d.worked ? 'bg-brand-success' : 'bg-white/6')}
+            className={cn(
+              'aspect-square rounded-[3px]',
+              d.worked ? 'bg-brand-success' : light ? 'bg-light-border' : 'bg-white/6'
+            )}
             title={d.date}
           />
         ))}
       </div>
-      <p className="mt-3 text-xs text-text-muted">Últimos 30 días</p>
+      <p className={cn('mt-3 text-xs', light ? 'text-light-muted' : 'text-text-muted')}>Últimos 30 días</p>
     </div>
   );
 }

@@ -108,20 +108,26 @@ export default async function InicioPage() {
         </div>
       </section>
 
-      <section>
-        <h2 className="mb-5 font-display text-xl font-extrabold tracking-tight">Mentores invitados</h2>
+      {/* Zona clara insertada dentro del dashboard oscuro, como respiro visual */}
+      <section className="rounded-3xl border border-light-border bg-light-bg p-6 sm:p-8">
+        <div className="mb-5 flex items-center justify-between">
+          <h2 className="font-display text-xl font-extrabold tracking-tight text-light-text">Mentores invitados</h2>
+          <Link href="/portal/mentores" className="text-xs font-bold text-brand-purple hover:text-black">
+            Ver todos →
+          </Link>
+        </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {mentors.map((mentor, i) => (
-            <RevealCard key={mentor.id} delay={i * 0.08} className="p-6">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-purple/25 to-brand-pink/15 font-display text-sm font-extrabold text-white">
+            <RevealCard key={mentor.id} variant="light" delay={i * 0.08} className="p-6">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-purple/25 to-brand-pink/15 font-display text-sm font-extrabold text-brand-purple">
                 {mentor.name
                   .split(' ')
                   .map((w) => w[0])
                   .join('')
                   .slice(0, 2)}
               </div>
-              <h3 className="mb-1 font-display text-base font-extrabold">{mentor.name}</h3>
-              <p className="text-xs text-text-secondary">{mentor.role}</p>
+              <h3 className="mb-1 font-display text-base font-extrabold text-light-text">{mentor.name}</h3>
+              <p className="text-xs text-light-text2">{mentor.role}</p>
             </RevealCard>
           ))}
         </div>

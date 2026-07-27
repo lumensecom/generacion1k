@@ -320,6 +320,28 @@
         }
         .nav-cta:hover { transform: scale(1.03); box-shadow: 0 0 24px rgba(245, 158, 11, 0.3); }
 
+        .nav-portal-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 16px;
+            border-radius: 9px;
+            border: 1px solid rgba(124, 58, 237, 0.4);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .nav-portal-btn:hover {
+            border-color: var(--purple-light);
+            background: rgba(124, 58, 237, 0.10);
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.18);
+        }
+        .nav-portal-btn svg { flex-shrink: 0; }
+        .nav-portal-btn { display: none; }
+
         /* Hamburguesa */
         .nav-toggle {
             display: flex;
@@ -364,7 +386,7 @@
             transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
         }
         .mobile-menu.open { opacity: 1; visibility: visible; transform: translateY(0); }
-        .mobile-menu a:not(.btn-cta) {
+        .mobile-menu a:not(.btn-cta):not(.nav-portal-btn) {
             padding: 16px 4px;
             font-size: 16px;
             font-weight: 700;
@@ -374,12 +396,13 @@
             align-items: center;
             justify-content: space-between;
         }
-        .mobile-menu a:not(.btn-cta)::after {
+        .mobile-menu a:not(.btn-cta):not(.nav-portal-btn)::after {
             content: '→';
             color: var(--purple-light);
             font-weight: 400;
         }
         .mobile-menu .btn-cta { margin-top: 20px; width: 100%; }
+        .mobile-menu .nav-portal-btn { border-radius: 10px; font-size: 15px; }
 
         /* ============================================================
            HERO
@@ -1270,6 +1293,7 @@
             .nav-links { display: flex; }
             .nav-toggle { display: none; }
             .mobile-menu { display: none; }
+            .nav-portal-btn { display: inline-flex; }
             .transform-grid { grid-template-columns: 1fr 1fr; }
             .timeline { grid-template-columns: repeat(3, 1fr); }
             .plans { grid-template-columns: 1fr 1fr; max-width: 900px; margin-left: auto; margin-right: auto; }
@@ -1325,6 +1349,10 @@
                 <a href="/programa" class="nav-link-program">Programa completo →</a>
             </div>
             <div class="nav-right">
+                <a href="/portal" class="nav-portal-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                    Portal
+                </a>
                 <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="nav-cta">Agendar llamada</a>
                 <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu">
                     <span></span><span></span><span></span>
@@ -1341,6 +1369,10 @@
         <a href="#sobre-mi">Sobre mí</a>
         <a href="#faq">FAQ</a>
         <a href="/programa" style="color: var(--purple-light);">Programa completo</a>
+        <a href="/portal" class="nav-portal-btn" style="display: inline-flex; margin-top: 14px; justify-content: center; padding: 13px 16px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            Portal de estudiantes
+        </a>
         <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-cta">
             Agenda tu llamada gratuita <span class="arrow">→</span>
         </a>

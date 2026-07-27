@@ -2,8 +2,18 @@
 
 import { motion } from 'framer-motion';
 import { AnimatedNumber } from '@/components/animated/AnimatedNumber';
+import { cn } from '@/lib/utils';
 
-export function CircularProgress({ percent, size = 176 }: { percent: number; size?: number }) {
+export function CircularProgress({
+  percent,
+  size = 176,
+  theme = 'dark',
+}: {
+  percent: number;
+  size?: number;
+  theme?: 'dark' | 'light';
+}) {
+  const light = theme === 'light';
   const stroke = 12;
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -12,7 +22,14 @@ export function CircularProgress({ percent, size = 176 }: { percent: number; siz
   return (
     <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={radius} stroke="rgba(255,255,255,0.08)" strokeWidth={stroke} fill="none" />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke={light ? 'rgba(16,16,22,0.08)' : 'rgba(255,255,255,0.08)'}
+          strokeWidth={stroke}
+          fill="none"
+        />
         <motion.circle
           cx={size / 2}
           cy={size / 2}
@@ -34,10 +51,12 @@ export function CircularProgress({ percent, size = 176 }: { percent: number; siz
         </defs>
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="font-mono text-3xl font-medium text-white">
+        <span className={cn('font-mono text-3xl font-medium', light ? 'text-light-text' : 'text-white')}>
           <AnimatedNumber value={clamped} suffix="%" />
         </span>
-        <span className="text-[10px] uppercase tracking-widest text-text-muted">completado</span>
+        <span className={cn('text-[10px] uppercase tracking-widest', light ? 'text-light-muted' : 'text-text-muted')}>
+          completado
+        </span>
       </div>
     </div>
   );

@@ -3,8 +3,16 @@
 import { useEffect, useRef, useState, useTransition } from 'react';
 import { savePersonalNotes } from '@/app/portal/mi-progreso/actions';
 import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 
-export function PersonalNotes({ initialNotes }: { initialNotes: string }) {
+export function PersonalNotes({
+  initialNotes,
+  theme = 'dark',
+}: {
+  initialNotes: string;
+  theme?: 'dark' | 'light';
+}) {
+  const light = theme === 'light';
   const [notes, setNotes] = useState(initialNotes);
   const [saved, setSaved] = useState(true);
   const [, startTransition] = useTransition();
@@ -25,12 +33,21 @@ export function PersonalNotes({ initialNotes }: { initialNotes: string }) {
   useEffect(() => () => timer.current && clearTimeout(timer.current), []);
 
   return (
-    <div className="rounded-2xl border border-border bg-bg-card p-6">
+    <div
+      className={cn(
+        'rounded-2xl border p-6',
+        light
+          ? 'border-light-border bg-light-card shadow-[0_10px_26px_rgba(20,20,60,0.06)]'
+          : 'border-border bg-bg-card'
+      )}
+    >
       <div className="mb-3 flex items-center justify-between">
-        <p className="font-display text-base font-extrabold">Notas personales</p>
-        <span className="text-[11px] text-text-muted">{saved ? 'Guardado' : 'Guardando…'}</span>
+        <p className={cn('font-display text-base font-extrabold', light && 'text-light-text')}>Notas personales</p>
+        <span className={cn('text-[11px]', light ? 'text-light-muted' : 'text-text-muted')}>
+          {saved ? 'Guardado' : 'Guardando…'}
+        </span>
       </div>
-      <p className="mb-4 text-xs text-text-muted">
+      <p className={cn('mb-4 text-xs', light ? 'text-light-muted' : 'text-text-muted')}>
         Espacio libre para tus reflexiones. Solo lo ves tú y Juan.
       </p>
       <Textarea

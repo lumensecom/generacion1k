@@ -13,11 +13,11 @@ export default async function PerfilPage() {
   if (!student) notFound();
 
   return (
-    <PortalShell session={session}>
+    <PortalShell session={session} theme="light">
       <div className="mb-10">
-        <span className="font-mono text-[11px] uppercase tracking-widest text-brand-purpleLight">Tu cuenta</span>
-        <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Mi <span className="accent-text">perfil</span>
+        <span className="font-mono text-[11px] uppercase tracking-widest text-brand-purple">Tu cuenta</span>
+        <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight text-light-text sm:text-4xl">
+          Mi <span className="accent-text-light">perfil</span>
         </h1>
         <AnimatedDivider className="mt-4" />
       </div>

@@ -48,48 +48,48 @@ export default async function MiProgresoPage() {
   const startedAt = student?.first_login_at ?? student?.invited_at ?? new Date().toISOString();
 
   return (
-    <PortalShell session={session}>
+    <PortalShell session={session} theme="light">
       <div className="mb-10">
-        <span className="font-mono text-[11px] uppercase tracking-widest text-brand-purpleLight">Mi progreso</span>
-        <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Así vas en <span className="accent-text">Generación 1K</span>
+        <span className="font-mono text-[11px] uppercase tracking-widest text-brand-purple">Mi progreso</span>
+        <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight text-light-text sm:text-4xl">
+          Así vas en <span className="accent-text-light">Generación 1K</span>
         </h1>
         <AnimatedDivider className="mt-4" />
       </div>
 
-      <section className="mb-12 grid grid-cols-1 gap-6 rounded-2xl border border-border bg-bg-card p-8 sm:grid-cols-[auto_1fr]">
+      <section className="mb-12 grid grid-cols-1 gap-6 rounded-2xl border border-light-border bg-light-card p-8 shadow-[0_10px_26px_rgba(20,20,60,0.06)] sm:grid-cols-[auto_1fr]">
         <div className="flex justify-center">
-          <CircularProgress percent={stats.percent} />
+          <CircularProgress percent={stats.percent} theme="light" />
         </div>
         <div className="grid grid-cols-3 gap-4 self-center text-center">
           <div>
-            <p className="font-mono text-2xl font-medium text-white">{daysSince(startedAt)}</p>
-            <p className="mt-1 text-xs text-text-muted">días desde que empezaste</p>
+            <p className="font-mono text-2xl font-medium text-light-text">{daysSince(startedAt)}</p>
+            <p className="mt-1 text-xs text-light-muted">días desde que empezaste</p>
           </div>
           <div>
-            <p className="font-mono text-2xl font-medium text-white">
+            <p className="font-mono text-2xl font-medium text-light-text">
               {stats.completedModules}/{stats.totalModules}
             </p>
-            <p className="mt-1 text-xs text-text-muted">módulos completados</p>
+            <p className="mt-1 text-xs text-light-muted">módulos completados</p>
           </div>
           <div>
-            <p className="font-mono text-2xl font-medium text-white">
+            <p className="font-mono text-2xl font-medium text-light-text">
               {stats.videosWatched}/{stats.totalModules}
             </p>
-            <p className="mt-1 text-xs text-text-muted">videos vistos</p>
+            <p className="mt-1 text-xs text-light-muted">videos vistos</p>
           </div>
         </div>
       </section>
 
       <section className="mb-12">
-        <h2 className="mb-6 font-display text-xl font-extrabold tracking-tight">Línea de tiempo</h2>
-        <div className="space-y-1 border-l border-border pl-6">
+        <h2 className="mb-6 font-display text-xl font-extrabold tracking-tight text-light-text">Línea de tiempo</h2>
+        <div className="space-y-1 border-l border-light-border pl-6">
           {modules.map((m, i) => {
             const p = stats.byModule.get(m.id);
             const state = m.is_locked ? 'locked' : p?.module_completed ? 'done' : p?.video_watched ? 'progress' : 'pending';
             const Icon = state === 'done' ? CheckCircle2 : state === 'progress' ? PlayCircle : state === 'locked' ? Lock : Circle;
             const dotColor =
-              state === 'done' ? 'bg-brand-success' : state === 'progress' ? 'bg-brand-yellow' : state === 'locked' ? 'bg-text-muted' : 'bg-white/20';
+              state === 'done' ? 'bg-brand-success' : state === 'progress' ? 'bg-brand-yellow' : state === 'locked' ? 'bg-light-muted' : 'bg-light-border';
 
             return (
               <SlideInBlock key={m.id} delay={i * 0.04} className="relative py-3">
@@ -104,10 +104,10 @@ export default async function MiProgresoPage() {
                   <Icon
                     className={cn(
                       'h-4 w-4 flex-shrink-0',
-                      state === 'done' ? 'text-brand-success' : state === 'progress' ? 'text-brand-yellow' : 'text-text-muted'
+                      state === 'done' ? 'text-brand-success' : state === 'progress' ? 'text-brand-yellow' : 'text-light-muted'
                     )}
                   />
-                  <span className={cn('text-sm font-semibold', state === 'locked' ? 'text-text-muted' : 'text-white')}>
+                  <span className={cn('text-sm font-semibold', state === 'locked' ? 'text-light-muted' : 'text-light-text')}>
                     {m.title}
                   </span>
                 </div>
@@ -118,12 +118,12 @@ export default async function MiProgresoPage() {
       </section>
 
       <section className="mb-12">
-        <h2 className="mb-6 font-display text-xl font-extrabold tracking-tight">Hábitos</h2>
-        <CheckinWidget streak={streak} checkedInToday={checkedInToday} last30={last30} />
+        <h2 className="mb-6 font-display text-xl font-extrabold tracking-tight text-light-text">Hábitos</h2>
+        <CheckinWidget streak={streak} checkedInToday={checkedInToday} last30={last30} theme="light" />
       </section>
 
       <section>
-        <PersonalNotes initialNotes={student?.personal_notes ?? ''} />
+        <PersonalNotes initialNotes={student?.personal_notes ?? ''} theme="light" />
       </section>
     </PortalShell>
   );

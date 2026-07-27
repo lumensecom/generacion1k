@@ -23,8 +23,24 @@
     color: transparent;
   }
 
+  .accent-text-light {
+    font-family: var(--font-playfair);
+    font-style: italic;
+    font-weight: 600;
+    background: linear-gradient(120deg, #101016 5%, #7C3AED 50%, #EC4899 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
   .grid-dots {
     background-image: radial-gradient(rgba(168, 85, 247, 0.10) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .grid-dots-light {
+    background-image: radial-gradient(rgba(124, 58, 237, 0.08) 1px, transparent 1px);
     background-size: 32px 32px;
   }
 }
