@@ -112,7 +112,7 @@ export default async function InicioPage() {
               index={m.order_index}
               videoWatched={Boolean(stats.byModule.get(m.id)?.video_watched)}
               completed={Boolean(stats.byModule.get(m.id)?.module_completed)}
-              unlocked={isModuleUnlocked(modules, i, passedModuleIds)}
+              unlocked={isModuleUnlocked(modules, i, passedModuleIds, session.role === 'admin')}
               delay={i * 0.08}
             />
           ))}

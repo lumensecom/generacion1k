@@ -184,8 +184,19 @@ export function getPassedModuleIds(attempts: TestAttemptRow[]): Set<string> {
   return new Set(attempts.filter((a) => a.passed).map((a) => a.module_id));
 }
 
-/** true si el módulo en `modules[index]` está efectivamente disponible para el estudiante. */
-export function isModuleUnlocked(modules: ModuleRow[], index: number, passedModuleIds: Set<string>): boolean {
+/**
+ * true si el módulo en `modules[index]` está efectivamente disponible.
+ * El admin (isAdmin=true) ve absolutamente todo desbloqueado, incluso
+ * módulos marcados is_locked manualmente — necesita poder revisar
+ * cualquier módulo sin depender del progreso de ningún estudiante.
+ */
+export function isModuleUnlocked(
+  modules: ModuleRow[],
+  index: number,
+  passedModuleIds: Set<string>,
+  isAdmin = false
+): boolean {
+  if (isAdmin) return true;
   const mod = modules[index];
   if (!mod) return false;
   if (mod.is_locked) return false;

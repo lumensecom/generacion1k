@@ -39,7 +39,7 @@ export default async function ModuloDetailPage({ params }: { params: { slug: str
   const nextSlug = orderedIndex < allModules.length - 1 ? allModules[orderedIndex + 1].slug : null;
 
   const passedModuleIds = getPassedModuleIds(allAttempts);
-  const unlocked = isModuleUnlocked(allModules, orderedIndex, passedModuleIds);
+  const unlocked = isModuleUnlocked(allModules, orderedIndex, passedModuleIds, session.role === 'admin');
   const content = getModuleContent(mod.slug);
   const latestAttempt = moduleAttempts[0] ?? null;
 
