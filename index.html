@@ -882,7 +882,7 @@
         .month-card li::before { content: '+'; color: var(--purple-light); font-weight: 700; }
 
         /* planes */
-        .plans-head { text-align: center; margin: 88px 0 44px; }
+        .plans-head { text-align: center; margin: 0 0 44px; }
         .plans-head h3 {
             font-family: var(--font-display);
             font-weight: 800;
@@ -943,10 +943,34 @@
             margin-top: 4px;
             font-style: italic;
         }
-        .plan-duration { color: var(--text-secondary); font-size: 14px; margin-top: 12px; }
-        .plan-price { font-family: var(--font-mono); font-size: 26px; font-weight: 500; margin: 20px 0 4px; }
-        .plan-price span { font-size: 14px; color: var(--text-muted); }
-        .plan-price-alt { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); }
+        .plan-duration-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-family: var(--font-mono);
+            font-size: 12.5px;
+            font-weight: 500;
+            color: var(--purple-light);
+            background: rgba(124, 58, 237, 0.12);
+            border: 1px solid rgba(124, 58, 237, 0.28);
+            padding: 7px 13px;
+            border-radius: 999px;
+            margin-top: 16px;
+        }
+        .plan-why { font-size: 13.5px; line-height: 1.6; color: var(--text-muted); margin-top: 11px; }
+        .plan-price { font-family: var(--font-mono); font-size: 30px; font-weight: 500; margin: 22px 0 6px; }
+        .plan-price span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+        .plan-price-monthly {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.12);
+            padding: 4px 10px;
+            border-radius: 7px;
+        }
+        .plan-price-alt { display: block; font-family: var(--font-mono); font-size: 12.5px; color: var(--text-muted); margin-top: 10px; }
         .plan-divider { height: 1px; background: var(--border); margin: 24px 0 18px; }
         .plan-includes {
             font-family: var(--font-mono);
@@ -990,6 +1014,37 @@
         }
         .honest-box p { font-size: 14.5px; line-height: 1.75; color: var(--text-secondary); }
         .honest-box strong { color: #fff; font-weight: 700; }
+
+        /* ---------- planes en tema claro ---------- */
+        .section-light .plans-head p { color: var(--light-text-2); }
+        .section-light .plan {
+            background: var(--light-card);
+            border-color: var(--light-border);
+            box-shadow: 0 1px 0 rgba(16, 16, 22, 0.02) inset, 0 14px 30px rgba(16, 16, 22, 0.06);
+        }
+        .section-light .plan:hover {
+            box-shadow: 0 1px 0 rgba(16, 16, 22, 0.02) inset, 0 0 34px rgba(124, 58, 237, 0.12);
+        }
+        .section-light .plan.featured {
+            background:
+                linear-gradient(var(--light-card), var(--light-card)) padding-box,
+                linear-gradient(135deg, rgba(124, 58, 237, 0.9), rgba(236, 72, 153, 0.7), rgba(245, 158, 11, 0.55)) border-box;
+            box-shadow: 0 0 46px rgba(124, 58, 237, 0.12);
+        }
+        .section-light .plan-name { color: var(--light-text); }
+        .section-light .plan-for { color: var(--light-muted); }
+        .section-light .plan-duration-chip { color: var(--purple); background: rgba(124, 58, 237, 0.08); border-color: rgba(124, 58, 237, 0.2); }
+        .section-light .plan-why { color: var(--light-muted); }
+        .section-light .plan-price { color: var(--light-text); }
+        .section-light .plan-price span { color: var(--light-muted); }
+        .section-light .plan-price-alt { color: var(--light-muted); }
+        .section-light .plan-divider { background: var(--light-border); }
+        .section-light .plan-includes { color: var(--light-muted); }
+        .section-light .plan li { color: var(--light-text-2); }
+        .section-light .btn-ghost { color: var(--light-text); border-color: rgba(124, 58, 237, 0.35); }
+        .section-light .btn-ghost:hover { border-color: var(--purple); box-shadow: 0 0 26px rgba(124, 58, 237, 0.14); }
+        .section-light .honest-box p { color: var(--light-text-2); }
+        .section-light .honest-box strong { color: var(--light-text); }
 
         /* ============================================================
            SECCIÓN — FASES
@@ -1627,7 +1682,6 @@
     <!-- ============ EL PROGRAMA + PLANES ============ -->
     <section id="programa">
         <div class="orb orb-purple" style="top: 4%; left: 40%; width: 400px; height: 400px;"></div>
-        <span class="watermark" aria-hidden="true">ELITE</span>
 
         <div class="container">
             <div class="section-head reveal">
@@ -1672,20 +1726,34 @@
                     </ul>
                 </div>
             </div>
+        </div>
+    </section>
 
+    <!-- ============ OFERTA DE PLANES (tema claro) ============ -->
+    <section id="planes" class="section-light">
+        <div class="orb orb-purple" style="top: 6%; left: -8%; width: 380px; height: 380px;"></div>
+        <div class="orb orb-pink" style="bottom: 4%; right: -6%; width: 340px; height: 340px;"></div>
+        <span class="watermark" aria-hidden="true">ELITE</span>
+
+        <div class="container">
             <!-- Planes -->
             <div class="plans-head reveal">
                 <h3>Elige tu nivel de <span class="accent">acompañamiento</span></h3>
-                <p>Ambos planes incluyen el sistema completo y trabajo 1:1 directo con Juan Felipe. La diferencia es cuánto tiempo caminamos juntos.</p>
+                <p>Ambos planes incluyen el sistema completo y trabajo 1:1 directo con Juan Felipe. La diferencia es cuánto tiempo caminamos juntos — y por eso el precio cambia.</p>
             </div>
 
             <div class="plans">
                 <div class="plan reveal">
                     <span class="plan-name">ELITE START</span>
                     <p class="plan-for">Para lanzar tu negocio desde cero y lograr tus primeras ventas.</p>
-                    <span class="plan-duration">3 meses de acompañamiento</span>
-                    <div class="plan-price">Desde $250 USD <span>· por los 3 meses</span></div>
-                    <span class="plan-price-alt">el precio final depende de tu caso</span>
+
+                    <span class="plan-duration-chip">📅 3 meses de acompañamiento</span>
+                    <p class="plan-why">El tiempo mínimo real para pasar de cero a tus primeras ventas — ni un mes menos.</p>
+
+                    <div class="plan-price">Desde $250 USD</div>
+                    <span class="plan-price-monthly">≈ $84 USD / mes</span>
+                    <span class="plan-price-alt">el precio final depende de tu caso, se confirma en la llamada</span>
+
                     <div class="plan-divider"></div>
                     <p class="plan-includes">Incluye</p>
                     <ul>
@@ -1703,9 +1771,14 @@
                     <span class="plan-badge">Más elegido</span>
                     <span class="plan-name">ELITE GROWTH</span>
                     <p class="plan-for">Para construir un negocio sólido y escalarlo en serio.</p>
-                    <span class="plan-duration">6 meses de acompañamiento</span>
-                    <div class="plan-price">Negociable <span>· según tu caso</span></div>
-                    <span class="plan-price-alt">lo definimos juntos en la llamada</span>
+
+                    <span class="plan-duration-chip">📅 6 meses de acompañamiento</span>
+                    <p class="plan-why">3 meses extra para estabilizar lo que ya funciona y escalarlo con criterio.</p>
+
+                    <div class="plan-price">Desde $480 USD</div>
+                    <span class="plan-price-monthly">≈ $80 USD / mes</span>
+                    <span class="plan-price-alt">el precio final depende de tu caso, se confirma en la llamada</span>
+
                     <div class="plan-divider"></div>
                     <p class="plan-includes">Incluye</p>
                     <ul>
@@ -1714,7 +1787,7 @@
                         <li><span class="mark-v">✓</span> Plan de crecimiento mes 4-6</li>
                         <li><span class="mark-v">✓</span> Seguimiento del negocio a largo plazo</li>
                         <li><span class="mark-v">✓</span> Prioridad en agenda y soporte</li>
-                        <li><span class="mark-v">✓</span> Mejores condiciones por mayor compromiso</li>
+                        <li><span class="mark-v">✓</span> Mejor precio por mes que Elite Start</li>
                     </ul>
                     <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-cta">Agenda una llamada</a>
                 </div>
