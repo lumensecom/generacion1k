@@ -1,6 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { timingSafeEqual } from 'node:crypto';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { setSessionCookie, clearSessionCookie, getSession } from '@/lib/session';
 import { getStudentByEmail, getStudentIntake, logActivity, getPortalConfig } from '@/lib/portal-data';
@@ -10,6 +11,14 @@ export interface ActionResult {
 }
 
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL ?? '').toLowerCase().trim();
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? '';
+
+function safeCompare(a: string, b: string): boolean {
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+  if (bufA.length !== bufB.length) return false;
+  return timingSafeEqual(bufA, bufB);
+}
 
 async function afterLogin(studentId: string, email: string, fullName: string, role: 'student' | 'admin') {
   const intake = role === 'admin' ? null : await getStudentIntake(studentId);
@@ -32,20 +41,17 @@ export async function submitAccessCode(formData: FormData): Promise<ActionResult
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'Ese correo no parece válido.' };
   if (!code) return { error: 'Ingresa la clave de acceso.' };
 
-  const isAdmin = ADMIN_EMAIL && email === ADMIN_EMAIL;
+  if (ADMIN_EMAIL && email === ADMIN_EMAIL) {
+    return { error: 'Ese correo es de administrador. Usa la pestaña "Soy admin" para entrar.' };
+  }
 
-  if (!isAdmin) {
-    const [isActive, accessCode] = await Promise.all([
-      getPortalConfig('is_active'),
-      getPortalConfig('access_code'),
-    ]);
+  const [isActive, accessCode] = await Promise.all([getPortalConfig('is_active'), getPortalConfig('access_code')]);
 
-    if (isActive !== 'true') {
-      return { error: 'El acceso a esta generación está cerrado por ahora. Escríbele a Juan.' };
-    }
-    if (!accessCode || code !== accessCode) {
-      return { error: 'Clave de acceso incorrecta. Revísala con Juan.' };
-    }
+  if (isActive !== 'true') {
+    return { error: 'El acceso a esta generación está cerrado por ahora. Escríbele a Juan.' };
+  }
+  if (!accessCode || code !== accessCode) {
+    return { error: 'Clave de acceso incorrecta. Revísala con Juan.' };
   }
 
   const admin = supabaseAdmin();
@@ -64,13 +70,7 @@ export async function submitAccessCode(formData: FormData): Promise<ActionResult
   const nowIso = new Date().toISOString();
   const { data: created, error } = await admin
     .from('students')
-    .insert({
-      email,
-      full_name: fullName,
-      role: isAdmin ? 'admin' : 'student',
-      first_login_at: nowIso,
-      last_login_at: nowIso,
-    })
+    .insert({ email, full_name: fullName, role: 'student', first_login_at: nowIso, last_login_at: nowIso })
     .select('id')
     .single();
 
@@ -78,7 +78,7 @@ export async function submitAccessCode(formData: FormData): Promise<ActionResult
     return { error: 'No pudimos crear tu perfil. Intenta de nuevo o escríbele a Juan.' };
   }
 
-  await afterLogin(created.id, email, fullName, isAdmin ? 'admin' : 'student');
+  await afterLogin(created.id, email, fullName, 'student');
   return {};
 }
 
@@ -93,10 +93,58 @@ export async function submitReturningEmail(formData: FormData): Promise<ActionRe
   if (!student || !student.is_active) {
     return { error: 'No encontramos una cuenta activa con ese correo. Usa la clave de acceso si es tu primera vez.' };
   }
+  if (student.role === 'admin') {
+    return { error: 'Esa cuenta es de administrador. Usa la pestaña "Soy admin" para entrar.' };
+  }
 
   const admin = supabaseAdmin();
   await admin.from('students').update({ last_login_at: new Date().toISOString() }).eq('id', student.id);
-  await afterLogin(student.id, student.email, student.full_name, student.role as 'student' | 'admin');
+  await afterLogin(student.id, student.email, student.full_name, 'student');
+  return {};
+}
+
+/** Login del admin: correo fijo (ADMIN_EMAIL) + contraseña (ADMIN_PASSWORD). */
+export async function submitAdminLogin(formData: FormData): Promise<ActionResult> {
+  const email = String(formData.get('email') ?? '')
+    .trim()
+    .toLowerCase();
+  const password = String(formData.get('password') ?? '');
+
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+    return { error: 'El login de admin no está configurado. Falta ADMIN_EMAIL o ADMIN_PASSWORD en el servidor.' };
+  }
+  if (!email || !password) {
+    return { error: 'Ingresa correo y contraseña.' };
+  }
+  if (!safeCompare(email, ADMIN_EMAIL) || !safeCompare(password, ADMIN_PASSWORD)) {
+    return { error: 'Correo o contraseña incorrectos.' };
+  }
+
+  const admin = supabaseAdmin();
+  const existing = await getStudentByEmail(email);
+  const nowIso = new Date().toISOString();
+
+  if (existing) {
+    if (!existing.is_active) return { error: 'Esta cuenta está desactivada.' };
+    await admin
+      .from('students')
+      .update({ role: 'admin', last_login_at: nowIso })
+      .eq('id', existing.id);
+    await afterLogin(existing.id, existing.email, existing.full_name, 'admin');
+    return {};
+  }
+
+  const { data: created, error } = await admin
+    .from('students')
+    .insert({ email, full_name: 'Admin', role: 'admin', first_login_at: nowIso, last_login_at: nowIso })
+    .select('id')
+    .single();
+
+  if (error || !created) {
+    return { error: 'No pudimos crear la cuenta de admin. Intenta de nuevo.' };
+  }
+
+  await afterLogin(created.id, email, 'Admin', 'admin');
   return {};
 }
 
