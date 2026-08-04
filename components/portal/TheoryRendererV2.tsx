@@ -8,6 +8,7 @@ import { AnimatedDiagram } from '@/components/animated/AnimatedDiagram';
 import { InfoCallout } from '@/components/animated/InfoCallout';
 import { ExampleCard } from '@/components/animated/ExampleCard';
 import { ToolCard } from '@/components/animated/ToolCard';
+import { ToolExplainer } from '@/components/animated/explainers/ToolExplainer';
 import type { TheoryBlock2 } from '@/lib/modules-content';
 
 export function TheoryRendererV2({ blocks, accentColor }: { blocks: TheoryBlock2[]; accentColor: string }) {
@@ -71,6 +72,9 @@ export function TheoryRendererV2({ blocks, accentColor }: { blocks: TheoryBlock2
 
           case 'timeline':
             return <Timeline key={i} steps={block.steps} accentColor={accentColor} />;
+
+          case 'toolExplainer':
+            return <ToolExplainer key={i} tool={block.tool} accentColor={accentColor} />;
 
           case 'toolGrid':
             return (

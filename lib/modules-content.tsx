@@ -10,6 +10,8 @@ import type { TimelineStep } from '@/components/animated/Timeline';
 
 export type TestAnswerValue = number | number[] | string | null;
 
+export type ToolExplainerId = 'dropi-flow' | 'shopify-setup' | 'pixel-events' | 'ads-structure';
+
 export type TestQuestionDef =
   | { type: 'single'; question: string; options: string[]; correctIndex: number }
   | { type: 'multiple'; question: string; options: string[]; correctIndices: number[] }
@@ -25,7 +27,8 @@ export type TheoryBlock2 =
   | { type: 'example'; company?: string; content: ReactNode }
   | { type: 'comparison'; columns: ComparisonColumn[] }
   | { type: 'timeline'; steps: TimelineStep[] }
-  | { type: 'toolGrid'; tools: { name: string; description: string; url: string }[] };
+  | { type: 'toolGrid'; tools: { name: string; description: string; url: string }[] }
+  | { type: 'toolExplainer'; tool: ToolExplainerId };
 
 export interface ModuleContent {
   slug: string;
@@ -212,6 +215,7 @@ export const MODULES_CONTENT: Record<string, ModuleContent> = {
         { title: 'Instalar ReleaseIt COD', meta: '10 min', description: 'App Store → buscar "ReleaseIt" → instalar' },
         { title: 'Subir primer producto', meta: '30 min', description: 'Con imágenes, precio, descripción, variantes' },
       ] },
+      { type: 'toolExplainer', tool: 'shopify-setup' },
       { type: 'heading', text: 'Configuración del checkout' },
       {
         type: 'comparison',
@@ -261,7 +265,7 @@ export const MODULES_CONTENT: Record<string, ModuleContent> = {
         content:
           'Dropi es la plataforma #1 de dropshipping en Colombia. Conecta tu tienda Shopify con proveedores locales que tienen inventario y logística. Cuando alguien te compra, Dropi despacha por ti.',
       },
-      { type: 'diagram', steps: ['Cliente compra en tu tienda', 'Orden entra a Dropi', 'Proveedor prepara producto', 'Transportadora recoge', 'Cliente recibe y paga', 'Dropi te paga tu ganancia'] },
+      { type: 'toolExplainer', tool: 'dropi-flow' },
       { type: 'heading', text: 'Por qué ADMA como proveedor principal' },
       { type: 'list', variant: 'checked', items: [
         'Stock permanente de productos ganadores en Colombia',
@@ -398,6 +402,7 @@ export const MODULES_CONTENT: Record<string, ModuleContent> = {
         <span key="5"><B>Purchase</B> — Alguien COMPRÓ (el más importante)</span>,
       ] },
       { type: 'callout', variant: 'warning', content: 'Sin el evento Purchase configurado, Meta/TikTok NO PUEDE optimizar tus campañas. Estarás gastando plata sin aprender.' },
+      { type: 'toolExplainer', tool: 'pixel-events' },
       { type: 'heading', text: 'Setup paso a paso' },
       { type: 'timeline', steps: [
         { title: 'Crear Meta Business Manager', description: 'business.facebook.com, con tu Facebook personal' },
@@ -531,7 +536,7 @@ export const MODULES_CONTENT: Record<string, ModuleContent> = {
     introLine2: 'Todo lo anterior te preparó. Ahora se lanza.',
     theory: [
       { type: 'heading', text: 'Estructura de cuenta' },
-      { type: 'diagram', steps: ['Campaña', 'Ad Group Broad Colombia', '3-5 creativos'] },
+      { type: 'toolExplainer', tool: 'ads-structure' },
       { type: 'heading', text: 'Objetivo correcto' },
       {
         type: 'comparison',
