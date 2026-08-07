@@ -245,6 +245,15 @@
         }
 
         .cta-note { font-size: 12.5px; color: var(--text-muted); margin-top: 14px; }
+        .cta-secondary { margin-top: 10px; font-size: 13.5px; }
+        .cta-secondary a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(180, 180, 190, 0.3);
+            padding-bottom: 2px;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+        .cta-secondary a:hover { color: var(--purple-light); border-color: var(--purple-light); }
 
         /* ---------- Scroll reveal ---------- */
         .reveal {
@@ -688,6 +697,81 @@
         .after li  { color: var(--text-primary); font-weight: 600; }
         .mark-x { color: var(--danger); font-weight: 700; flex-shrink: 0; }
         .mark-v { color: var(--success); font-weight: 700; flex-shrink: 0; }
+
+        /* ============================================================
+           SECCIÓN — CASOS REALES
+        ============================================================ */
+        .cases-grid { display: grid; grid-template-columns: 1fr; gap: 22px; }
+        .case-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(124, 58, 237, 0.22);
+            border-radius: 20px;
+            padding: 30px 26px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .case-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(124, 58, 237, 0.5);
+            box-shadow: 0 18px 44px rgba(124, 58, 237, 0.14);
+        }
+        .case-person { display: flex; align-items: center; gap: 14px; }
+        .case-avatar {
+            width: 46px; height: 46px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+            font-size: 15px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+        }
+        .case-name { font-weight: 800; font-size: 16px; color: var(--text-primary); }
+        .case-profile {
+            font-family: var(--font-mono);
+            font-size: 11.5px;
+            color: var(--text-muted);
+            margin-top: 3px;
+            letter-spacing: 0.02em;
+        }
+        .case-result {
+            margin-top: 22px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 999px;
+            padding: 8px 15px;
+            align-self: flex-start;
+        }
+        .case-before {
+            margin-top: 20px;
+            padding-left: 15px;
+            border-left: 2px solid rgba(248, 113, 113, 0.4);
+        }
+        .case-before-tag {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 10.5px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--danger);
+            margin-bottom: 6px;
+        }
+        .case-before p { font-size: 14.5px; line-height: 1.65; color: var(--text-muted); }
+        .case-quote {
+            margin-top: 22px;
+            font-size: 15.5px;
+            line-height: 1.7;
+            color: var(--text-primary);
+            font-style: italic;
+        }
 
         /* ============================================================
            SECCIÓN — ¿QUÉ ES DROPSHIPPING? (CLARA)
@@ -1350,6 +1434,7 @@
             .mobile-menu { display: none; }
             .nav-portal-btn { display: inline-flex; }
             .transform-grid { grid-template-columns: 1fr 1fr; }
+            .cases-grid { grid-template-columns: 1fr 1fr; }
             .timeline { grid-template-columns: repeat(3, 1fr); }
             .plans { grid-template-columns: 1fr 1fr; max-width: 900px; margin-left: auto; margin-right: auto; }
             .phases-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1357,6 +1442,7 @@
 
         @media (min-width: 1024px) {
             .pain-grid { grid-template-columns: repeat(3, 1fr); }
+            .cases-grid { grid-template-columns: repeat(3, 1fr); }
             .phases-grid { grid-template-columns: repeat(3, 1fr); }
             .steps { grid-template-columns: repeat(4, 1fr); }
             .about-grid { grid-template-columns: 360px 1fr; gap: 72px; }
@@ -1396,6 +1482,7 @@
                 <span class="logo-name">Generación<span>Elite</span></span>
             </a>
             <div class="nav-links">
+                <a href="#casos">Casos</a>
                 <a href="#modelo">El modelo</a>
                 <a href="#programa">El programa</a>
                 <a href="#fases">Fases</a>
@@ -1418,6 +1505,7 @@
 
     <!-- Menú móvil -->
     <div class="mobile-menu" id="mobileMenu">
+        <a href="#casos">Casos</a>
         <a href="#modelo">El modelo</a>
         <a href="#programa">El programa</a>
         <a href="#fases">Fases</a>
@@ -1440,28 +1528,10 @@
         <div class="orb orb-pink" style="top: 22%; right: 6%; width: 340px; height: 340px;"></div>
         <div class="orb orb-amber" style="bottom: 14%; left: 4%; width: 260px; height: 260px;"></div>
 
-        <!-- Objetos flotantes -->
-        <div class="float-card fc-1" aria-hidden="true">
-            <span class="fc-icon">🛒</span>
-            <span class="fc-body">
-                <span class="fc-title">Nueva venta · $47.900</span>
-                <span class="fc-sub">hace 2 min · contra entrega</span>
-            </span>
-        </div>
-        <div class="float-card fc-2" aria-hidden="true">
-            <span class="fc-icon">🎯</span>
-            <span class="fc-body">
-                <span class="fc-title">Objetivo: $1.000 USD</span>
-                <span class="fc-sub">mes 3 · plan claro</span>
-            </span>
-        </div>
-        <div class="float-card fc-3" aria-hidden="true">
-            <span class="fc-icon">🚀</span>
-            <span class="fc-body">
-                <span class="fc-title">Tienda publicada ✓</span>
-                <span class="fc-sub">semana 3 · Shopify</span>
-            </span>
-        </div>
+        <!-- Objetos flotantes: retirados a propósito. Simulaban ventas en vivo
+             ("Nueva venta hace 2 min") y con casos reales más abajo eso resta
+             credibilidad. El CSS .float-card / .fc-* sigue disponible por si
+             se quieren reactivar con datos verificables. -->
 
         <div class="container">
             <span class="hero-badge">
@@ -1483,11 +1553,11 @@
             <div class="hero-cta-wrap">
                 <div class="hero-cta-row">
                     <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-cta">
-                        Agenda tu llamada gratuita <span class="arrow">→</span>
+                        Quiero mi llamada gratuita <span class="arrow">→</span>
                     </a>
-                    <a href="/programa" class="btn-ghost">Conoce el programa completo →</a>
                 </div>
                 <p class="cta-note">Sin compromiso · 30-40 minutos · Solo si es para ti</p>
+                <p class="cta-secondary"><a href="/programa">o mira el programa completo primero →</a></p>
 
                 <!-- Elemento firma: cupos disponibles (actualizar el número manualmente) -->
                 <div class="cupos">
@@ -1606,6 +1676,79 @@
                         <li><span class="mark-v">✓</span> Acompañamiento real en cada paso</li>
                     </ul>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ CASOS REALES ============ -->
+    <section id="casos" class="section-dark">
+        <div class="orb orb-pink" style="top: 20%; left: -8%; width: 400px; height: 400px;"></div>
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">Casos reales</span>
+                <h2 class="h2">Primera generación:<br><span class="accent">todos vendieron</span></h2>
+                <p class="section-sub">
+                    Ninguno tenía experiencia. Todos lograron sus primeras ventas y montaron
+                    sus propias campañas en las primeras 3 semanas.
+                </p>
+                <div class="head-beam"></div>
+            </div>
+
+            <div class="cases-grid">
+                <div class="case-card reveal">
+                    <div class="case-person">
+                        <span class="case-avatar">N</span>
+                        <div>
+                            <div class="case-name">Nicole</div>
+                            <div class="case-profile">18 años · Colombia</div>
+                        </div>
+                    </div>
+                    <span class="case-result">Primeras ventas en 3 semanas</span>
+                    <div class="case-before">
+                        <span class="case-before-tag">Antes</span>
+                        <p>Empezó desde cero, sin haber vendido nada nunca en internet.</p>
+                    </div>
+                    <p class="case-quote">"En 3 semanas ya tenía ventas y mis propias campañas activas."</p>
+                </div>
+
+                <div class="case-card reveal reveal-d1">
+                    <div class="case-person">
+                        <span class="case-avatar">NC</span>
+                        <div>
+                            <div class="case-name">Nicolás Charry</div>
+                            <div class="case-profile">13 años · Colombia</div>
+                        </div>
+                    </div>
+                    <span class="case-result">El más joven de la generación</span>
+                    <div class="case-before">
+                        <span class="case-before-tag">Antes</span>
+                        <p>Estudiante de colegio, sin experiencia ni capital propio.</p>
+                    </div>
+                    <p class="case-quote">"A los 13 ya logré mis primeras ventas y aprendí a montar campañas."</p>
+                </div>
+
+                <div class="case-card reveal reveal-d2">
+                    <div class="case-person">
+                        <span class="case-avatar">L</span>
+                        <div>
+                            <div class="case-name">Lucía</div>
+                            <div class="case-profile">48 años · Colombia</div>
+                        </div>
+                    </div>
+                    <span class="case-result">De cero a vender en 3 semanas</span>
+                    <div class="case-before">
+                        <span class="case-before-tag">Antes</span>
+                        <p>No sabía nada de ecommerce y creía que esto era solo para jóvenes.</p>
+                    </div>
+                    <p class="case-quote">"La edad no fue excusa: hoy vendo y manejo mis propias campañas."</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: clamp(40px, 6vw, 56px);">
+                <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-cta">
+                    Quiero resultados como estos <span class="arrow">→</span>
+                </a>
+                <p class="cta-note">Aplicación gratuita · Sin compromiso · Cupos limitados</p>
             </div>
         </div>
     </section>
@@ -2022,6 +2165,36 @@
             <div class="faq-list reveal">
                 <div class="faq-item">
                     <button class="faq-q" aria-expanded="false">
+                        ¿Cómo sé que esto no es una estafa?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        <p>Entiendo la desconfianza, hay mucho fraude en internet. Por eso puedes verificarlo todo antes: busca <strong>@juanflopezzz</strong> en Instagram y TikTok, construyo el ecommerce en público y ahí están los resultados documentados. Además, la llamada es gratis y no se paga nada antes de hablar. Si en esa conversación algo no te convence, no aplicas y listo.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-q" aria-expanded="false">
+                        No tengo dinero para pagar la mentoría ahora.
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        <p>Lo entiendo, yo también empecé sin dinero. Por eso hay planes de pago flexibles: puedes dividir el pago en cuotas y aceptamos transferencia en pesos colombianos. Lo importante es que empieces, no que esperes el momento perfecto. En la llamada miramos tu situación y buscamos la opción que te sirva.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-q" aria-expanded="false">
+                        No tengo tiempo, trabajo o estudio todo el día.
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-a">
+                        <p>Casi todos empiezan así. Con 1-2 horas diarias es suficiente para arrancar: antes de dormir, en el almuerzo o los fines de semana. Nicolás lo hizo con 13 años mientras estudiaba y Lucía con 48 mientras trabajaba. Como el acompañamiento es 1:1, ajustamos el ritmo a tu agenda real, no al revés.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-q" aria-expanded="false">
                         ¿Necesito experiencia previa en ecommerce?
                         <span class="faq-icon">+</span>
                     </button>
@@ -2123,7 +2296,8 @@
             <p class="disclaimer">
                 Este sitio no es parte de Meta, Facebook, TikTok ni Google.
                 No prometemos hacerte millonario ni ingresos en 24 horas.
-                Tus resultados dependen de tu esfuerzo y ejecución.
+                Los casos mostrados son estudiantes reales, pero no son resultados típicos ni garantizados:
+                dependen de la dedicación, la ejecución y el contexto de cada persona.
             </p>
             <a class="ig" href="https://instagram.com/juanflopezzz" target="_blank" rel="noopener noreferrer">@juanflopezzz</a>
             <p style="margin-top: 18px;">
