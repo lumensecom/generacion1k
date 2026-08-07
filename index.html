@@ -245,15 +245,6 @@
         }
 
         .cta-note { font-size: 12.5px; color: var(--text-muted); margin-top: 14px; }
-        .cta-secondary { margin-top: 10px; font-size: 13.5px; }
-        .cta-secondary a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            border-bottom: 1px solid rgba(180, 180, 190, 0.3);
-            padding-bottom: 2px;
-            transition: color 0.2s ease, border-color 0.2s ease;
-        }
-        .cta-secondary a:hover { color: var(--purple-light); border-color: var(--purple-light); }
 
         /* ---------- Scroll reveal ---------- */
         .reveal {
@@ -285,23 +276,17 @@
             height: 68px;
         }
         .logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-        .logo-mark {
-            width: 34px; height: 34px;
-            background: linear-gradient(135deg, var(--purple), var(--pink));
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-family: var(--font-display);
-            font-weight: 800;
-            font-size: 13px;
-            color: #fff;
+        /* Logo 1K CLUB. El PNG de Cloudinary ya trae canal alfa (90% de la
+           imagen es transparente), así que va directo sobre el fondo oscuro.
+           La URL lleva un c_crop ajustado al contenido sólido del render
+           original, que venía con mucho margen vacío alrededor. */
+        .logo-img {
+            height: 38px;
+            width: auto;
+            display: block;
+            filter: drop-shadow(0 2px 10px rgba(245, 158, 11, 0.28));
         }
-        .logo-name {
-            font-family: var(--font-display);
-            font-weight: 800;
-            font-size: 16px;
-            letter-spacing: -0.01em;
-        }
-        .logo-name span { color: var(--purple-light); }
+        footer .logo-img { height: 52px; }
 
         .nav-links { display: none; align-items: center; gap: 30px; }
         .nav-links a {
@@ -461,15 +446,20 @@
             margin-bottom: 32px;
             animation: heroFade 0.9s ease 0.1s both;
         }
+        /* Titular largo estilo antoecom (promesa + objeciones), así que va más
+           pequeño y acotado en ancho: a 78px ocupaba media pantalla. */
         .hero h1 {
             font-family: var(--font-display);
             font-weight: 800;
-            font-size: clamp(42px, 7.5vw, 78px);
-            line-height: 1.06;
-            letter-spacing: -0.03em;
+            font-size: clamp(31px, 4.7vw, 54px);
+            line-height: 1.14;
+            letter-spacing: -0.025em;
+            max-width: 940px;
+            margin: 0 auto;
+            text-wrap: balance;
             animation: heroFade 0.9s ease 0.3s both;
         }
-        .hero h1 .accent { font-size: 1.02em; }
+        .hero h1 .accent { font-size: 1em; }
         .hero-sub {
             margin: 30px auto 0;
             max-width: 580px;
@@ -479,6 +469,44 @@
             color: var(--text-secondary);
             animation: heroFade 0.9s ease 0.55s both;
         }
+        /* ---------- Indicador de paso (estilo antoecom: "1 · Mira el video") ---------- */
+        .hero-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 26px;
+            margin-top: clamp(30px, 4vw, 40px);
+            flex-wrap: wrap;
+            animation: heroFade 0.9s ease 0.62s both;
+        }
+        .hero-step {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+        .hero-step .hs-num {
+            width: 26px; height: 26px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+        }
+        .hero-step.is-next { color: var(--text-muted); }
+        .hero-step.is-next .hs-num {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: var(--text-muted);
+        }
+        .hero-steps .hs-arrow { color: var(--text-muted); font-size: 15px; }
+
         /* ---------- Video del hero (VSL) ---------- */
         .hero-video {
             position: relative;
@@ -546,29 +574,6 @@
         }
 
         /* prueba social con foto */
-        .hero-proof {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 28px;
-            padding: 8px 18px 8px 8px;
-            border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.03);
-        }
-        .hero-proof img {
-            width: 38px; height: 38px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(168, 85, 247, 0.5);
-        }
-        .hero-proof span {
-            font-size: 13px;
-            color: var(--text-secondary);
-            text-align: left;
-            line-height: 1.4;
-        }
-        .hero-proof strong { color: #fff; font-weight: 700; }
 
         /* objetos flotantes (desktop) */
         .float-card {
@@ -1522,9 +1527,10 @@
     <!-- ============ NAVBAR ============ -->
     <nav class="navbar">
         <div class="container navbar-inner">
-            <a href="#" class="logo" aria-label="Generación 1K Elite">
-                <span class="logo-mark">1K</span>
-                <span class="logo-name">Generación<span>Elite</span></span>
+            <a href="#" class="logo" aria-label="1K Club">
+                <img class="logo-img"
+                     src="https://res.cloudinary.com/dss3b02ao/image/upload/c_crop,x_540,y_288,w_557,h_385/f_auto,q_auto,w_240/v1786067394/1KCLUB_uofkqi.png"
+                     alt="1K Club" width="240" height="166" fetchpriority="high" decoding="async">
             </a>
             <div class="nav-links">
                 <a href="#casos">Casos</a>
@@ -1582,19 +1588,20 @@
                 ⚡ Programa 1:1 · Cupos limitados · Colombia &amp; Latam
             </span>
 
+            <!-- Fórmula de antoecom: promesa concreta + "sin" las objeciones
+                 que frenan la compra, con la segunda mitad en color de acento. -->
             <h1>
-                Tu primer $1.000 USD<br>
-                con ecommerce.<br>
-                Construido <span class="accent">contigo.</span>
+                Cómo facturar tus primeros $1.000 USD
+                con tu propia tienda online —
+                <span class="accent">sin experiencia, sin bodega y sin renunciar a tu trabajo.</span>
             </h1>
 
             <p class="hero-sub">
-                No es un curso ni una mentoría grupal. Trabajo contigo 1:1 durante 3 meses
-                para construir tu ecommerce: producto, tienda, anuncios y tus primeras ventas.
+                Te acompaño 1:1 durante 3 meses hasta tus primeras ventas reales.
             </p>
 
             <!-- ────────────────────────────────────────────────────────────
-                 VIDEO DEL HERO (VSL)
+                 VIDEO DEL HERO (VSL) + INDICADOR DE PASOS
 
                  Está comentado a propósito: la landing está en producción y
                  un recuadro vacío que diga "próximamente" convierte peor que
@@ -1605,17 +1612,27 @@
                    2. Reemplaza ID_DEL_VIDEO por el id de YouTube (lo que va
                       después de "v=" en la URL).
                  Eso es todo: el contenedor ya es responsive 16:9 y el CSS
-                 (.hero-video) ya está listo más arriba.
+                 (.hero-steps, .hero-video) ya está listo más arriba.
+
+            <div class="hero-steps">
+                <span class="hero-step">
+                    <span class="hs-num">1</span> Mira el video
+                </span>
+                <span class="hs-arrow">→</span>
+                <span class="hero-step is-next">
+                    <span class="hs-num">2</span> Agenda tu llamada
+                </span>
+            </div>
 
             <div class="hero-video">
                 <iframe
                     src="https://www.youtube-nocookie.com/embed/ID_DEL_VIDEO?rel=0&amp;modestbranding=1"
-                    title="Cómo construir tu primer ecommerce de $1.000 USD"
+                    title="Cómo facturar tus primeros $1.000 USD con tu propia tienda online"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerpolicy="strict-origin-when-cross-origin"
                     allowfullscreen></iframe>
             </div>
-            <p class="hero-video-note">Míralo completo: son 4 minutos y te ahorran 6 meses de ensayo y error.</p>
+            <p class="hero-video-note">Son 4 minutos y te ahorran 6 meses de ensayo y error.</p>
             ──────────────────────────────────────────────────────────── -->
 
             <div class="hero-cta-wrap">
@@ -1624,20 +1641,12 @@
                         Quiero mi llamada gratuita <span class="arrow">→</span>
                     </a>
                 </div>
-                <p class="cta-note">Sin compromiso · 30-40 minutos · Solo si es para ti</p>
-                <p class="cta-secondary"><a href="/programa">o mira el programa completo primero →</a></p>
+                <p class="cta-note">Gratis · 30 minutos · Sin compromiso</p>
 
                 <!-- Elemento firma: cupos disponibles (actualizar el número manualmente) -->
                 <div class="cupos">
                     <span class="cupos-dot"></span>
                     <span>2 cupos disponibles este mes</span>
-                </div>
-
-                <br>
-                <div class="hero-proof">
-                    <img src="https://res.cloudinary.com/dss3b02ao/image/upload/f_auto,q_auto,w_120/v1783628255/WhatsApp_Image_2026-07-09_at_15.16.58_dq91vg.jpg"
-                         alt="Juan Felipe López" loading="lazy" decoding="async">
-                    <span>Te acompaña <strong>Juan Felipe</strong> · @juanflopezzz<br>Construye ecommerce en público.</span>
                 </div>
             </div>
 
@@ -2402,8 +2411,9 @@
     <footer>
         <div class="container">
             <div class="logo">
-                <span class="logo-mark">1K</span>
-                <span class="logo-name">Generación<span>Elite</span></span>
+                <img class="logo-img"
+                     src="https://res.cloudinary.com/dss3b02ao/image/upload/c_crop,x_540,y_288,w_557,h_385/f_auto,q_auto,w_320/v1786067394/1KCLUB_uofkqi.png"
+                     alt="1K Club" width="320" height="221" loading="lazy" decoding="async">
             </div>
             <p>&copy; 2026 Generación 1K · Juan Felipe López. Todos los derechos reservados.</p>
             <p class="disclaimer">
