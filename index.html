@@ -479,6 +479,36 @@
             color: var(--text-secondary);
             animation: heroFade 0.9s ease 0.55s both;
         }
+        /* ---------- Video del hero (VSL) ---------- */
+        .hero-video {
+            position: relative;
+            width: 100%;
+            max-width: 760px;
+            margin: clamp(34px, 5vw, 46px) auto 0;
+            aspect-ratio: 16 / 9;
+            border-radius: 20px;
+            overflow: hidden;
+            background: linear-gradient(160deg, rgba(124, 58, 237, 0.20), rgba(10, 10, 10, 0.92));
+            border: 1px solid rgba(124, 58, 237, 0.35);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), 0 0 60px rgba(124, 58, 237, 0.12);
+            animation: heroFade 0.9s ease 0.7s both;
+        }
+        .hero-video iframe,
+        .hero-video video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+        }
+        .hero-video-note {
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--text-muted);
+            animation: heroFade 0.9s ease 0.75s both;
+        }
+
         .hero-cta-wrap { margin-top: 42px; animation: heroFade 0.9s ease 0.8s both; }
         .hero-cta-row {
             display: flex;
@@ -596,31 +626,6 @@
             color: #fff;
         }
         .trust-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
-
-        .ticker {
-            margin-top: 72px;
-            width: 100%;
-            overflow: hidden;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 12px 0;
-            position: relative;
-            z-index: 2;
-        }
-        .ticker-track { display: flex; width: max-content; animation: marquee 32s linear infinite; }
-        .ticker-track span {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: rgba(168, 85, 247, 0.55);
-            white-space: nowrap;
-            padding-right: 48px;
-        }
-        @keyframes marquee {
-            from { transform: translateX(0); }
-            to   { transform: translateX(-50%); }
-        }
 
         /* ============================================================
            SECCIÓN — PROBLEMA
@@ -1076,6 +1081,45 @@
         .plan .btn-ghost, .plan .btn-cta { margin-top: auto; text-align: center; }
         .plan ul { margin-bottom: 32px; }
 
+        /* ---------- Filtro: para quién es / no es (tema oscuro) ----------
+           Portado desde /programa, que lo tenía en tema claro. */
+        .fit-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+        .fit-col { border-radius: 22px; padding: 36px 30px; }
+        .fit-col.yes {
+            background: linear-gradient(180deg, rgba(16, 185, 129, 0.10), rgba(16, 185, 129, 0.02));
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+        .fit-col.no {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(248, 113, 113, 0.30);
+        }
+        .fit-tag {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 7px 15px;
+            border-radius: 999px;
+            margin-bottom: 24px;
+        }
+        .fit-col.yes .fit-tag { background: rgba(16, 185, 129, 0.14); color: var(--success); }
+        .fit-col.no  .fit-tag { background: rgba(248, 113, 113, 0.12); color: var(--danger); }
+        .fit-col li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 9px 0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .fit-col.no li { color: var(--text-muted); font-weight: 500; }
+        .fit-mark { flex-shrink: 0; font-weight: 800; }
+        .fit-col.yes .fit-mark { color: var(--success); }
+        .fit-col.no  .fit-mark { color: var(--danger); }
+
         /* garantía honesta */
         .honest-box {
             display: flex;
@@ -1435,6 +1479,7 @@
             .nav-portal-btn { display: inline-flex; }
             .transform-grid { grid-template-columns: 1fr 1fr; }
             .cases-grid { grid-template-columns: 1fr 1fr; }
+            .fit-grid { grid-template-columns: 1fr 1fr; }
             .timeline { grid-template-columns: repeat(3, 1fr); }
             .plans { grid-template-columns: 1fr 1fr; max-width: 900px; margin-left: auto; margin-right: auto; }
             .phases-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1526,7 +1571,6 @@
         <div class="grain"></div>
         <div class="orb orb-purple" style="top: 6%; left: 12%; width: 420px; height: 420px;"></div>
         <div class="orb orb-pink" style="top: 22%; right: 6%; width: 340px; height: 340px;"></div>
-        <div class="orb orb-amber" style="bottom: 14%; left: 4%; width: 260px; height: 260px;"></div>
 
         <!-- Objetos flotantes: retirados a propósito. Simulaban ventas en vivo
              ("Nueva venta hace 2 min") y con casos reales más abajo eso resta
@@ -1545,10 +1589,34 @@
             </h1>
 
             <p class="hero-sub">
-                No vendemos otro curso. No es una mentoría grupal de 200 personas.
-                Trabajamos contigo durante mínimo 3 meses para construir un ecommerce real —
-                producto, tienda, anuncios y primeras ventas.
+                No es un curso ni una mentoría grupal. Trabajo contigo 1:1 durante 3 meses
+                para construir tu ecommerce: producto, tienda, anuncios y tus primeras ventas.
             </p>
+
+            <!-- ────────────────────────────────────────────────────────────
+                 VIDEO DEL HERO (VSL)
+
+                 Está comentado a propósito: la landing está en producción y
+                 un recuadro vacío que diga "próximamente" convierte peor que
+                 no tener nada.
+
+                 PARA ACTIVARLO cuando el video esté listo:
+                   1. Borra esta línea de apertura del comentario y la de cierre.
+                   2. Reemplaza ID_DEL_VIDEO por el id de YouTube (lo que va
+                      después de "v=" en la URL).
+                 Eso es todo: el contenedor ya es responsive 16:9 y el CSS
+                 (.hero-video) ya está listo más arriba.
+
+            <div class="hero-video">
+                <iframe
+                    src="https://www.youtube-nocookie.com/embed/ID_DEL_VIDEO?rel=0&amp;modestbranding=1"
+                    title="Cómo construir tu primer ecommerce de $1.000 USD"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen></iframe>
+            </div>
+            <p class="hero-video-note">Míralo completo: son 4 minutos y te ahorran 6 meses de ensayo y error.</p>
+            ──────────────────────────────────────────────────────────── -->
 
             <div class="hero-cta-wrap">
                 <div class="hero-cta-row">
@@ -1573,31 +1641,22 @@
                 </div>
             </div>
 
+            <!-- Métricas: las dos primeras son de MI tienda (LUMENS), no de
+                 estudiantes. Los labels dicen "mi/mis" a propósito para no
+                 mezclarlas con los casos de la sección #casos. -->
             <div class="trust-row">
                 <div class="trust-item">
+                    <div class="trust-num" data-count="5" data-prefix="+$" data-suffix=".000 USD">+$5.000 USD</div>
+                    <div class="trust-label">que factura mi tienda cada semana</div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-num" data-count="9" data-prefix="ROAS " data-suffix="+">ROAS 9+</div>
+                    <div class="trust-label">en mis campañas de TikTok Ads</div>
+                </div>
+                <div class="trust-item">
                     <div class="trust-num" data-count="40" data-prefix="+">+40</div>
-                    <div class="trust-label">personas en primera edición</div>
+                    <div class="trust-label">personas en la primera edición</div>
                 </div>
-                <div class="trust-item">
-                    <div class="trust-num" data-count="20" data-prefix="$" data-suffix="K+ USD">$20K+ USD</div>
-                    <div class="trust-label">facturados por el fundador</div>
-                </div>
-                <div class="trust-item">
-                    <div class="trust-num">CO &amp; LATAM</div>
-                    <div class="trust-label">alcance del programa</div>
-                </div>
-                <div class="trust-item">
-                    <div class="trust-num">1:1</div>
-                    <div class="trust-label">acompañamiento real</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Ticker -->
-        <div class="ticker" aria-hidden="true">
-            <div class="ticker-track">
-                <span>Primera edición: 40 personas · Junio 2026 · Colombia · Ecommerce real · De 0 a $1K USD ·</span>
-                <span>Primera edición: 40 personas · Junio 2026 · Colombia · Ecommerce real · De 0 a $1K USD ·</span>
             </div>
         </div>
     </header>
@@ -1866,6 +1925,44 @@
                         <li>Optimización de pauta</li>
                         <li>Sistema funcionando</li>
                         <li>Plan de crecimiento</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ FILTRO: PARA QUIÉN ES ============ -->
+    <section id="filtro" class="section-dark">
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">Filtro</span>
+                <h2 class="h2">No trabajo con <span class="accent">todo el mundo</span></h2>
+                <p class="section-sub">
+                    Son 2 cupos al mes y el acompañamiento es 1:1. Prefiero decirte antes
+                    si esto no es para ti, que perder tu tiempo y el mío en una llamada.
+                </p>
+                <div class="head-beam"></div>
+            </div>
+
+            <div class="fit-grid">
+                <div class="fit-col yes reveal">
+                    <span class="fit-tag">✅ Es para ti si</span>
+                    <ul>
+                        <li><span class="fit-mark">✓</span> Estás listo para trabajar duro 3 meses</li>
+                        <li><span class="fit-mark">✓</span> Tienes $100-200 USD para invertir en tu negocio</li>
+                        <li><span class="fit-mark">✓</span> Quieres construir algo real, no un side hustle</li>
+                        <li><span class="fit-mark">✓</span> Vas a ejecutar lo que aprendas, no solo mirar</li>
+                        <li><span class="fit-mark">✓</span> Estás dispuesto a fallar rápido y aprender más rápido</li>
+                    </ul>
+                </div>
+                <div class="fit-col no reveal reveal-d1">
+                    <span class="fit-tag">❌ No es para ti si</span>
+                    <ul>
+                        <li><span class="fit-mark">✗</span> Buscas dinero fácil o pasivo</li>
+                        <li><span class="fit-mark">✗</span> No quieres invertir capital para operar</li>
+                        <li><span class="fit-mark">✗</span> Vas a poner excusas por qué "no funciona en Colombia"</li>
+                        <li><span class="fit-mark">✗</span> Solo quieres ver clases sin ejecutar</li>
+                        <li><span class="fit-mark">✗</span> Esperas resultados en 2 semanas sin esfuerzo real</li>
                     </ul>
                 </div>
             </div>
@@ -2262,6 +2359,22 @@
                         <p>Un curso te da información. Nosotros construimos contigo. Cada decisión la tomamos juntos, te decimos exactamente qué hacer en cada paso y revisamos tu negocio constantemente.</p>
                     </div>
                 </div>
+            </div>
+
+            <div class="honest-box reveal">
+                <span class="hb-icon">🤝</span>
+                <h4>Lo que no te voy a prometer</h4>
+                <p>
+                    No vendo magia. <strong>No te puedo garantizar que vas a ganar dinero</strong> —
+                    eso depende de cuánto ejecutes tú, y no lo controlo yo. Nadie que te prometa
+                    una cifra fija te está diciendo la verdad.
+                </p>
+                <p>
+                    Lo que sí te garantizo: <strong>un sistema que ya funciona</strong>, probado en mi
+                    propia tienda y en la primera generación, y que <strong>voy a estar ahí cada semana</strong>
+                    hasta que tu tienda esté vendiendo. Si haces el trabajo, esto funciona.
+                    Si esperas resultados sin ejecutar, ningún programa del mundo te sirve — ni el mío.
+                </p>
             </div>
         </div>
     </section>
