@@ -1,73 +1,27 @@
 'use client';
 
-import { useRef, useState, useEffect, useCallback } from 'react';
-import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useTransform,
-  useSpring,
-  useReducedMotion,
-} from 'framer-motion';
-import { X, MousePointerClick, Code2, ArrowDown } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { X, MousePointerClick, Code2 } from 'lucide-react';
 import { BLOQUES, TEMPERATURAS, type Bloque } from '@/lib/recursos-data';
 
-// Altura visual de cada bloque en el sketch, según lo que representa.
-// No son medidas reales de una landing, son proporciones que hacen legible
-// el esqueleto de un vistazo.
+// Altura de cada recuadro en el esqueleto, según lo que representa. No son
+// medidas reales: son proporciones que hacen legible la estructura de un
+// vistazo, igual que en un wireframe a mano.
 const ALTURA: Record<Bloque['tipo'], number> = {
-  media: 92,
-  texto: 54,
-  social: 42,
-  cta: 40,
-  lista: 76,
-  datos: 84,
-  urgencia: 34,
-};
-
-const TONO: Record<Bloque['temperatura'], { borde: string; glow: string; texto: string }> = {
-  hot: {
-    borde: 'rgba(248,113,113,0.55)',
-    glow: 'rgba(248,113,113,0.20)',
-    texto: '#FCA5A5',
-  },
-  tibio: {
-    borde: 'rgba(245,158,11,0.5)',
-    glow: 'rgba(245,158,11,0.16)',
-    texto: '#FCD34D',
-  },
-  frio: {
-    borde: 'rgba(34,211,238,0.5)',
-    glow: 'rgba(34,211,238,0.16)',
-    texto: '#67E8F9',
-  },
+  media: 104,
+  texto: 58,
+  social: 46,
+  cta: 42,
+  lista: 88,
+  datos: 96,
+  urgencia: 36,
 };
 
 export function AnatomiaLanding() {
   const [activo, setActivo] = useState<Bloque | null>(null);
   const [tocado, setTocado] = useState(false);
-  const wrapRef = useRef<HTMLDivElement>(null);
   const sinMovimiento = useReducedMotion();
-
-  // El wrapper mide varias pantallas de alto; el escenario queda sticky
-  // dentro y el progreso del scroll maneja la rotación y la separación
-  // de las capas. Así el 3D se "arma" mientras bajas, sin robarte el scroll.
-  const { scrollYProgress } = useScroll({
-    target: wrapRef,
-    offset: ['start start', 'end end'],
-  });
-
-  const suave = useSpring(scrollYProgress, {
-    stiffness: 90,
-    damping: 24,
-    restDelta: 0.001,
-  });
-
-  // De página plana (como se ve en un navegador) a vista isométrica explotada.
-  const rotateX = useTransform(suave, [0, 0.42], [4, 56]);
-  const rotateZ = useTransform(suave, [0, 0.42], [0, -26]);
-  const separacion = useTransform(suave, [0.15, 0.75], [0, 74]);
-  const escala = useTransform(suave, [0, 0.42, 1], [1, 0.86, 0.86]);
 
   const cerrar = useCallback(() => setActivo(null), []);
 
@@ -77,180 +31,179 @@ export function AnatomiaLanding() {
       if (e.key === 'Escape') cerrar();
     };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    // Bloquea el scroll del fondo mientras la ventana está abierta.
+    const overflowPrevio = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = overflowPrevio;
+    };
   }, [activo, cerrar]);
 
   return (
     <>
-      <div ref={wrapRef} className="relative h-[320vh]">
-        <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden px-4">
-          {/* Riel de temperatura */}
-          <div className="pointer-events-none absolute left-4 top-1/2 hidden -translate-y-1/2 lg:block">
-            <div className="flex flex-col items-center gap-3">
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#FCA5A5]">
-                Hot
-              </span>
-              <div className="h-52 w-[3px] rounded-full bg-gradient-to-b from-[#F87171] via-[#F59E0B] to-[#22D3EE]" />
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#67E8F9]">
-                Frío
-              </span>
-            </div>
-          </div>
+      <section className="relative px-5 pb-10 pt-4 sm:pt-8">
+        {/* Resplandor ambiental: es lo que hace que el esqueleto se lea
+            "por encima" del fondo negro, sin necesidad de rotarlo. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-[90px]"
+          style={{
+            background:
+              'radial-gradient(circle, rgba(124,58,237,0.22) 0%, rgba(124,58,237,0.06) 45%, transparent 70%)',
+          }}
+        />
 
-          {/* Escenario 3D */}
-          <div
-            className="relative w-full max-w-[300px] sm:max-w-[340px]"
-            style={{ perspective: 1500, perspectiveOrigin: '50% 40%' }}
+        <div className="relative mx-auto max-w-[380px]">
+          {/* Marco: da la lectura de "esto es una página" */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="relative rounded-[26px] border border-brand-purple/30 bg-gradient-to-b from-white/[0.045] to-white/[0.012] p-3 shadow-[0_40px_90px_-20px_rgba(0,0,0,0.9),0_0_70px_-12px_rgba(124,58,237,0.35)] backdrop-blur-sm sm:p-4"
           >
-            <motion.div
-              style={
-                sinMovimiento
-                  ? undefined
-                  : { rotateX, rotateZ, scale: escala, transformStyle: 'preserve-3d' }
-              }
-              className="relative"
-            >
+            {/* Barra superior tipo navegador */}
+            <div className="mb-3 flex items-center gap-1.5 px-2 pt-1">
+              <span className="h-2 w-2 rounded-full bg-white/15" />
+              <span className="h-2 w-2 rounded-full bg-white/15" />
+              <span className="h-2 w-2 rounded-full bg-white/15" />
+              <span className="ml-2 h-1.5 flex-1 rounded-full bg-white/[0.07]" />
+            </div>
+
+            <div className="space-y-2">
               {BLOQUES.map((bloque, i) => (
-                <Capa
+                <Recuadro
                   key={bloque.id}
                   bloque={bloque}
                   indice={i}
-                  separacion={separacion}
                   sinMovimiento={!!sinMovimiento}
-                  activo={activo?.id === bloque.id}
-                  hayActivo={!!activo}
                   onClick={() => {
                     setActivo(bloque);
                     setTocado(true);
                   }}
                 />
               ))}
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
 
-          {/* Pista de interacción, se va apenas tocan algo */}
+          {/* Pista de interacción */}
           <AnimatePresence>
             {!tocado && (
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
-                transition={{ delay: 0.8, duration: 0.5 }}
-                className="pointer-events-none absolute bottom-8 flex flex-col items-center gap-2"
+                transition={{ delay: 1, duration: 0.5 }}
+                className="pointer-events-none mt-7 flex justify-center"
               >
                 <motion.span
-                  animate={{ y: [0, 6, 0] }}
-                  transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-                  className="flex items-center gap-2 rounded-full border border-border bg-bg-card/90 px-4 py-2 text-[12.5px] font-semibold text-text-secondary backdrop-blur"
+                  animate={sinMovimiento ? undefined : { y: [0, -4, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                  className="flex items-center gap-2 rounded-full border border-brand-purple/30 bg-bg-card/90 px-4 py-2.5 text-[12.5px] font-semibold text-text-secondary backdrop-blur"
                 >
                   <MousePointerClick size={14} className="text-brand-purpleLight" />
-                  Toca cualquier sección
+                  Toca cualquier sección para abrirla
                 </motion.span>
-                <span className="flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.14em] text-text-muted">
-                  <ArrowDown size={11} /> Baja para separarlas
-                </span>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
-      </div>
+      </section>
 
-      <PanelDetalle bloque={activo} onClose={cerrar} />
+      <VentanaDetalle bloque={activo} onClose={cerrar} />
     </>
   );
 }
 
-function Capa({
+function Recuadro({
   bloque,
   indice,
-  separacion,
   sinMovimiento,
-  activo,
-  hayActivo,
   onClick,
 }: {
   bloque: Bloque;
   indice: number;
-  separacion: ReturnType<typeof useTransform<number, number>>;
   sinMovimiento: boolean;
-  activo: boolean;
-  hayActivo: boolean;
   onClick: () => void;
 }) {
-  const tono = TONO[bloque.temperatura];
-  // Cada capa se aleja del plano según su posición: la de más abajo queda
-  // más "al fondo", que es lo que da la sensación de despiece.
-  const z = useTransform(separacion, (v) => v * indice * 0.5);
+  const temp = TEMPERATURAS[bloque.temperatura];
 
   return (
     <motion.button
       type="button"
       onClick={onClick}
-      initial={{ opacity: 0, y: 26 }}
+      initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-40px' }}
+      viewport={{ once: true, margin: '-30px' }}
       transition={{
-        delay: sinMovimiento ? 0 : indice * 0.045,
-        duration: 0.5,
+        delay: sinMovimiento ? 0 : 0.25 + indice * 0.055,
+        duration: 0.45,
         ease: [0.16, 1, 0.3, 1],
       }}
-      style={{
-        height: ALTURA[bloque.tipo],
-        // En framer-motion la profundidad es `z`, no `translateZ`: como CSS no
-        // tiene una propiedad `translateZ` suelta, el valor se descartaría.
-        z: sinMovimiento ? undefined : z,
-        borderColor: activo ? tono.texto : tono.borde,
-        boxShadow: activo
-          ? `0 0 0 1px ${tono.texto}, 0 18px 50px ${tono.glow}`
-          : `0 10px 30px ${tono.glow}`,
-        opacity: hayActivo && !activo ? 0.35 : 1,
-      }}
-      className="group relative mb-[6px] flex w-full items-center justify-center rounded-[10px] border bg-gradient-to-br from-white/[0.09] to-white/[0.02] backdrop-blur-sm transition-[opacity,filter] duration-300 hover:brightness-125"
+      whileHover={sinMovimiento ? undefined : { scale: 1.025 }}
+      whileTap={{ scale: 0.985 }}
+      style={{ height: ALTURA[bloque.tipo] }}
+      className="group relative flex w-full items-center justify-center rounded-xl border border-brand-purple/40 bg-brand-purple/[0.06] transition-colors duration-200 hover:border-brand-purpleLight hover:bg-brand-purple/[0.14]"
       aria-label={`Ver ${bloque.nombre}`}
     >
+      {/* Número de orden */}
+      <span className="pointer-events-none absolute left-2.5 top-2 font-mono text-[9px] text-brand-purpleLight/50">
+        {String(indice + 1).padStart(2, '0')}
+      </span>
+
+      {/* Punto de temperatura */}
       <span
-        className="pointer-events-none px-3 text-center font-display text-[10.5px] font-extrabold uppercase leading-tight tracking-wide"
-        style={{ color: tono.texto }}
-      >
+        aria-hidden
+        className="pointer-events-none absolute right-2.5 top-2.5 h-1.5 w-1.5 rounded-full"
+        style={{ background: temp.color }}
+        title={temp.etiqueta}
+      />
+
+      <span className="pointer-events-none px-4 text-center font-display text-[11px] font-extrabold uppercase leading-tight tracking-[0.04em] text-white/85 transition-colors group-hover:text-white">
         {bloque.nombre}
       </span>
 
-      <span className="pointer-events-none absolute left-2 top-2 font-mono text-[8.5px] text-white/35">
-        {String(indice + 1).padStart(2, '0')}
+      {/* Brillo que barre el recuadro al pasar el cursor */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+      >
+        <span className="absolute inset-y-0 -left-full w-1/2 bg-gradient-to-r from-transparent via-white/[0.09] to-transparent transition-[left] duration-700 ease-out group-hover:left-full" />
       </span>
     </motion.button>
   );
 }
 
-function PanelDetalle({ bloque, onClose }: { bloque: Bloque | null; onClose: () => void }) {
+function VentanaDetalle({ bloque, onClose }: { bloque: Bloque | null; onClose: () => void }) {
   return (
     <AnimatePresence>
       {bloque && (
-        <>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.22 }}
             onClick={onClose}
-            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/80 backdrop-blur-md"
           />
 
           <motion.div
             role="dialog"
             aria-modal="true"
             aria-label={bloque.nombre}
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', stiffness: 260, damping: 30 }}
-            className="fixed inset-x-0 bottom-0 z-50 max-h-[86vh] overflow-y-auto rounded-t-3xl border-t border-border bg-bg-secondary sm:inset-y-0 sm:left-auto sm:right-0 sm:max-h-none sm:w-[460px] sm:rounded-t-none sm:border-l sm:border-t-0"
+            initial={{ opacity: 0, scale: 0.9, y: 18 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+            className="relative flex max-h-[88vh] w-full max-w-[540px] flex-col overflow-hidden rounded-2xl border border-brand-purple/40 bg-bg-secondary shadow-[0_40px_100px_-20px_rgba(0,0,0,0.95),0_0_80px_-20px_rgba(124,58,237,0.45)]"
           >
-            <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-border/70 bg-bg-secondary/95 px-6 py-5 backdrop-blur">
-              <div>
+            <div className="flex items-start justify-between gap-4 border-b border-border/70 px-6 py-5">
+              <div className="min-w-0">
                 <span
                   className="font-mono text-[10px] uppercase tracking-[0.16em]"
-                  style={{ color: TONO[bloque.temperatura].texto }}
+                  style={{ color: TEMPERATURAS[bloque.temperatura].color }}
                 >
                   Tráfico {TEMPERATURAS[bloque.temperatura].etiqueta} ·{' '}
                   {TEMPERATURAS[bloque.temperatura].descripcion}
@@ -268,7 +221,7 @@ function PanelDetalle({ bloque, onClose }: { bloque: Bloque | null; onClose: () 
               </button>
             </div>
 
-            <div className="space-y-7 px-6 pb-16 pt-6">
+            <div className="space-y-7 overflow-y-auto px-6 pb-8 pt-6">
               <p className="text-[15px] leading-relaxed text-text-secondary">
                 {bloque.resumen}
               </p>
@@ -292,13 +245,10 @@ function PanelDetalle({ bloque, onClose }: { bloque: Bloque | null; onClose: () 
                       key={clave}
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.12 + i * 0.07, duration: 0.35 }}
+                      transition={{ delay: 0.14 + i * 0.07, duration: 0.35 }}
                       className="flex gap-3 text-[14.5px] leading-relaxed text-text-secondary"
                     >
-                      <span
-                        className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full"
-                        style={{ background: TONO[bloque.temperatura].texto }}
-                      />
+                      <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-brand-purpleLight" />
                       {clave}
                     </motion.li>
                   ))}
@@ -321,7 +271,7 @@ function PanelDetalle({ bloque, onClose }: { bloque: Bloque | null; onClose: () 
               </div>
             </div>
           </motion.div>
-        </>
+        </div>
       )}
     </AnimatePresence>
   );
