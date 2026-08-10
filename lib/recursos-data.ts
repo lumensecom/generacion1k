@@ -1,8 +1,7 @@
 // Contenido de la zona pública de recursos (/recursos).
 //
 // Vive aparte de portal-data.ts a propósito: esto es material abierto, no
-// requiere sesión y no toca Supabase. Si mañana crece, cada recurso puede
-// mudarse a su propia ruta sin tocar el portal.
+// requiere sesión y no toca Supabase.
 
 export type Recurso = {
   slug: string;
@@ -19,13 +18,22 @@ export const RECURSOS: Recurso[] = [
     numero: 1,
     titulo: 'Anatomía de una landing que vende',
     descripcion:
-      'Las 14 secciones de una página de ventas, en orden, y por qué cada una está donde está. Explorable pieza por pieza.',
+      'Las 16 secciones de una página de producto, en orden, con el código Liquid de cada una listo para pegar en Shopify.',
     etiqueta: 'Interactivo',
     disponible: true,
   },
   {
-    slug: 'producto-ganador',
+    slug: 'landing-con-ia',
     numero: 2,
+    titulo: 'Cómo armar la landing con IA',
+    descripcion:
+      'El paso a paso y los prompts exactos: uno para que Gemini escriba tus bloques Liquid y otros para generar las imágenes.',
+    etiqueta: 'Prompts',
+    disponible: true,
+  },
+  {
+    slug: 'producto-ganador',
+    numero: 3,
     titulo: 'Cómo validar un producto ganador',
     descripcion:
       'Los criterios que uso antes de invertir un peso en pauta: margen, dolor, diferencial y prueba de demanda.',
@@ -34,19 +42,10 @@ export const RECURSOS: Recurso[] = [
   },
   {
     slug: 'estructura-campanas',
-    numero: 3,
+    numero: 4,
     titulo: 'Estructura de campañas en TikTok Ads',
     descripcion:
       'Cómo armo, leo y escalo una campaña de contra entrega sin quemar presupuesto en los primeros días.',
-    etiqueta: 'Guía',
-    disponible: false,
-  },
-  {
-    slug: 'contra-entrega',
-    numero: 4,
-    titulo: 'Contra entrega en Colombia, de punta a punta',
-    descripcion:
-      'Dropi, transportadoras, tasa de entrega y qué hacer con las devoluciones para que no se coman el margen.',
     etiqueta: 'Guía',
     disponible: false,
   },
@@ -55,238 +54,499 @@ export const RECURSOS: Recurso[] = [
 // ---------------------------------------------------------------------------
 // Anatomía de una landing
 //
-// El orden es el del esquema original: arriba lo que ve el tráfico HOT (ya
-// conoce el producto, viene a comprar) y abajo lo que necesita el tráfico
-// FRÍO (llegó del anuncio y aún no confía). Por eso el botón de compra
-// aparece antes que las reseñas: quien ya está listo no debería tener que
-// bajar hasta el final.
+// Orden real de la plantilla: arriba lo que necesita quien ya viene decidido
+// (tráfico HOT), abajo lo que necesita quien acaba de llegar del anuncio y
+// todavía no confía (FRÍO). Por eso el botón de compra aparece antes que las
+// reseñas: quien ya está listo no debería tener que bajar hasta el final.
 // ---------------------------------------------------------------------------
 
 export type Bloque = {
   id: string;
   nombre: string;
-  tipo: 'media' | 'texto' | 'social' | 'cta' | 'lista' | 'datos' | 'urgencia';
+  tipo: 'anuncio' | 'media' | 'texto' | 'social' | 'cta' | 'lista' | 'datos' | 'urgencia';
   temperatura: 'hot' | 'tibio' | 'frio';
+  bloque: 1 | 2;
   resumen: string;
   porQue: string;
   claves: string[];
-  // Espacio reservado para el snippet de Liquid de cada bloque. Se deja
-  // vacío a propósito hasta que peguemos los nuestros.
-  liquid: string | null;
+  liquid: string;
 };
 
 export const BLOQUES: Bloque[] = [
   {
-    id: 'oferta',
-    nombre: 'Información clave de la oferta',
+    id: 'anuncios',
+    nombre: 'Barra de anuncios',
+    tipo: 'anuncio',
+    temperatura: 'hot',
+    bloque: 1,
+    resumen: 'La franja de arriba del todo, con la condición que más desarma la objeción.',
+    porQue:
+      'Es lo primero que entra en campo visual, antes incluso de la foto. En contra entrega, "pagas al recibir" ahí arriba quita de un golpe la objeción más grande: el miedo a pagar por adelantado.',
+    claves: [
+      'Una sola idea, no tres beneficios apretados',
+      'El punto que parpadea da sensación de "en vivo" sin mentir',
+      'Si vendes contra entrega, esa es la frase que va',
+    ],
+    liquid: `<div class="pdp-announce">
+  <span class="pdp-announce-dot"></span>
+  [ENVÍO GRATIS HOY · PAGAS AL RECIBIR]
+</div>`,
+  },
+  {
+    id: 'hero',
+    nombre: 'Hero: galería de imágenes',
     tipo: 'media',
     temperatura: 'hot',
-    resumen:
-      'La imagen o GIF que abre la página, con lo esencial de la oferta encima.',
+    bloque: 1,
+    resumen: 'El carrusel de fotos del producto, deslizable, con puntos de posición.',
     porQue:
-      'Es la única sección donde vale la pena detenerse a pensar y editar con calma. Es lo primero que ve todo el mundo, frío o caliente, y decide si se quedan o se van.',
+      'Es la única sección donde vale la pena detenerse a pensar y editar con calma. Debe continuar visualmente el anuncio por el que llegaron: si el anuncio mostró un resultado, la primera foto tiene que ser ese resultado.',
     claves: [
-      'Debe leerse completa sin hacer scroll, también en móvil',
-      'Que continúe visualmente el anuncio por el que llegaron',
-      'Una sola idea: qué es y para qué sirve',
+      'La primera imagen carga en eager, las demás en lazy',
+      'Máximo 5 fotos: más es indecisión, no variedad',
+      'Toma las imágenes del producto de Shopify automáticamente',
     ],
-    liquid: null,
+    liquid: `<div class="pdp-gallery">
+  <div class="pdp-track" id="pdpTrack">
+    {%- if product.images.size > 0 -%}
+      {%- for image in product.images limit: 5 -%}
+        <div class="pdp-slide">
+          <img src="{{ image | image_url: width: 900 }}"
+               alt="{{ image.alt | default: product.title | escape }}"
+               loading="{% if forloop.first %}eager{% else %}lazy{% endif %}">
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+  <div class="pdp-dots" id="pdpDots"></div>
+</div>`,
   },
   {
-    id: 'titulo',
-    nombre: 'Título del producto + estrellas + precio',
-    tipo: 'texto',
+    id: 'oferta',
+    nombre: 'Oferta: precio y beneficios',
+    tipo: 'datos',
     temperatura: 'hot',
-    resumen: 'Nombre, calificación en estrellas y precio, juntos y arriba.',
+    bloque: 1,
+    resumen:
+      'Estrellas, título, precio con ahorro, aviso de stock y los tres beneficios de confianza.',
     porQue:
-      'Las reseñas aquí importan muchísimo, porque la mayoría de clientes nunca va a llegar hasta abajo a verlas. Las estrellas junto al precio hacen el trabajo de las reseñas para quien no baja.',
+      'Las estrellas aquí importan muchísimo, porque la mayoría de clientes nunca va a llegar hasta abajo a ver las reseñas. Y el ahorro se muestra en pesos, no en porcentaje: "ahorras $80.000" pesa más que "40% off" porque el cerebro no tiene que calcular nada.',
     claves: [
       'Precio visible sin scroll: esconderlo genera desconfianza',
-      'Las estrellas van pegadas al título, no sueltas',
-      'Si hay precio tachado, que la comparación sea honesta',
+      'El tachado tiene que ser un precio que de verdad tuviste',
+      'Los tres beneficios son envío, forma de pago y garantía',
     ],
-    liquid: null,
+    liquid: `<div class="pdp-rating">
+  <span class="pdp-stars">★★★★★</span>
+  <span><b>[4.9]</b> · [+1.800] clientes satisfechos</span>
+</div>
+
+<h1 class="pdp-title">{{ product.title }}</h1>
+
+<div class="pdp-price-row">
+  <span class="pdp-price">{{ product.price | money }}</span>
+  {%- if product.compare_at_price > product.price -%}
+    <span class="pdp-price-old">{{ product.compare_at_price | money }}</span>
+    <span class="pdp-save">
+      AHORRAS {{ product.compare_at_price | minus: product.price | money }}
+    </span>
+  {%- endif -%}
+</div>
+
+<div class="pdp-stock">
+  <span class="pdp-pulse"></span>
+  [ÚLTIMAS UNIDADES DISPONIBLES]
+</div>`,
   },
   {
-    id: 'interes',
-    nombre: 'Interés y confianza',
-    tipo: 'texto',
+    id: 'cronograma',
+    nombre: 'Cronograma del pedido',
+    tipo: 'datos',
     temperatura: 'hot',
-    resumen: 'Bloque corto que responde "¿por qué te compro a ti?".',
+    bloque: 1,
+    resumen: 'Los tres pasos con fechas reales: hoy pides, tal día se despacha, tal día lo recibes.',
     porQue:
-      'Vamos a aumentar la confianza en la tienda de forma sutil cada vez que tengamos la oportunidad, mientras resolvemos dudas frecuentes. No es una sección, es una costumbre.',
+      'Convierte una promesa vaga ("envío rápido") en fechas concretas que el cliente puede imaginar. Las calcula Liquid a partir de la fecha de hoy, así que nunca quedan desactualizadas ni hay que tocarlas.',
     claves: [
-      'Envío, garantía y devolución en una línea cada uno',
-      'Mejor íconos y frases cortas que un párrafo',
-      'Resolver la duda antes de que la piensen',
+      'Las fechas se calculan solas: +1, +2 y +4 días',
+      'Los meses van en un array porque Liquid no los tiene en español',
+      'Ajusta los rangos a los tiempos reales de tu transportadora',
     ],
-    liquid: null,
+    liquid: `{%- assign hoy = "now" | date: "%s" -%}
+{%- assign meses = "Ene,Feb,Mar,Abr,May,Jun,Jul,Ago,Sep,Oct,Nov,Dic" | split: "," -%}
+{%- assign s_desp = hoy | plus: 86400 -%}
+{%- assign m_desp = s_desp | date: "%m" | minus: 1 -%}
+{%- assign f_desp = s_desp | date: "%d " | append: meses[m_desp] -%}
+{%- assign s_min = hoy | plus: 172800 -%}
+{%- assign m_min = s_min | date: "%m" | minus: 1 -%}
+{%- assign f_min = s_min | date: "%d " | append: meses[m_min] -%}
+{%- assign s_max = hoy | plus: 345600 -%}
+{%- assign m_max = s_max | date: "%m" | minus: 1 -%}
+{%- assign f_max = s_max | date: "%d " | append: meses[m_max] -%}
+
+<div class="pdp-tl-row">
+  <div class="pdp-tl-step">
+    <div class="pdp-tl-icon on">🛒</div>
+    <span class="pdp-tl-date">Hoy</span>
+    <span class="pdp-tl-desc">Tu pedido</span>
+  </div>
+  <div class="pdp-tl-step">
+    <div class="pdp-tl-icon">🚚</div>
+    <span class="pdp-tl-date">{{ f_desp }}</span>
+    <span class="pdp-tl-desc">Despacho</span>
+  </div>
+  <div class="pdp-tl-step">
+    <div class="pdp-tl-icon">📦</div>
+    <span class="pdp-tl-date">{{ f_min }} – {{ f_max }}</span>
+    <span class="pdp-tl-desc">Recibes y pagas</span>
+  </div>
+</div>`,
   },
   {
-    id: 'social',
-    nombre: 'Validación social',
-    tipo: 'social',
-    temperatura: 'hot',
-    resumen: 'Señal rápida de que otros ya compraron y quedaron bien.',
+    id: 'vs',
+    nombre: 'Antes y después / vs competencia',
+    tipo: 'media',
+    temperatura: 'tibio',
+    bloque: 2,
+    resumen: 'Dos imágenes lado a lado: cómo está hoy y cómo queda con el producto.',
     porQue:
-      'Arriba va la versión corta: un contador, tres caras, una frase. Las reseñas largas van al final, pero quien compra rápido necesita ver la señal aquí.',
+      'Va apenas debajo de la oferta porque es la prueba visual más rápida que existe. El cerebro compara antes de leer: dos fotos lado a lado hacen en un segundo el trabajo de tres párrafos de copy.',
     claves: [
-      'Cifras concretas antes que adjetivos',
-      'Fotos reales pesan más que estrellas dibujadas',
-      'Si no tienes reseñas todavía, no las inventes',
+      'El "antes" tiene que parecerse a la situación real del cliente',
+      'Misma luz y mismo encuadre en ambas o pierde credibilidad',
+      'Sirve igual para "antes/después" que para "ellos/nosotros"',
     ],
-    liquid: null,
+    liquid: `<div class="pdp-vs">
+  <h2 class="pdp-h">La diferencia se ve <mark>desde el primer uso</mark></h2>
+  <div class="pdp-vs-grid">
+    <div class="pdp-vs-card bad">
+      <img src="[URL_IMAGEN_ANTES]" alt="[Antes]" loading="lazy">
+      <div class="pdp-vs-tag">Antes / otros</div>
+    </div>
+    <div class="pdp-vs-card good">
+      <img src="[URL_IMAGEN_DESPUES]" alt="[Después]" loading="lazy">
+      <div class="pdp-vs-tag">Después / con esto</div>
+    </div>
+  </div>
+</div>`,
   },
   {
-    id: 'cta-1',
+    id: 'cta',
     nombre: 'Botón de compra',
     tipo: 'cta',
     temperatura: 'hot',
-    resumen: 'El primer botón, arriba del todo.',
+    bloque: 2,
+    resumen: 'El botón naranja con brillo que barre, repetido tres veces en la página.',
     porQue:
-      'Todo lo de arriba existe para que este botón tenga sentido. El cliente caliente ya venía decidido: obligarlo a bajar media página para comprar es perder ventas.',
+      'El color de acento está reservado solo para esto. Si el mismo naranja aparece en decoración, el ojo deja de asociarlo con "aquí se hace clic" y el botón pierde fuerza. El texto va en primera persona porque el cliente se lo dice a sí mismo.',
     claves: [
-      'Que contraste con todo lo demás de la página',
-      'Texto en primera persona: "Lo quiero", no "Enviar"',
-      'Se repite más abajo, pero este es el que atrapa al que ya decidió',
+      'Un solo color de acento en toda la página, solo para botones',
+      'Dispara el formulario de contra entrega, no un carrito normal',
+      'La nota de abajo repite que se paga al recibir',
     ],
-    liquid: null,
+    liquid: `<div class="pdp-cta-wrap">
+  <button type="button" class="pdp-cta pdp-buy">[LO QUIERO · PAGO AL RECIBIR]</button>
+  <p class="pdp-cta-note">Pagas cuando lo recibes · Envío gratis</p>
+</div>
+
+<script>
+/* Los CTA disparan el formulario de contra entrega.
+   Cambia el selector si no usas ReleasIt. */
+document.querySelectorAll('.pdp-buy').forEach(function(btn){
+  btn.addEventListener('click', function(e){
+    e.preventDefault();
+    var t = document.getElementById('rsi_buy_now_button');
+    if (t) {
+      ['pointerdown','mousedown','pointerup','mouseup','click'].forEach(function(ev){
+        t.dispatchEvent(new MouseEvent(ev, { view: window, bubbles: true, cancelable: true, buttons: 1 }));
+      });
+    }
+  });
+});
+</script>`,
   },
   {
-    id: 'gif-principal',
-    nombre: 'GIF principal',
-    tipo: 'media',
-    temperatura: 'tibio',
-    resumen: 'El producto en movimiento, mostrando lo que mejor hace.',
-    porQue:
-      'Mostramos la parte más llamativa del producto, la misma que aparece en el anuncio o en las imágenes de la página. Si el anuncio prometió algo, aquí se ve.',
-    claves: [
-      'Que se entienda sin sonido y sin explicación',
-      'Corto y en bucle: 2 a 4 segundos',
-      'Peso controlado o se cae la velocidad de carga',
-    ],
-    liquid: null,
-  },
-  {
-    id: 'copy',
-    nombre: 'Copy de mayor interés',
-    tipo: 'texto',
-    temperatura: 'tibio',
-    resumen: 'El titular más fuerte, con un texto complementario debajo.',
-    porQue:
-      'Aquí es donde se convence a quien todavía duda. El titular carga el argumento principal y el texto de abajo lo sostiene.',
-    claves: [
-      'Un beneficio, no una lista de características',
-      'Hablarle al problema del cliente, no al producto',
-      'Frases cortas: en móvil se lee en diagonal',
-    ],
-    liquid: null,
-  },
-  {
-    id: 'gif-2',
-    nombre: 'GIF 2',
-    tipo: 'media',
-    temperatura: 'tibio',
-    resumen: 'Segundo apoyo visual, con otro ángulo o uso.',
-    porQue:
-      'Rompe el muro de texto y muestra un uso distinto al del primer GIF. Sirve de respiro visual antes de la lista de beneficios.',
-    claves: [
-      'Que no repita el ángulo del GIF principal',
-      'Ideal: el producto en manos de una persona real',
-      'Va justo antes de la lista para preparar el terreno',
-    ],
-    liquid: null,
-  },
-  {
-    id: 'beneficios',
-    nombre: 'Lista de beneficios',
+    id: 'dolor',
+    nombre: 'El problema',
     tipo: 'lista',
     temperatura: 'tibio',
-    resumen: 'Los "por qué sí" del producto, en lista.',
+    bloque: 2,
+    resumen: 'Bloque oscuro con cuatro molestias concretas del día a día.',
     porQue:
-      'Las listas de beneficios hacen que las personas consuman más fácil los "por qué sí" de tu producto. En bloque de texto se pierden; en lista se leen.',
+      'Va sobre fondo oscuro a propósito: el cambio de color marca un cambio de tono y el lector baja la guardia. Aquí no se habla del producto, se habla de lo que le duele — si no se reconoce en al menos uno, no va a comprar.',
     claves: [
-      'Beneficio, no característica: qué gana el cliente',
-      'Entre 4 y 6 puntos, más se vuelve ruido',
-      'Cada punto en una sola línea',
+      'Cuatro dolores, no ocho: más se vuelve queja',
+      'Concretos y cotidianos, no abstractos',
+      'Ninguno menciona el producto todavía',
     ],
-    liquid: null,
+    liquid: `<div class="pdp-dark">
+  <h2 class="pdp-h">¿Vas a seguir <mark>[con el mismo problema]</mark>?</h2>
+  <div class="pdp-pain">
+    <span class="pdp-pain-e">😩</span>
+    <p class="pdp-pain-t">[Dolor 1: la molestia concreta del día a día]</p>
+  </div>
+  <div class="pdp-pain">
+    <span class="pdp-pain-e">⏳</span>
+    <p class="pdp-pain-t">[Dolor 2: el tiempo que pierde]</p>
+  </div>
+  <div class="pdp-pain">
+    <span class="pdp-pain-e">💸</span>
+    <p class="pdp-pain-t">[Dolor 3: lo que le cuesta seguir así]</p>
+  </div>
+  <div class="pdp-pain">
+    <span class="pdp-pain-e">😖</span>
+    <p class="pdp-pain-t">[Dolor 4: la consecuencia que más le pesa]</p>
+  </div>
+</div>`,
   },
   {
-    id: 'porcentaje',
-    nombre: '% de beneficio o tabla comparativa',
-    tipo: 'datos',
+    id: 'video',
+    nombre: 'Video del producto',
+    tipo: 'media',
     temperatura: 'tibio',
-    resumen: 'Cifras o una tabla que comparan tu producto contra la alternativa.',
+    bloque: 2,
+    resumen: 'Video en bucle, sin sonido, mostrando el producto funcionando.',
     porQue:
-      'El porcentaje de beneficio o una tabla deben usarse para comparar atributos de tu producto. Es el bloque que convierte una opinión en un dato.',
+      'Después del bloque de dolor, el video es la respuesta. Va en autoplay silenciado y en bucle porque nadie le da play a un video en una página de producto: si no arranca solo, no se ve.',
     claves: [
-      'Comparar contra la alternativa real del cliente',
-      'Tres cifras redondas pesan más que diez exactas',
-      'Si el dato no se puede sostener, mejor no ponerlo',
+      'Se tiene que entender sin sonido y sin explicación',
+      'Corto y en bucle: entre 5 y 15 segundos',
+      'El poster evita el recuadro negro mientras carga',
     ],
-    liquid: null,
+    liquid: `<video class="pdp-img" style="width:100%;margin:0;"
+       autoplay loop muted playsinline
+       preload="metadata" poster="[URL_POSTER]">
+  <source src="[URL_VIDEO]" type="video/mp4">
+</video>`,
   },
   {
     id: 'caracteristicas',
-    nombre: 'Lista de características',
+    nombre: 'Características',
+    tipo: 'lista',
+    temperatura: 'tibio',
+    bloque: 2,
+    resumen: 'Rejilla de cuatro tarjetas: qué hace y qué gana el cliente con eso.',
+    porQue:
+      'Las listas hacen que las personas consuman más fácil los "por qué sí" de tu producto. Cada tarjeta lleva la característica arriba y el beneficio abajo, porque la característica sola no vende: "125 cm" no dice nada, "sin agacharte" sí.',
+    claves: [
+      'Cuatro tarjetas: llenan la pantalla sin exigir scroll largo',
+      'Característica arriba, lo que gana el cliente abajo',
+      'Si un dato no se puede sostener, mejor no ponerlo',
+    ],
+    liquid: `<div class="pdp-feats">
+  <div class="pdp-feat">
+    <span class="pdp-feat-e">⚙️</span>
+    <div class="pdp-feat-t">[Característica 1]</div>
+    <div class="pdp-feat-s">[Qué gana con eso]</div>
+  </div>
+  <div class="pdp-feat">
+    <span class="pdp-feat-e">📐</span>
+    <div class="pdp-feat-t">[Característica 2]</div>
+    <div class="pdp-feat-s">[Qué gana con eso]</div>
+  </div>
+  <div class="pdp-feat">
+    <span class="pdp-feat-e">🔋</span>
+    <div class="pdp-feat-t">[Característica 3]</div>
+    <div class="pdp-feat-s">[Qué gana con eso]</div>
+  </div>
+  <div class="pdp-feat">
+    <span class="pdp-feat-e">🛡️</span>
+    <div class="pdp-feat-t">[Característica 4]</div>
+    <div class="pdp-feat-s">[Qué gana con eso]</div>
+  </div>
+</div>`,
+  },
+  {
+    id: 'tabla',
+    nombre: 'Tabla comparativa',
+    tipo: 'datos',
+    temperatura: 'frio',
+    bloque: 2,
+    resumen: 'Tu producto contra la alternativa, criterio por criterio.',
+    porQue:
+      'Es el bloque que convierte una opinión en un dato. La columna tuya va resaltada en amarillo suave y la del rival en gris apagado: el contraste hace la comparación antes de que lea una sola palabra.',
+    claves: [
+      'Comparar contra la alternativa real, no contra un invento',
+      'Cuatro o cinco criterios, los que de verdad decide el cliente',
+      'La columna propia siempre resaltada, la otra apagada',
+    ],
+    liquid: `<table class="pdp-tbl">
+  <thead>
+    <tr>
+      <th>Criterio</th>
+      <th class="hi">Con esto</th>
+      <th>Lo de siempre</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>[Criterio 1]</td><td class="hi">✅ [Bien]</td><td class="lo">❌ [Mal]</td></tr>
+    <tr><td>[Criterio 2]</td><td class="hi">⚡ [Bien]</td><td class="lo">⏳ [Mal]</td></tr>
+    <tr><td>[Criterio 3]</td><td class="hi">✅ [Bien]</td><td class="lo">❌ [Mal]</td></tr>
+    <tr><td>[Criterio 4]</td><td class="hi">🛡️ [Bien]</td><td class="lo">⚠️ [Mal]</td></tr>
+  </tbody>
+</table>`,
+  },
+  {
+    id: 'pasos',
+    nombre: 'Cómo se usa',
     tipo: 'lista',
     temperatura: 'frio',
-    resumen: 'La ficha técnica: medidas, materiales, contenido, compatibilidad.',
+    bloque: 2,
+    resumen: 'Tres pasos numerados que muestran lo fácil que es.',
     porQue:
-      'Son fundamentales, porque una buena landing debe responder todas las preguntas del cliente. Cada duda que no resuelvas aquí es una venta que se cae o un mensaje que toca contestar a mano.',
+      'Ataca una objeción que casi nadie escribe pero mucha gente piensa: "seguro es complicado". Tres pasos, ni uno más — cuatro ya se lee como instructivo y activa justo el miedo que quieres desactivar.',
     claves: [
-      'Medidas y materiales exactos',
-      'Qué incluye y qué no incluye la caja',
-      'Es la sección que más reduce mensajes de WhatsApp',
+      'Exactamente tres pasos, aunque el proceso tenga cinco',
+      'Cada paso empieza con un verbo en negrita',
+      'Si puedes, acompáñalo de una imagen del proceso',
     ],
-    liquid: null,
-  },
-  {
-    id: 'deseo',
-    nombre: 'Deseo: antes y después',
-    tipo: 'media',
-    temperatura: 'frio',
-    resumen:
-      'Antes y después, o video del producto con texto diciendo lo que va a recibir.',
-    porQue:
-      'Aquí nos centramos en lo que el cliente va a sentir cuando adquiera el producto, para activar el deseo. Ya entendió qué es; ahora tiene que verse a sí mismo usándolo.',
-    claves: [
-      'Mostrar el resultado, no el producto',
-      'El antes tiene que parecerse a la situación del cliente',
-      'Decir explícitamente qué va a recibir',
-    ],
-    liquid: null,
-  },
-  {
-    id: 'urgencia',
-    nombre: 'Urgencia',
-    tipo: 'urgencia',
-    temperatura: 'frio',
-    resumen: 'La razón para comprar hoy y no "después".',
-    porQue:
-      'Sin una razón real para decidir ahora, el cliente frío cierra la página con toda la intención de volver — y no vuelve.',
-    claves: [
-      'Que la escasez sea verdadera: stock o envío real',
-      'Los contadores falsos se notan y queman la tienda',
-      'Una sola línea, sin gritar',
-    ],
-    liquid: null,
+    liquid: `<div class="pdp-steps">
+  <h2 class="pdp-h">Resultados en <mark>3 pasos</mark></h2>
+  <div class="pdp-step">
+    <div class="pdp-step-n">1</div>
+    <p class="pdp-step-t"><b>[Acción 1]:</b> [detalle breve]</p>
+  </div>
+  <div class="pdp-step">
+    <div class="pdp-step-n">2</div>
+    <p class="pdp-step-t"><b>[Acción 2]:</b> [detalle breve]</p>
+  </div>
+  <div class="pdp-step">
+    <div class="pdp-step-n">3</div>
+    <p class="pdp-step-t"><b>[Acción 3]:</b> [detalle breve]</p>
+  </div>
+</div>`,
   },
   {
     id: 'resenas',
     nombre: 'Reseñas',
     tipo: 'social',
     temperatura: 'frio',
-    resumen: 'La prueba social completa, al cierre.',
+    bloque: 2,
+    resumen: 'Tres reseñas con avatar, ciudad, fecha relativa y sello de verificado.',
     porQue:
-      'Al menos 5 reseñas, y al menos 2 con foto si las conseguimos. Quien llegó hasta aquí es el más desconfiado de todos: necesita ver gente real antes de decidir.',
+      'Quien llegó hasta aquí es el más desconfiado de todos. Cada reseña empieza por el problema que la persona tenía y termina en el resultado, en negrita — esa estructura hace que el lector se reconozca antes de llegar a la parte que lo convence.',
     claves: [
-      'Mínimo 5, con nombre y fecha',
-      'Al menos 2 con foto real del cliente',
-      'Una reseña que mencione una pega menor da más credibilidad',
+      'Mínimo tres, con ciudad y fecha relativa ("hace 4 días")',
+      'Cada una debe cubrir un uso o un perfil distinto',
+      'Si no tienes reseñas todavía, no las inventes',
     ],
-    liquid: null,
+    liquid: `<div class="pdp-rev">
+  <div class="pdp-rev-s">★★★★★</div>
+  <p class="pdp-rev-t">
+    "[Empieza por el problema que tenía y termina en el resultado.
+    <b>La frase con el resultado va en negrita.</b>]"
+  </p>
+  <div class="pdp-rev-m">
+    <div class="pdp-rev-av">[XX]</div>
+    <div>
+      <div class="pdp-rev-n">[Nombre A.]</div>
+      <div class="pdp-rev-l">[Ciudad] · Hace [4] días</div>
+    </div>
+    <span class="pdp-rev-v">✓ Verificado</span>
+  </div>
+</div>`,
+  },
+  {
+    id: 'incluye',
+    nombre: 'Qué incluye',
+    tipo: 'lista',
+    temperatura: 'frio',
+    bloque: 2,
+    resumen: 'La lista de todo lo que llega en la caja, con visto verde.',
+    porQue:
+      'Cada línea con visto es una unidad de valor percibido. Siete líneas hacen que el mismo precio se sienta más justo que si dijeras solo "el producto", aunque sea exactamente lo mismo que llega.',
+    claves: [
+      'Desglosa: cada accesorio va en su propia línea',
+      'Incluye el envío y la garantía como si fueran productos',
+      'El borde punteado lo hace leer como "paquete"',
+    ],
+    liquid: `<div class="pdp-bundle">
+  <h2 class="pdp-h" style="font-size:16px;">¿Qué recibes?</h2>
+  <ul>
+    <li><span>✓</span> 1× [Producto principal]</li>
+    <li><span>✓</span> [N]× [Accesorio incluido]</li>
+    <li><span>✓</span> 1× [Cable / manual / extra]</li>
+    <li><span>✓</span> Envío gratis a tu domicilio</li>
+    <li><span>✓</span> Garantía de [90] días</li>
+    <li><span>✓</span> Pago contra entrega</li>
+  </ul>
+</div>`,
+  },
+  {
+    id: 'garantia',
+    nombre: 'Garantía',
+    tipo: 'texto',
+    temperatura: 'frio',
+    bloque: 2,
+    resumen: 'Bloque corto que traslada el riesgo de la compra hacia ti.',
+    porQue:
+      'Es reversión de riesgo: mientras el cliente sienta que arriesga su plata, no compra. Una garantía concreta y con plazo mueve ese riesgo a tu lado, y por eso funciona mejor que cualquier adjetivo sobre la calidad.',
+    claves: [
+      'Plazo concreto en días, nunca "garantía de por vida"',
+      'Decir qué pasa exactamente si falla',
+      'Va cerca del cierre, cuando ya está decidiendo',
+    ],
+    liquid: `<div class="pdp-gar">
+  <div class="pdp-gar-e">🛡️</div>
+  <div>
+    <h3 class="pdp-gar-t">Garantía de [90] días</h3>
+    <p class="pdp-gar-b">
+      [Si presenta cualquier falla de fábrica dentro del periodo,
+      se cambia sin trámites.]
+    </p>
+  </div>
+</div>`,
+  },
+  {
+    id: 'faq',
+    nombre: 'Preguntas frecuentes',
+    tipo: 'lista',
+    temperatura: 'frio',
+    bloque: 2,
+    resumen: 'Acordeón con las dudas que de verdad frenan la compra.',
+    porQue:
+      'Una buena landing debe responder todas las preguntas del cliente. Cada duda que no resuelvas aquí es una venta que se cae o un mensaje que toca contestar a mano — esta es la sección que más reduce el WhatsApp.',
+    claves: [
+      'Saca las preguntas de tus propios chats, no las inventes',
+      'Que "cómo funciona el pago contra entrega" nunca falte',
+      'Solo uno abierto a la vez, para que no se vuelva un muro',
+    ],
+    liquid: `<div class="pdp-faq-i">
+  <button type="button" class="pdp-faq-q">
+    <span>[¿Cómo funciona el pago contra entrega?]</span>
+    <span class="pdp-faq-ic">+</span>
+  </button>
+  <div class="pdp-faq-p">
+    <div class="pdp-faq-c">
+      Haces el pedido sin pagar nada por adelantado y le pagas
+      al mensajero cuando llega a tu casa.
+    </div>
+  </div>
+</div>`,
+  },
+  {
+    id: 'cierre',
+    nombre: 'Cierre y urgencia',
+    tipo: 'urgencia',
+    temperatura: 'frio',
+    bloque: 2,
+    resumen: 'Bloque oscuro final: prueba social, último botón y sellos de confianza.',
+    porQue:
+      'Sin una razón real para decidir ahora, el cliente frío cierra la página con toda la intención de volver — y no vuelve. Los tres sellos de abajo son lo último que ve antes de decidir, y por eso repiten las tres objeciones principales.',
+    claves: [
+      'Que la escasez sea verdadera: los contadores falsos se notan',
+      'Repite las tres condiciones que quitan miedo',
+      'Es el tercer botón: quien llegó aquí ya leyó todo',
+    ],
+    liquid: `<div class="pdp-close">
+  <p>★★★★★ Más de <b>[1.800] clientes</b> ya lo tienen en casa</p>
+  <button type="button" class="pdp-cta pdp-buy">[LO QUIERO · PAGO AL RECIBIR]</button>
+  <div class="pdp-trust">
+    <div><i></i>Pago contra entrega</div>
+    <div><i></i>Envío gratis</div>
+    <div><i></i>Garantía [90] días</div>
+  </div>
+</div>`,
   },
 ];
 

@@ -4,18 +4,20 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { X, MousePointerClick, Code2 } from 'lucide-react';
 import { BLOQUES, TEMPERATURAS, type Bloque } from '@/lib/recursos-data';
+import { BloqueCodigo } from '@/components/recursos/BloqueCodigo';
 
 // Altura de cada recuadro en el esqueleto, según lo que representa. No son
 // medidas reales: son proporciones que hacen legible la estructura de un
 // vistazo, igual que en un wireframe a mano.
 const ALTURA: Record<Bloque['tipo'], number> = {
-  media: 104,
-  texto: 58,
-  social: 46,
-  cta: 42,
-  lista: 88,
-  datos: 96,
-  urgencia: 36,
+  anuncio: 28,
+  media: 96,
+  texto: 54,
+  social: 44,
+  cta: 40,
+  lista: 80,
+  datos: 88,
+  urgencia: 62,
 };
 
 export function AnatomiaLanding() {
@@ -73,16 +75,29 @@ export function AnatomiaLanding() {
 
             <div className="space-y-2">
               {BLOQUES.map((bloque, i) => (
-                <Recuadro
-                  key={bloque.id}
-                  bloque={bloque}
-                  indice={i}
-                  sinMovimiento={!!sinMovimiento}
-                  onClick={() => {
-                    setActivo(bloque);
-                    setTocado(true);
-                  }}
-                />
+                <div key={bloque.id}>
+                  {/* Entre el bloque 1 y el 2 va el formulario de pedido, que
+                      lo pone la app de contra entrega y no se toca. Marcarlo
+                      aquí evita la confusión de por qué son dos bloques. */}
+                  {bloque.bloque === 2 && BLOQUES[i - 1]?.bloque === 1 && (
+                    <div className="my-3 flex items-center gap-3">
+                      <span className="h-px flex-1 bg-brand-yellow/25" />
+                      <span className="whitespace-nowrap font-mono text-[8.5px] uppercase tracking-[0.14em] text-brand-yellow/70">
+                        Formulario de pedido
+                      </span>
+                      <span className="h-px flex-1 bg-brand-yellow/25" />
+                    </div>
+                  )}
+                  <Recuadro
+                    bloque={bloque}
+                    indice={i}
+                    sinMovimiento={!!sinMovimiento}
+                    onClick={() => {
+                      setActivo(bloque);
+                      setTocado(true);
+                    }}
+                  />
+                </div>
               ))}
             </div>
           </motion.div>
@@ -197,7 +212,7 @@ function VentanaDetalle({ bloque, onClose }: { bloque: Bloque | null; onClose: (
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', stiffness: 320, damping: 26 }}
-            className="relative flex max-h-[88vh] w-full max-w-[540px] flex-col overflow-hidden rounded-2xl border border-brand-purple/40 bg-bg-secondary shadow-[0_40px_100px_-20px_rgba(0,0,0,0.95),0_0_80px_-20px_rgba(124,58,237,0.45)]"
+            className="relative flex max-h-[88vh] w-full max-w-[640px] flex-col overflow-hidden rounded-2xl border border-brand-purple/40 bg-bg-secondary shadow-[0_40px_100px_-20px_rgba(0,0,0,0.95),0_0_80px_-20px_rgba(124,58,237,0.45)]"
           >
             <div className="flex items-start justify-between gap-4 border-b border-border/70 px-6 py-5">
               <div className="min-w-0">
@@ -255,19 +270,16 @@ function VentanaDetalle({ bloque, onClose }: { bloque: Bloque | null; onClose: (
                 </ul>
               </div>
 
-              {/* Hueco reservado para el snippet de Liquid. Se deja explícito
-                  para que se note que falta y no se olvide. */}
               <div>
-                <h4 className="flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-text-muted">
-                  <Code2 size={12} /> Código Liquid
-                </h4>
-                <div className="mt-4 rounded-xl border border-dashed border-border bg-black/30 p-6 text-center">
-                  <p className="text-[13.5px] leading-relaxed text-text-muted">
-                    Aquí va el snippet de Shopify de esta sección.
-                    <br />
-                    <span className="text-text-secondary">Pendiente de pegar.</span>
-                  </p>
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h4 className="flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-text-muted">
+                    <Code2 size={12} /> Código de esta sección
+                  </h4>
+                  <span className="whitespace-nowrap rounded-full border border-border px-2.5 py-1 font-mono text-[9.5px] uppercase tracking-[0.1em] text-text-muted">
+                    Bloque {bloque.bloque}
+                  </span>
                 </div>
+                <BloqueCodigo codigo={bloque.liquid} />
               </div>
             </div>
           </motion.div>

@@ -1,13 +1,15 @@
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Sparkles } from 'lucide-react';
 import { FloatingOrb } from '@/components/animated/FloatingOrb';
 import { AnatomiaLanding } from '@/components/recursos/AnatomiaLanding';
+import { BloqueCodigo } from '@/components/recursos/BloqueCodigo';
 import { BLOQUES, TEMPERATURAS } from '@/lib/recursos-data';
+import { LIQUID_BLOQUE_1, LIQUID_BLOQUE_2 } from '@/lib/landing-liquid';
 
 export const metadata = {
   title: 'Anatomía de una landing que vende | Recursos Generación 1K',
   description:
-    'Las 14 secciones de una página de ventas de contra entrega, en orden, y por qué cada una está donde está.',
+    'Las 16 secciones de una página de producto de contra entrega, en orden, con el código Liquid de cada una listo para pegar en Shopify.',
 };
 
 export default function AnatomiaLandingPage() {
@@ -101,19 +103,61 @@ export default function AnatomiaLandingPage() {
           ))}
         </ol>
 
+      </section>
+
+      {/* Los dos bloques completos, listos para pegar */}
+      <section className="relative mx-auto max-w-4xl px-5 pb-20">
+        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-brand-purpleLight">
+          Plantilla completa
+        </span>
+        <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+          Los dos bloques, listos para pegar
+        </h2>
+        <p className="mt-4 max-w-2xl text-[14.5px] leading-relaxed text-text-secondary">
+          Es la misma plantilla despersonalizada: sin marca, sin nombres de producto y
+          con toda la paleta en variables CSS al inicio del bloque 1. Cambiar el color de
+          la página entera son seis líneas. Lo que está entre corchetes lo reemplazas tú.
+        </p>
+
+        <div className="mt-9 space-y-9">
+          <div>
+            <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+              <h3 className="font-display text-lg font-extrabold tracking-tight">
+                Bloque 1 · Cabecera
+              </h3>
+              <span className="font-mono text-[10.5px] uppercase tracking-[0.1em] text-text-muted">
+                Va arriba del formulario
+              </span>
+            </div>
+            <BloqueCodigo codigo={LIQUID_BLOQUE_1} alto="max-h-[460px]" />
+          </div>
+
+          <div>
+            <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+              <h3 className="font-display text-lg font-extrabold tracking-tight">
+                Bloque 2 · Cuerpo
+              </h3>
+              <span className="font-mono text-[10.5px] uppercase tracking-[0.1em] text-text-muted">
+                Va debajo del formulario
+              </span>
+            </div>
+            <BloqueCodigo codigo={LIQUID_BLOQUE_2} alto="max-h-[460px]" />
+          </div>
+        </div>
+
         <div className="mt-14 rounded-2xl border border-brand-purple/25 bg-gradient-to-b from-brand-purple/[0.08] to-transparent p-8 text-center sm:p-10">
           <h3 className="font-display text-2xl font-extrabold tracking-tight">
-            Esto es el mapa. Falta tu producto.
+            ¿Y si la IA la escribe por ti?
           </h3>
           <p className="mx-auto mt-3 max-w-xl text-[14.5px] leading-relaxed text-text-secondary">
-            Saber el orden es la mitad. La otra mitad es qué poner en cada bloque
-            para lo que tú vendes — y eso se decide caso por caso.
+            Tengo el prompt exacto para que Gemini te genere estos dos bloques con tu
+            producto, tu ángulo y tu paleta — y los prompts para generar las imágenes.
           </p>
           <Link
-            href="/"
+            href="/recursos/landing-con-ia"
             className="mt-7 inline-flex min-h-[48px] items-center gap-2 rounded-xl bg-brand-yellow px-7 font-extrabold text-black transition-colors hover:bg-brand-yellowHover"
           >
-            Agenda tu llamada <ArrowRight size={16} />
+            <Sparkles size={16} /> Cómo hacerlo con IA
           </Link>
         </div>
       </section>
