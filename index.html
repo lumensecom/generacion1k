@@ -555,14 +555,22 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
+        /* Va arriba del titular, así que lleva marco: suelto y sin fondo se
+           leía como un pie de foto en vez de como una condición de entrada. */
         .cupos {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            margin-top: 24px;
+            margin-bottom: 30px;
+            padding: 8px 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(16, 185, 129, 0.28);
+            background: rgba(16, 185, 129, 0.07);
             font-family: var(--font-mono);
-            font-size: 13px;
+            font-size: 12.5px;
+            letter-spacing: 0.02em;
             color: var(--text-secondary);
+            animation: heroFade 0.9s ease 0.1s both;
         }
         .cupos-dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
         .cupos-dot::after {
@@ -618,7 +626,7 @@
             flex-wrap: wrap;
             justify-content: center;
             margin: 64px auto 0;
-            max-width: 880px;
+            max-width: 620px;
             border-top: 1px solid rgba(255, 255, 255, 0.07);
             padding-top: 36px;
             animation: heroFade 0.9s ease 1s both;
@@ -1591,6 +1599,13 @@
              se quieren reactivar con datos verificables. -->
 
         <div class="container">
+            <!-- La escasez va arriba del todo: es lo primero que condiciona
+                 cómo se lee la promesa. Actualizar el número a mano. -->
+            <div class="cupos">
+                <span class="cupos-dot"></span>
+                <span>Solo 5 personas cada mes</span>
+            </div>
+
             <!-- La cifra ES el gráfico del hero. Las dos líneas que la enmarcan
                  van pequeñas a propósito: de un vistazo se lee "$1.000 USD" y
                  el resto es contexto. Las objeciones bajaron al subtítulo para
@@ -1647,25 +1662,15 @@
                     </a>
                 </div>
                 <p class="cta-note">Gratis · 30 minutos · Sin compromiso</p>
-
-                <!-- Elemento firma: cupos disponibles (actualizar el número manualmente) -->
-                <div class="cupos">
-                    <span class="cupos-dot"></span>
-                    <span>2 cupos disponibles este mes</span>
-                </div>
             </div>
 
-            <!-- Métricas: las dos primeras son de MI tienda (LUMENS), no de
-                 estudiantes. Los labels dicen "mi/mis" a propósito para no
-                 mezclarlas con los casos de la sección #casos. -->
+            <!-- Métricas: la primera es de MI tienda (LUMENS), no de
+                 estudiantes. El label dice "mi" a propósito para no
+                 mezclarla con los casos de la sección #casos. -->
             <div class="trust-row">
                 <div class="trust-item">
-                    <div class="trust-num" data-count="5" data-prefix="+$" data-suffix=".000 USD">+$5.000 USD</div>
+                    <div class="trust-num" data-count="6" data-prefix="+$" data-suffix=".000 USD">+$6.000 USD</div>
                     <div class="trust-label">que factura mi tienda cada semana</div>
-                </div>
-                <div class="trust-item">
-                    <div class="trust-num" data-count="9" data-prefix="ROAS " data-suffix="+">ROAS 9+</div>
-                    <div class="trust-label">en mis campañas de TikTok Ads</div>
                 </div>
                 <div class="trust-item">
                     <div class="trust-num" data-count="40" data-prefix="+">+40</div>
@@ -1952,7 +1957,7 @@
                 <span class="eyebrow">Filtro</span>
                 <h2 class="h2">No trabajo con <span class="accent">todo el mundo</span></h2>
                 <p class="section-sub">
-                    Son 2 cupos al mes y el acompañamiento es 1:1. Prefiero decirte antes
+                    Son 5 cupos al mes y el acompañamiento es 1:1. Prefiero decirte antes
                     si esto no es para ti, que perder tu tiempo y el mío en una llamada.
                 </p>
                 <div class="head-beam"></div>
