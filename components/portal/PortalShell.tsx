@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { PortalNav } from '@/components/portal/PortalNav';
+import { Asistente } from '@/components/portal/Asistente';
 import { FloatingOrb } from '@/components/animated/FloatingOrb';
 import { cn } from '@/lib/utils';
 import type { SessionPayload } from '@/lib/session';
@@ -36,6 +37,9 @@ export function PortalShell({
         <PortalNav name={session.name} role={session.role} />
         <main className="mx-auto max-w-6xl px-5 py-10">{children}</main>
       </div>
+      {/* Vive en el shell, no en cada página: así la conversación sobrevive
+          mientras el estudiante navega entre módulos. */}
+      <Asistente nombre={session.name} />
     </div>
   );
 }
