@@ -430,44 +430,49 @@
         }
         .hero .container { position: relative; z-index: 2; }
 
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 9px 20px;
-            border-radius: 999px;
-            border: 1px solid rgba(168, 85, 247, 0.35);
-            background: rgba(124, 58, 237, 0.10);
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: #C9A5F7;
-            margin-bottom: 32px;
-            animation: heroFade 0.9s ease 0.1s both;
-        }
-        /* Titular largo estilo antoecom (promesa + objeciones), así que va más
-           pequeño y acotado en ancho: a 78px ocupaba media pantalla. */
+        /* Titular gráfico. antoecom pone su H1 en 22px porque el protagonista
+           del hero es el video; aquí el protagonista es la cifra, así que el
+           texto que la rodea se achica y ella crece. Es el mismo criterio:
+           una sola cosa manda en la primera pantalla. */
         .hero h1 {
-            font-family: var(--font-display);
-            font-weight: 800;
-            font-size: clamp(31px, 4.7vw, 54px);
-            line-height: 1.14;
-            letter-spacing: -0.025em;
-            max-width: 940px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(2px, 0.7vw, 9px);
+            max-width: 900px;
             margin: 0 auto;
-            text-wrap: balance;
-            animation: heroFade 0.9s ease 0.3s both;
+            font-family: var(--font-display);
+            animation: heroFade 0.9s ease 0.2s both;
         }
-        .hero h1 .accent { font-size: 1em; }
-        .hero-sub {
-            margin: 30px auto 0;
-            max-width: 580px;
-            font-size: clamp(16px, 2.2vw, 19px);
-            font-weight: 400;
-            line-height: 1.75;
+        .hero h1 .ht-line {
+            max-width: 100%;
+            font-size: clamp(18px, 2.9vw, 31px);
+            font-weight: 700;
+            line-height: 1.28;
+            letter-spacing: -0.02em;
             color: var(--text-secondary);
-            animation: heroFade 0.9s ease 0.55s both;
+            text-wrap: balance;
+        }
+        .hero h1 .ht-figure {
+            max-width: 100%;
+            font-size: clamp(44px, 12.5vw, 128px);
+            font-weight: 800;
+            line-height: 0.98;
+            letter-spacing: -0.045em;
+            background: linear-gradient(120deg, #fff 12%, var(--purple-light) 58%, var(--pink) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+        .hero-sub {
+            margin: 26px auto 0;
+            max-width: 560px;
+            font-size: clamp(15.5px, 2.2vw, 18px);
+            font-weight: 400;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            animation: heroFade 0.9s ease 0.42s both;
         }
         /* ---------- Indicador de paso (estilo antoecom: "1 · Mira el video") ---------- */
         .hero-steps {
@@ -1586,20 +1591,18 @@
              se quieren reactivar con datos verificables. -->
 
         <div class="container">
-            <span class="hero-badge">
-                ⚡ Programa 1:1 · Cupos limitados · Colombia &amp; Latam
-            </span>
-
-            <!-- Fórmula de antoecom: promesa concreta + "sin" las objeciones
-                 que frenan la compra, con la segunda mitad en color de acento. -->
+            <!-- La cifra ES el gráfico del hero. Las dos líneas que la enmarcan
+                 van pequeñas a propósito: de un vistazo se lee "$1.000 USD" y
+                 el resto es contexto. Las objeciones bajaron al subtítulo para
+                 no engordar el titular. -->
             <h1>
-                Cómo facturar tus primeros $1.000 USD
-                con tu propia tienda online —
-                <span class="accent">sin experiencia, sin bodega y sin renunciar a tu trabajo.</span>
+                <span class="ht-line">Factura tus primeros</span>
+                <span class="ht-figure">$1.000 USD</span>
+                <span class="ht-line">con tu propia tienda online</span>
             </h1>
 
             <p class="hero-sub">
-                Te acompaño 1:1 durante 3 meses hasta tus primeras ventas reales.
+                Te acompaño 1:1 durante 3 meses. Sin experiencia previa y sin inventario.
             </p>
 
             <!-- ────────────────────────────────────────────────────────────
