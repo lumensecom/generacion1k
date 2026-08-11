@@ -11,11 +11,13 @@ interface Turno {
   content: string;
 }
 
+// La primera es a propósito la de alguien que acaba de entrar y no sabe
+// dónde está parado: es la duda más común del día uno.
 const SUGERENCIAS = [
+  'Acabo de entrar, ¿por dónde empiezo?',
   '¿Cómo sé si un producto es ganador?',
+  '¿Por qué me aparece un módulo bloqueado?',
   '¿Qué hago si mi campaña no vende?',
-  '¿Cómo configuro el pixel de TikTok?',
-  '¿Cuándo escalo una campaña?',
 ];
 
 export function Asistente({ nombre }: { nombre: string }) {
@@ -130,29 +132,43 @@ export function Asistente({ nombre }: { nombre: string }) {
 
   return (
     <>
-      {/* Botón flotante */}
+      {/* Botón flotante. Lleva texto y no solo un ícono: un estudiante que
+          entra por primera vez no tiene por qué adivinar que la chispa de la
+          esquina es quien le va a resolver las dudas. En móvil el texto se
+          esconde al abrir el panel para no competir con él. */}
       <motion.button
         type="button"
         onClick={() => setAbierto((v) => !v)}
-        initial={{ opacity: 0, scale: 0.85 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, y: 12, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ delay: 0.6, type: 'spring', stiffness: 300, damping: 22 }}
-        whileHover={sinMovimiento ? undefined : { scale: 1.06 }}
-        whileTap={{ scale: 0.94 }}
-        aria-label={abierto ? 'Cerrar asistente' : 'Abrir asistente de estudio'}
-        className="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-brand-purple to-brand-pink text-white shadow-[0_12px_40px_-8px_rgba(124,58,237,0.7)] sm:bottom-7 sm:right-7"
+        whileHover={sinMovimiento ? undefined : { scale: 1.04 }}
+        whileTap={{ scale: 0.95 }}
+        aria-label={abierto ? 'Cerrar asistente' : 'Abrir el asistente de estudio'}
+        className={cn(
+          'fixed bottom-5 right-5 z-50 items-center gap-2.5 rounded-full bg-gradient-to-br from-brand-purple to-brand-pink py-3.5 pl-5 pr-6 font-display text-[14px] font-extrabold text-white shadow-[0_12px_40px_-8px_rgba(124,58,237,0.75)] sm:bottom-7 sm:right-7',
+          // Abierto en móvil el panel ocupa la pantalla y el botón taparía el
+          // campo de escribir; ahí se cierra con la X de la cabecera.
+          abierto ? 'hidden pl-4 pr-4 sm:flex' : 'flex'
+        )}
       >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.span
-            key={abierto ? 'x' : 'chat'}
-            initial={{ opacity: 0, rotate: -60 }}
-            animate={{ opacity: 1, rotate: 0 }}
-            exit={{ opacity: 0, rotate: 60 }}
-            transition={{ duration: 0.16 }}
-          >
-            {abierto ? <X size={22} /> : <Sparkles size={22} />}
-          </motion.span>
-        </AnimatePresence>
+        {abierto ? (
+          <X size={20} />
+        ) : (
+          <>
+            <span className="relative flex h-5 w-5 shrink-0 items-center justify-center">
+              <Sparkles size={19} />
+              {!sinMovimiento && (
+                <motion.span
+                  className="absolute inset-0 rounded-full bg-white/40"
+                  animate={{ scale: [1, 1.9], opacity: [0.5, 0] }}
+                  transition={{ duration: 2.2, repeat: Infinity, ease: 'easeOut' }}
+                />
+              )}
+            </span>
+            ¿Tienes una duda?
+          </>
+        )}
       </motion.button>
 
       <AnimatePresence>
@@ -214,8 +230,9 @@ export function Asistente({ nombre }: { nombre: string }) {
                 {turnos.length === 0 && (
                   <div>
                     <p className="text-[14.5px] leading-relaxed text-text-secondary">
-                      Hola {nombre.split(' ')[0]}. Pregúntame lo que sea de los 10 módulos y te
-                      respondo con lo que enseña el programa.
+                      Hola {nombre.split(' ')[0]}. Pregúntame lo que sea del programa — cómo
+                      funciona el portal, qué hacer ahora o cualquier duda de los 10 módulos.
+                      Te respondo con lo que enseña Juan.
                     </p>
                     <div className="mt-5 space-y-2">
                       {SUGERENCIAS.map((s) => (
@@ -245,7 +262,7 @@ export function Asistente({ nombre }: { nombre: string }) {
                           : 'border border-border bg-bg-card text-text-secondary'
                       )}
                     >
-                      {t.content || <Escribiendo />}
+                      {t.content ? <TextoConNegritas texto={t.content} /> : <Escribiendo />}
                     </div>
                   </div>
                 ))}
@@ -302,6 +319,34 @@ export function Asistente({ nombre }: { nombre: string }) {
           </>
         )}
       </AnimatePresence>
+    </>
+  );
+}
+
+// El modelo marca en negrita los nombres de los botones ("ve a **Módulos**"),
+// que es justo donde ayuda. Como el mensaje se pinta con whitespace-pre-wrap,
+// sin esto se verían los asteriscos literales.
+//
+// Se resuelven **negrita** y *cursiva* y nada más: es lo único que usa. Una
+// librería de markdown aquí pesaría más que el componente entero y además
+// traería enlaces e imágenes, que no queremos renderizar desde el modelo.
+function TextoConNegritas({ texto }: { texto: string }) {
+  const partes = texto.split(/(\*\*[^*]+\*\*|\*[^*\n]+\*)/g);
+  return (
+    <>
+      {partes.map((p, i) => {
+        if (p.startsWith('**') && p.endsWith('**') && p.length > 4) {
+          return (
+            <strong key={i} className="font-semibold text-white">
+              {p.slice(2, -2)}
+            </strong>
+          );
+        }
+        if (p.startsWith('*') && p.endsWith('*') && p.length > 2) {
+          return <em key={i}>{p.slice(1, -1)}</em>;
+        }
+        return p;
+      })}
     </>
   );
 }

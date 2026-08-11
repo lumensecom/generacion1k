@@ -1,4 +1,5 @@
 import 'server-only';
+import type { Mensaje } from '@/lib/asistente-modelo';
 
 // Cliente de la API de NVIDIA (NIM). Es compatible con el formato de OpenAI,
 // así que son llamadas HTTP normales — no hace falta ningún SDK.
@@ -15,11 +16,6 @@ const MODELO_POR_DEFECTO = 'nvidia/nemotron-3-super-120b-a12b';
 
 export function modeloActual(): string {
   return process.env.NEMOTRON_MODEL?.trim() || MODELO_POR_DEFECTO;
-}
-
-export interface Mensaje {
-  role: 'system' | 'user' | 'assistant';
-  content: string;
 }
 
 export class NemotronError extends Error {

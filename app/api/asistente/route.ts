@@ -1,5 +1,5 @@
 import { getSession } from '@/lib/session';
-import { chatStream, leerTexto, NemotronError, type Mensaje } from '@/lib/nemotron';
+import { responder, esErrorDeConfiguracion, esErrorDeModelo, type Mensaje } from '@/lib/asistente-modelo';
 import { construirContexto, MODULOS_TEXTO } from '@/lib/asistente-contexto';
 import { systemPrompt, bloqueDeMaterial } from '@/lib/asistente-prompt';
 
@@ -80,15 +80,14 @@ export async function POST(request: Request) {
   // si no, una conversación larga arrastra siempre los módulos del principio.
   const contexto = construirContexto(pregunta, slug);
 
+  const sistema = systemPrompt(session.name.split(' ')[0] || session.name, moduloActual);
   const mensajes: Mensaje[] = [
-    { role: 'system', content: systemPrompt(session.name.split(' ')[0] || session.name, moduloActual) },
     ...historial,
     { role: 'user', content: `${bloqueDeMaterial(contexto)}\n\nPREGUNTA DE ${session.name}:\n${pregunta}` },
   ];
 
   try {
-    const bruto = await chatStream(mensajes, request.signal);
-    return new Response(leerTexto(bruto), {
+    return new Response(await responder(sistema, mensajes, request.signal), {
       headers: {
         'Content-Type': 'text/plain; charset=utf-8',
         'Cache-Control': 'no-store',
@@ -97,17 +96,16 @@ export async function POST(request: Request) {
       },
     });
   } catch (e) {
-    if (e instanceof NemotronError) {
-      console.error('[asistente]', e.message);
-      return error(
-        e.status === 503
-          ? 'El asistente no está configurado todavía. Avísale a Juan.'
-          : 'El asistente no está disponible en este momento. Intenta de nuevo en un minuto.',
-        e.status
-      );
-    }
     // Si el estudiante cierra la pestaña, fetch aborta: no es un fallo real.
     if (e instanceof Error && e.name === 'AbortError') return new Response(null, { status: 499 });
+
+    if (esErrorDeModelo(e)) {
+      console.error('[asistente]', e.message);
+      return esErrorDeConfiguracion(e)
+        ? error('El asistente no está configurado todavía. Avísale a Juan.', 503)
+        : error('El asistente no está disponible en este momento. Intenta de nuevo en un minuto.', 502);
+    }
+
     console.error('[asistente] error inesperado', e);
     return error('Algo falló. Intenta de nuevo.', 500);
   }
