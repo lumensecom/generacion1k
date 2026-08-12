@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { CalendarDays, Users, Video, ExternalLink, Check } from 'lucide-react';
+import { CalendarDays, Users, Video, ExternalLink, Check, Download } from 'lucide-react';
 import { votarEncuesta } from '@/app/portal/ayuda/actions';
 import { VideoPlayer } from '@/components/portal/VideoPlayer';
+import { urlGoogleCalendar, urlDescargaICS } from '@/lib/calendario';
 import { cn } from '@/lib/utils';
 import type { GroupSession, SessionPoll } from '@/lib/types';
 
@@ -100,6 +101,16 @@ function TarjetaClase({ clase }: { clase: GroupSession }) {
   const estado = estadoClase(clase);
   const envivo = estado === 'envivo';
 
+  const evento = {
+    titulo: `${clase.title} — Clase grupal Generación 1K`,
+    descripcion: clase.description,
+    inicio: clase.scheduled_at,
+    duracionMinutos: clase.duration_minutes,
+    url: clase.meet_url,
+  };
+  const google = urlGoogleCalendar(evento);
+  const ics = urlDescargaICS(evento, clase.id);
+
   return (
     <article
       className={cn(
@@ -148,6 +159,31 @@ function TarjetaClase({ clase }: { clase: GroupSession }) {
         <p className="mt-4 whitespace-pre-wrap text-[14px] leading-relaxed text-text-secondary">
           {clase.description}
         </p>
+      )}
+
+      {(google || ics) && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {google && (
+            <a
+              href={google}
+              target="_blank"
+              rel="noopener"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-[12px] font-semibold text-text-secondary transition-colors hover:border-brand-purple/50 hover:text-white"
+            >
+              <CalendarDays className="h-3.5 w-3.5" /> Google Calendar
+              <ExternalLink className="h-3 w-3" />
+            </a>
+          )}
+          {ics && (
+            <a
+              href={ics}
+              download="clase-grupal-generacion1k.ics"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-[12px] font-semibold text-text-secondary transition-colors hover:border-brand-purple/50 hover:text-white"
+            >
+              <Download className="h-3.5 w-3.5" /> Apple / Outlook
+            </a>
+          )}
+        </div>
       )}
     </article>
   );

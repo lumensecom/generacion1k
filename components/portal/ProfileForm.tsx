@@ -26,35 +26,35 @@ export function ProfileForm({ student }: { student: Student }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-lg space-y-5 rounded-2xl border border-light-border bg-light-card p-8 shadow-[0_10px_26px_rgba(20,20,60,0.06)]"
+      className="max-w-lg space-y-5 rounded-2xl border border-border bg-bg-card p-8"
     >
       <div className="space-y-2">
-        <Label className="text-light-text2">Email</Label>
+        <Label className="text-text-secondary">Email</Label>
         <Input value={student.email} disabled />
-        <p className="text-xs text-light-muted">El email no se puede cambiar. Escríbele a Juan si necesitas otro.</p>
+        <p className="text-xs text-text-muted">El email no se puede cambiar. Escríbele a Juan si necesitas otro.</p>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="fullName" className="text-light-text2">
+        <Label htmlFor="fullName" className="text-text-secondary">
           Nombre completo
         </Label>
         <Input id="fullName" name="fullName" defaultValue={student.full_name} required />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="age" className="text-light-text2">
+          <Label htmlFor="age" className="text-text-secondary">
             Edad
           </Label>
           <Input id="age" name="age" type="number" defaultValue={student.age ?? ''} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="city" className="text-light-text2">
+          <Label htmlFor="city" className="text-text-secondary">
             Ciudad
           </Label>
           <Input id="city" name="city" defaultValue={student.city ?? ''} />
         </div>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="phone" className="text-light-text2">
+        <Label htmlFor="phone" className="text-text-secondary">
           Teléfono / WhatsApp
         </Label>
         <Input id="phone" name="phone" defaultValue={student.phone ?? ''} placeholder="+57 300 000 0000" />

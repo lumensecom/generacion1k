@@ -23,6 +23,15 @@ export interface Student {
   password_hash: string | null;
   password_set_at: string | null;
   created_by_admin: boolean;
+  plan: 'start' | 'growth' | null;
+  plan_started_at: string | null;
+  /** Ajuste manual del total de sesiones; si es null manda el plan. */
+  sessions_total: number | null;
+  /** Importes en centavos y en entero — ver lib/planes.ts. */
+  amount_total_cents: number;
+  amount_paid_cents: number;
+  currency: string;
+  payment_notes: string | null;
 }
 
 export interface StudentIntake {
@@ -208,4 +217,23 @@ export interface SessionPollVote {
   student_id: string;
   option_id: string;
   created_at: string;
+}
+
+export type EstadoSesion = 'pendiente' | 'agendada' | 'hecha' | 'cancelada' | 'no_asistio';
+
+export interface OneOnOneSession {
+  id: string;
+  student_id: string;
+  session_number: number;
+  title: string | null;
+  scheduled_at: string | null;
+  duration_minutes: number;
+  meet_url: string | null;
+  status: EstadoSesion;
+  /** Lo que el estudiante quiere tratar; lo escribe él desde su perfil. */
+  student_topic: string | null;
+  admin_notes: string | null;
+  recording_url: string | null;
+  created_at: string;
+  updated_at: string;
 }

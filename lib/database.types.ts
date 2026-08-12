@@ -356,6 +356,62 @@ export type Database = {
         };
         Relationships: [];
       };
+      one_on_one_sessions: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          duration_minutes: number
+          id: string
+          meet_url: string | null
+          recording_url: string | null
+          scheduled_at: string | null
+          session_number: number
+          status: string
+          student_id: string
+          student_topic: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          meet_url?: string | null
+          recording_url?: string | null
+          scheduled_at?: string | null
+          session_number: number
+          status?: string
+          student_id: string
+          student_topic?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          meet_url?: string | null
+          recording_url?: string | null
+          scheduled_at?: string | null
+          session_number?: number
+          status?: string
+          student_id?: string
+          student_topic?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "one_on_one_sessions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_config: {
         Row: {
           id: string;
@@ -539,6 +595,13 @@ export type Database = {
       };
       students: {
         Row: {
+          sessions_total: number | null
+          plan_started_at: string | null
+          plan: string | null
+          payment_notes: string | null
+          currency: string
+          amount_total_cents: number
+          amount_paid_cents: number
           password_set_at: string | null
           password_hash: string | null
           created_by_admin: boolean
@@ -556,6 +619,13 @@ export type Database = {
           role: string;
         };
         Insert: {
+          sessions_total?: number | null
+          plan_started_at?: string | null
+          plan?: string | null
+          payment_notes?: string | null
+          currency?: string
+          amount_total_cents?: number
+          amount_paid_cents?: number
           password_set_at?: string | null
           password_hash?: string | null
           created_by_admin?: boolean
@@ -573,6 +643,13 @@ export type Database = {
           role?: string;
         };
         Update: {
+          sessions_total?: number | null
+          plan_started_at?: string | null
+          plan?: string | null
+          payment_notes?: string | null
+          currency?: string
+          amount_total_cents?: number
+          amount_paid_cents?: number
           password_set_at?: string | null
           password_hash?: string | null
           created_by_admin?: boolean

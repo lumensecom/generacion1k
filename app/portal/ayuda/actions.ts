@@ -2,7 +2,13 @@
 
 import { revalidatePath } from 'next/cache';
 import { getSession } from '@/lib/session';
-import { crearPregunta, crearSolicitudReunion, votar, getEncuestaAbierta } from '@/lib/portal-data';
+import {
+  crearPregunta,
+  crearSolicitudReunion,
+  votar,
+  getEncuestaAbierta,
+  guardarTemaSesion,
+} from '@/lib/portal-data';
 
 async function requireStudent() {
   const session = await getSession();
@@ -56,5 +62,21 @@ export async function votarEncuesta(optionId: string) {
 
   await votar(encuesta.id, session.sid, optionId);
   revalidatePath('/portal/clases');
+  return {};
+}
+
+/**
+ * El estudiante propone qué quiere tratar en una de sus 1:1.
+ * El guardado filtra por student_id además de por sesión: sin eso,
+ * cualquiera con un id de sesión ajeno podría escribir en la agenda de otro.
+ */
+export async function guardarTema(sessionId: string, tema: string) {
+  const session = await requireStudent();
+  const limpio = tema.trim().slice(0, 1000);
+
+  const ok = await guardarTemaSesion(sessionId, session.sid, limpio);
+  if (!ok) return { error: 'Esa sesión no es tuya.' };
+
+  revalidatePath('/portal/perfil');
   return {};
 }

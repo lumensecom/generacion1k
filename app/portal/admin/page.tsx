@@ -18,6 +18,7 @@ import {
   getClases,
   getEncuestaAbierta,
   getVotos,
+  getProximasSesiones,
 } from '@/lib/portal-data';
 import { AyudaAdmin } from '@/components/portal/admin/AyudaAdmin';
 import { ClasesAdmin } from '@/components/portal/admin/ClasesAdmin';
@@ -27,7 +28,7 @@ export const metadata = { title: 'Admin | Portal Generación 1K' };
 
 export default async function AdminPage() {
   const session = await requireSession();
-  const [summary, students, modules, accessCode, isActive, generation, preguntas, reuniones, clases, encuesta] =
+  const [summary, students, modules, accessCode, isActive, generation, preguntas, reuniones, clases, encuesta, proximasSesiones] =
     await Promise.all([
       getAdminSummary(),
       getAllStudents(),
@@ -39,6 +40,7 @@ export default async function AdminPage() {
       getReunionesConEstudiante(),
       getClases(),
       getEncuestaAbierta(),
+      getProximasSesiones(),
     ]);
 
   const votos = encuesta ? await getVotos(encuesta.id) : [];
@@ -67,6 +69,47 @@ export default async function AdminPage() {
             {summary.mostViewedModule?.title ?? 'Sin datos aún'}
           </p>
           <p className="mt-1 text-xs text-text-muted">Módulo más visto</p>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="mb-4 font-display text-base font-extrabold">Próximas sesiones 1:1</h3>
+        <div className="space-y-2">
+          {proximasSesiones.length === 0 && (
+            <p className="text-sm text-text-secondary">No hay sesiones agendadas.</p>
+          )}
+          {proximasSesiones.map((s) => (
+            <Link
+              key={s.id}
+              href={`/portal/admin/estudiantes/${s.student_id}`}
+              className="flex items-center justify-between gap-4 rounded-xl border border-border bg-bg-card px-5 py-3 hover:border-brand-purple/40"
+            >
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-semibold">
+                  {s.student?.full_name ?? 'Estudiante'}
+                  <span className="ml-2 font-normal text-text-muted">
+                    · {s.title?.trim() || `Sesión ${s.session_number}`}
+                  </span>
+                </span>
+                {s.student_topic && (
+                  <span className="mt-0.5 block truncate text-xs text-brand-purpleLight">
+                    Pidió: {s.student_topic}
+                  </span>
+                )}
+              </span>
+              <span className="shrink-0 font-mono text-xs text-text-secondary">
+                {s.scheduled_at
+                  ? new Date(s.scheduled_at).toLocaleString('es-CO', {
+                      weekday: 'short',
+                      day: 'numeric',
+                      month: 'short',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })
+                  : 'sin fecha'}
+              </span>
+            </Link>
+          ))}
         </div>
       </div>
 

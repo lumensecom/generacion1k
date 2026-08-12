@@ -17,6 +17,7 @@ import type {
   SessionPoll,
   SessionPollVote,
   OpcionEncuesta,
+  OneOnOneSession,
 } from '@/lib/types';
 
 // Capa de acceso a datos. Todo corre en el servidor con la service_role key
@@ -497,4 +498,118 @@ export async function crearEncuesta(question: string, opciones: OpcionEncuesta[]
 
 export async function cerrarEncuesta(id: string): Promise<void> {
   await supabaseAdmin().from('session_polls').update({ is_open: false }).eq('id', id);
+}
+
+// ============================================================
+// Cronograma de sesiones 1:1
+// ============================================================
+
+export async function getSesionesDeEstudiante(studentId: string): Promise<OneOnOneSession[]> {
+  const { data } = await supabaseAdmin()
+    .from('one_on_one_sessions')
+    .select('*')
+    .eq('student_id', studentId)
+    .order('session_number', { ascending: true });
+  return (data as unknown as OneOnOneSession[]) ?? [];
+}
+
+/** Agenda de Juan: las próximas sesiones de todos, con el estudiante resuelto. */
+export async function getProximasSesiones(limite = 20): Promise<(OneOnOneSession & { student: Student | null })[]> {
+  const [sesiones, estudiantes] = await Promise.all([
+    supabaseAdmin()
+      .from('one_on_one_sessions')
+      .select('*')
+      .not('scheduled_at', 'is', null)
+      .gte('scheduled_at', new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString())
+      .in('status', ['pendiente', 'agendada'])
+      .order('scheduled_at', { ascending: true })
+      .limit(limite),
+    getAllStudents(),
+  ]);
+  const porId = new Map(estudiantes.map((s) => [s.id, s]));
+  return ((sesiones.data as unknown as OneOnOneSession[]) ?? []).map((s) => ({
+    ...s,
+    student: porId.get(s.student_id) ?? null,
+  }));
+}
+
+/**
+ * Crea las filas que falten hasta `total`, una por semana desde `desde`.
+ *
+ * Es idempotente: las sesiones que ya existen no se tocan (de ahí el
+ * onConflict con ignoreDuplicates). Así se puede volver a pulsar "generar"
+ * después de ampliar el plan sin machacar lo ya agendado.
+ */
+export async function generarCronograma(
+  studentId: string,
+  total: number,
+  desde: Date,
+  duracionMinutos = 60
+): Promise<void> {
+  const existentes = await getSesionesDeEstudiante(studentId);
+  const ocupados = new Set(existentes.map((s) => s.session_number));
+
+  const filas = [];
+  for (let n = 1; n <= total; n++) {
+    if (ocupados.has(n)) continue;
+    const fecha = new Date(desde);
+    fecha.setDate(fecha.getDate() + (n - 1) * 7);
+    filas.push({
+      student_id: studentId,
+      session_number: n,
+      scheduled_at: fecha.toISOString(),
+      duration_minutes: duracionMinutos,
+      status: 'agendada',
+    });
+  }
+  if (filas.length === 0) return;
+
+  await supabaseAdmin()
+    .from('one_on_one_sessions')
+    .upsert(filas, { onConflict: 'student_id,session_number', ignoreDuplicates: true });
+}
+
+export async function actualizarSesion(id: string, cambios: Partial<OneOnOneSession>): Promise<void> {
+  await supabaseAdmin().from('one_on_one_sessions').update(cambios).eq('id', id);
+}
+
+export async function borrarSesion(id: string): Promise<void> {
+  await supabaseAdmin().from('one_on_one_sessions').delete().eq('id', id);
+}
+
+/** El estudiante solo puede tocar su propio tema, y solo de su sesión. */
+export async function guardarTemaSesion(sessionId: string, studentId: string, tema: string): Promise<boolean> {
+  const { data } = await supabaseAdmin()
+    .from('one_on_one_sessions')
+    .update({ student_topic: tema || null })
+    .eq('id', sessionId)
+    .eq('student_id', studentId)
+    .select('id');
+  return (data?.length ?? 0) > 0;
+}
+
+export async function actualizarPlanYPagos(
+  studentId: string,
+  cambios: {
+    plan: string | null;
+    planStartedAt: string | null;
+    sessionsTotal: number | null;
+    amountTotalCents: number;
+    amountPaidCents: number;
+    currency: string;
+    paymentNotes: string | null;
+  }
+): Promise<void> {
+  await supabaseAdmin()
+    .from('students')
+    .update({
+      plan: cambios.plan,
+      plan_started_at: cambios.planStartedAt,
+      sessions_total: cambios.sessionsTotal,
+      amount_total_cents: cambios.amountTotalCents,
+      amount_paid_cents: cambios.amountPaidCents,
+      currency: cambios.currency,
+      payment_notes: cambios.paymentNotes,
+    })
+    .eq('id', studentId);
 }

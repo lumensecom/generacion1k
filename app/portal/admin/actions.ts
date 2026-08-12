@@ -14,10 +14,15 @@ import {
   borrarClase,
   crearEncuesta,
   cerrarEncuesta,
+  actualizarPlanYPagos,
+  generarCronograma,
+  actualizarSesion,
+  borrarSesion,
 } from '@/lib/portal-data';
+import { aCentavos } from '@/lib/planes';
 import { hashPassword, generarPassword, MIN_PASSWORD } from '@/lib/password';
 import { tieneVideo } from '@/lib/video';
-import type { MeetingRequest } from '@/lib/types';
+import type { MeetingRequest, OneOnOneSession } from '@/lib/types';
 
 async function requireAdmin() {
   const session = await getSession();
@@ -316,5 +321,101 @@ export async function updateModuleVideoUrl(moduleId: string, videoUrl: string) {
   await supabaseAdmin().from('modules').update({ video_url: url || null }).eq('id', moduleId);
   revalidatePath('/portal/admin');
   revalidatePath('/portal/modulos');
+  return {};
+}
+
+// ============================================================
+// Plan, pagos y cronograma de 1:1
+// ============================================================
+
+export async function guardarPlanYPagos(formData: FormData) {
+  await requireAdmin();
+  const studentId = String(formData.get('studentId') ?? '');
+  if (!studentId) return { error: 'Falta el estudiante.' };
+
+  const planId = String(formData.get('plan') ?? '').trim();
+  const total = aCentavos(String(formData.get('amountTotal') ?? '0'));
+  const pagado = aCentavos(String(formData.get('amountPaid') ?? '0'));
+  if (total === null || pagado === null) return { error: 'Los importes deben ser números.' };
+
+  const sesionesTexto = String(formData.get('sessionsTotal') ?? '').trim();
+  const sesiones = sesionesTexto ? Number(sesionesTexto) : null;
+  if (sesiones !== null && (!Number.isInteger(sesiones) || sesiones < 1 || sesiones > 100)) {
+    return { error: 'Las sesiones deben ser un número entre 1 y 100.' };
+  }
+
+  await actualizarPlanYPagos(studentId, {
+    plan: planId === 'start' || planId === 'growth' ? planId : null,
+    planStartedAt: String(formData.get('planStartedAt') ?? '').trim() || null,
+    sessionsTotal: sesiones,
+    amountTotalCents: total,
+    amountPaidCents: pagado,
+    currency: String(formData.get('currency') ?? 'USD').trim().toUpperCase().slice(0, 3) || 'USD',
+    paymentNotes: String(formData.get('paymentNotes') ?? '').trim() || null,
+  });
+
+  revalidatePath('/portal/admin');
+  revalidatePath('/portal/perfil');
+  return {};
+}
+
+/** Crea de una vez las sesiones que falten, una por semana. */
+export async function generarCronogramaAdmin(formData: FormData) {
+  await requireAdmin();
+  const studentId = String(formData.get('studentId') ?? '');
+  const desdeTexto = String(formData.get('desde') ?? '').trim();
+  const total = Number(formData.get('total') ?? 0);
+  const duracion = Number(formData.get('duracion') ?? 60);
+
+  if (!studentId) return { error: 'Falta el estudiante.' };
+  if (!desdeTexto) return { error: 'Elige la fecha y hora de la primera sesión.' };
+  if (!Number.isInteger(total) || total < 1 || total > 100) {
+    return { error: 'El número de sesiones debe estar entre 1 y 100.' };
+  }
+
+  const desde = new Date(desdeTexto);
+  if (Number.isNaN(desde.getTime())) return { error: 'Esa fecha no es válida.' };
+
+  await generarCronograma(studentId, total, desde, Number.isFinite(duracion) ? duracion : 60);
+  revalidatePath('/portal/admin');
+  revalidatePath('/portal/perfil');
+  return {};
+}
+
+export async function guardarSesionAdmin(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get('id') ?? '');
+  if (!id) return { error: 'Falta la sesión.' };
+
+  const scheduledAt = String(formData.get('scheduledAt') ?? '').trim();
+  const recordingUrl = String(formData.get('recordingUrl') ?? '').trim();
+  if (recordingUrl && !tieneVideo(recordingUrl)) {
+    return { error: 'Esa URL de grabación no se reconoce. Pega el enlace de Cloudinary.' };
+  }
+
+  const duracion = Number(formData.get('durationMinutes') ?? 60);
+
+  await actualizarSesion(id, {
+    title: String(formData.get('title') ?? '').trim() || null,
+    // datetime-local entrega hora local sin zona; se pasa a ISO para que la
+    // base guarde siempre UTC y el calendario no se desplace.
+    scheduled_at: scheduledAt ? new Date(scheduledAt).toISOString() : null,
+    duration_minutes: Number.isFinite(duracion) && duracion > 0 ? duracion : 60,
+    meet_url: String(formData.get('meetUrl') ?? '').trim() || null,
+    status: String(formData.get('status') ?? 'pendiente') as OneOnOneSession['status'],
+    admin_notes: String(formData.get('adminNotes') ?? '').trim() || null,
+    recording_url: recordingUrl || null,
+  });
+
+  revalidatePath('/portal/admin');
+  revalidatePath('/portal/perfil');
+  return {};
+}
+
+export async function borrarSesionAdmin(id: string) {
+  await requireAdmin();
+  await borrarSesion(id);
+  revalidatePath('/portal/admin');
+  revalidatePath('/portal/perfil');
   return {};
 }

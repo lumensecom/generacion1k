@@ -15,7 +15,9 @@ import {
   computeProgressStats,
   getStudentActivity,
   getTestAttempts,
+  getSesionesDeEstudiante,
 } from '@/lib/portal-data';
+import { PlanPagosAdmin } from '@/components/portal/admin/PlanPagosAdmin';
 
 export const metadata = { title: 'Perfil de estudiante | Admin' };
 
@@ -55,13 +57,14 @@ function answerLabel(question: { type: string; options?: string[] }, value: Test
 
 export default async function AdminStudentDetailPage({ params }: { params: { id: string } }) {
   const session = await requireSession();
-  const [student, intake, modules, progress, activity, testAttempts] = await Promise.all([
+  const [student, intake, modules, progress, activity, testAttempts, sesiones] = await Promise.all([
     getStudentById(params.id),
     getStudentIntake(params.id),
     getModules(),
     getStudentProgress(params.id),
     getStudentActivity(params.id),
     getTestAttempts(params.id),
+    getSesionesDeEstudiante(params.id),
   ]);
 
   if (!student) notFound();
@@ -224,6 +227,11 @@ export default async function AdminStudentDetailPage({ params }: { params: { id:
           </div>
         </section>
       )}
+
+      <section className="mb-12">
+        <h2 className="mb-4 font-display text-lg font-extrabold">Plan, pagos y cronograma</h2>
+        <PlanPagosAdmin student={student} sesiones={sesiones} />
+      </section>
 
       <section>
         <h2 className="mb-4 font-display text-lg font-extrabold">Actividad reciente</h2>
