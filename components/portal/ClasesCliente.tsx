@@ -45,7 +45,7 @@ export function ClasesCliente({
 
   return (
     <div className="space-y-10">
-      {encuesta && <Encuesta encuesta={encuesta} conteos={conteos} miVoto={miVoto} />}
+      {encuesta && <EncuestaDia encuesta={encuesta} conteos={conteos} miVoto={miVoto} />}
 
       <section>
         <h2 className="mb-5 font-display text-xl font-extrabold tracking-tight">Próximas clases</h2>
@@ -189,7 +189,7 @@ function TarjetaClase({ clase }: { clase: GroupSession }) {
   );
 }
 
-function Encuesta({
+export function EncuestaDia({
   encuesta,
   conteos,
   miVoto,

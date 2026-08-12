@@ -11,7 +11,7 @@ const links = [
   { href: '/portal/inicio', label: 'Inicio', icon: LayoutDashboard },
   { href: '/portal/modulos', label: 'Módulos', icon: BookOpen },
   { href: '/portal/mi-progreso', label: 'Mi progreso', icon: TrendingUp },
-  { href: '/portal/clases', label: 'Clase grupal', icon: CalendarDays },
+  { href: '/portal/agenda', label: 'Agenda', icon: CalendarDays },
   { href: '/portal/ayuda', label: 'Ayuda', icon: LifeBuoy },
   { href: '/portal/mentores', label: 'Aliado', icon: Users },
   { href: '/portal/perfil', label: 'Perfil', icon: UserCircle },

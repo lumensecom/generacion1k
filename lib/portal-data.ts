@@ -534,39 +534,80 @@ export async function getProximasSesiones(limite = 20): Promise<(OneOnOneSession
 }
 
 /**
- * Crea las filas que falten hasta `total`, una por semana desde `desde`.
+ * Crea las sesiones que falten repitiendo uno o dos horarios cada semana.
  *
- * Es idempotente: las sesiones que ya existen no se tocan (de ahí el
- * onConflict con ignoreDuplicates). Así se puede volver a pulsar "generar"
- * después de ampliar el plan sin machacar lo ya agendado.
+ * `anclas` son las fechas/horas de la PRIMERA semana (p. ej. lunes 7pm y
+ * jueves 7pm). A partir de ahí cada una se repite sumando 7 días, y las
+ * sesiones quedan numeradas en orden cronológico real.
+ *
+ * Es idempotente: las que ya existen no se tocan (de ahí ignoreDuplicates
+ * sobre el unique). Así se puede volver a pulsar "completar" tras ampliar el
+ * plan sin machacar lo ya agendado.
  */
 export async function generarCronograma(
   studentId: string,
   total: number,
-  desde: Date,
-  duracionMinutos = 60
+  anclas: Date[],
+  duracionMinutos = 90
 ): Promise<void> {
+  if (anclas.length === 0 || total < 1) return;
+
   const existentes = await getSesionesDeEstudiante(studentId);
   const ocupados = new Set(existentes.map((s) => s.session_number));
 
-  const filas = [];
-  for (let n = 1; n <= total; n++) {
-    if (ocupados.has(n)) continue;
-    const fecha = new Date(desde);
-    fecha.setDate(fecha.getDate() + (n - 1) * 7);
-    filas.push({
-      student_id: studentId,
-      session_number: n,
-      scheduled_at: fecha.toISOString(),
-      duration_minutes: duracionMinutos,
-      status: 'agendada',
-    });
+  // Se generan las fechas semana a semana y luego se ordenan: si el segundo
+  // horario cae antes que el primero en la semana (jueves y luego lunes),
+  // la numeración seguiría siendo cronológica.
+  const fechas: Date[] = [];
+  for (let semana = 0; fechas.length < total; semana++) {
+    for (const ancla of anclas) {
+      const f = new Date(ancla);
+      f.setDate(f.getDate() + semana * 7);
+      fechas.push(f);
+    }
+    if (semana > 200) break; // red de seguridad, nunca debería llegar
   }
+  fechas.sort((a, b) => a.getTime() - b.getTime());
+
+  const filas = fechas.slice(0, total).flatMap((fecha, i) => {
+    const n = i + 1;
+    if (ocupados.has(n)) return [];
+    return [
+      {
+        student_id: studentId,
+        session_number: n,
+        scheduled_at: fecha.toISOString(),
+        duration_minutes: duracionMinutos,
+        status: 'agendada',
+      },
+    ];
+  });
   if (filas.length === 0) return;
 
   await supabaseAdmin()
     .from('one_on_one_sessions')
     .upsert(filas, { onConflict: 'student_id,session_number', ignoreDuplicates: true });
+}
+
+/** Crea N clases grupales semanales desde una fecha. */
+export async function generarClasesSemanales(input: {
+  titulo: string;
+  desde: Date;
+  semanas: number;
+  duracionMinutos: number;
+  meetUrl: string | null;
+}): Promise<void> {
+  const filas = Array.from({ length: input.semanas }, (_, i) => {
+    const f = new Date(input.desde);
+    f.setDate(f.getDate() + i * 7);
+    return {
+      title: `${input.titulo} ${i + 1}`,
+      scheduled_at: f.toISOString(),
+      duration_minutes: input.duracionMinutos,
+      meet_url: input.meetUrl,
+    };
+  });
+  if (filas.length > 0) await supabaseAdmin().from('group_sessions').insert(filas);
 }
 
 export async function actualizarSesion(id: string, cambios: Partial<OneOnOneSession>): Promise<void> {

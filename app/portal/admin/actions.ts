@@ -16,6 +16,7 @@ import {
   cerrarEncuesta,
   actualizarPlanYPagos,
   generarCronograma,
+  generarClasesSemanales,
   actualizarSesion,
   borrarSesion,
 } from '@/lib/portal-data';
@@ -359,26 +360,74 @@ export async function guardarPlanYPagos(formData: FormData) {
   return {};
 }
 
-/** Crea de una vez las sesiones que falten, una por semana. */
+/**
+ * Crea de una vez las sesiones que falten, repitiendo uno o dos horarios
+ * cada semana. El segundo horario es opcional: con uno solo se comporta
+ * como antes.
+ */
 export async function generarCronogramaAdmin(formData: FormData) {
   await requireAdmin();
   const studentId = String(formData.get('studentId') ?? '');
-  const desdeTexto = String(formData.get('desde') ?? '').trim();
   const total = Number(formData.get('total') ?? 0);
-  const duracion = Number(formData.get('duracion') ?? 60);
+  const duracion = Number(formData.get('duracion') ?? 90);
 
   if (!studentId) return { error: 'Falta el estudiante.' };
-  if (!desdeTexto) return { error: 'Elige la fecha y hora de la primera sesión.' };
   if (!Number.isInteger(total) || total < 1 || total > 100) {
     return { error: 'El número de sesiones debe estar entre 1 y 100.' };
   }
 
+  const anclas: Date[] = [];
+  for (const campo of ['slot1', 'slot2']) {
+    const texto = String(formData.get(campo) ?? '').trim();
+    if (!texto) continue;
+    const d = new Date(texto);
+    if (Number.isNaN(d.getTime())) return { error: 'Alguna de las fechas no es válida.' };
+    anclas.push(d);
+  }
+  if (anclas.length === 0) return { error: 'Elige al menos el primer horario de la semana.' };
+
+  // Dos anclas en el mismo instante generarían dos sesiones superpuestas.
+  if (anclas.length === 2 && anclas[0].getTime() === anclas[1].getTime()) {
+    return { error: 'Los dos horarios son el mismo. Cambia el segundo o déjalo vacío.' };
+  }
+  // Más de 7 días entre anclas rompe la idea de "dos veces por semana".
+  if (anclas.length === 2 && Math.abs(anclas[0].getTime() - anclas[1].getTime()) >= 7 * 864e5) {
+    return { error: 'Los dos horarios deben estar dentro de la misma semana.' };
+  }
+
+  await generarCronograma(studentId, total, anclas, Number.isFinite(duracion) ? duracion : 90);
+  revalidatePath('/portal/admin');
+  revalidatePath('/portal/agenda');
+  revalidatePath('/portal/perfil');
+  return {};
+}
+
+/** Crea las clases grupales de todo el trimestre de una sola vez. */
+export async function generarClasesAdmin(formData: FormData) {
+  await requireAdmin();
+  const titulo = String(formData.get('titulo') ?? '').trim() || 'Clase grupal';
+  const desdeTexto = String(formData.get('desde') ?? '').trim();
+  const semanas = Number(formData.get('semanas') ?? 12);
+  const duracion = Number(formData.get('duracion') ?? 90);
+  const meetUrl = String(formData.get('meetUrl') ?? '').trim();
+
+  if (!desdeTexto) return { error: 'Elige la fecha y hora de la primera clase.' };
   const desde = new Date(desdeTexto);
   if (Number.isNaN(desde.getTime())) return { error: 'Esa fecha no es válida.' };
+  if (!Number.isInteger(semanas) || semanas < 1 || semanas > 52) {
+    return { error: 'Las semanas deben estar entre 1 y 52.' };
+  }
 
-  await generarCronograma(studentId, total, desde, Number.isFinite(duracion) ? duracion : 60);
+  await generarClasesSemanales({
+    titulo,
+    desde,
+    semanas,
+    duracionMinutos: Number.isFinite(duracion) && duracion > 0 ? duracion : 90,
+    meetUrl: meetUrl || null,
+  });
   revalidatePath('/portal/admin');
-  revalidatePath('/portal/perfil');
+  revalidatePath('/portal/agenda');
+  revalidatePath('/portal/clases');
   return {};
 }
 

@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 import { CalendarPlus, Trash2, Check, BarChart3 } from 'lucide-react';
 import {
   crearClaseAdmin,
+  generarClasesAdmin,
   borrarClaseAdmin,
   guardarGrabacionClase,
   crearEncuestaAdmin,
@@ -34,6 +35,7 @@ export function ClasesAdmin({
 }) {
   return (
     <div className="space-y-10">
+      <GenerarClases />
       <NuevaClase />
       <Encuesta encuesta={encuesta} conteos={conteos} />
 
@@ -52,6 +54,108 @@ export function ClasesAdmin({
         )}
       </section>
     </div>
+  );
+}
+
+function GenerarClases() {
+  const [abierto, setAbierto] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, start] = useTransition();
+
+  function enviar(formData: FormData) {
+    setError(null);
+    start(async () => {
+      const r = await generarClasesAdmin(formData);
+      if (r?.error) return setError(r.error);
+      setAbierto(false);
+    });
+  }
+
+  if (!abierto) {
+    return (
+      <Button type="button" variant="subtle" onClick={() => setAbierto(true)}>
+        <CalendarPlus className="mr-2 h-4 w-4" /> Generar las clases del trimestre
+      </Button>
+    );
+  }
+
+  return (
+    <form action={enviar} className="rounded-2xl border border-brand-cyan/25 bg-brand-cyan/[0.05] p-6">
+      <h3 className="font-display text-base font-extrabold">Clases semanales de una vez</h3>
+      <p className="mt-1.5 text-[13px] text-text-muted">
+        Crea las clases de todo el trimestre repitiendo el mismo día y hora cada semana.
+        Después le pones la grabación a cada una.
+      </p>
+
+      <div className="mt-5 grid gap-4 sm:grid-cols-2">
+        <label className="block sm:col-span-2">
+          <span className="text-[12.5px] font-bold text-text-secondary">Título base</span>
+          <input
+            name="titulo"
+            defaultValue="Clase grupal · semana"
+            className="mt-1.5 w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-[14px] text-white outline-none focus:border-brand-purple/60"
+          />
+          <span className="mt-1 block text-[11.5px] text-text-muted">
+            Se le añade el número: &ldquo;Clase grupal · semana 1&rdquo;, &ldquo;… 2&rdquo;, etc.
+          </span>
+        </label>
+        <label className="block">
+          <span className="text-[12.5px] font-bold text-text-secondary">Primera clase</span>
+          <input
+            type="datetime-local"
+            name="desde"
+            required
+            className="mt-1.5 w-full rounded-xl border border-border bg-bg-secondary px-3 py-2.5 text-[14px] text-white outline-none focus:border-brand-purple/60"
+          />
+        </label>
+        <label className="block">
+          <span className="text-[12.5px] font-bold text-text-secondary">Cuántas semanas</span>
+          <input
+            type="number"
+            name="semanas"
+            min={1}
+            max={52}
+            defaultValue={12}
+            className="mt-1.5 w-full rounded-xl border border-border bg-bg-secondary px-3 py-2.5 text-[14px] text-white outline-none focus:border-brand-purple/60"
+          />
+        </label>
+        <label className="block">
+          <span className="text-[12.5px] font-bold text-text-secondary">Duración (min)</span>
+          <select
+            name="duracion"
+            defaultValue={90}
+            className="mt-1.5 w-full rounded-xl border border-border bg-bg-secondary px-3 py-2.5 text-[14px] text-white outline-none focus:border-brand-purple/60"
+          >
+            <option value={60}>60</option>
+            <option value={90}>90</option>
+            <option value={120}>120</option>
+          </select>
+        </label>
+        <label className="block">
+          <span className="text-[12.5px] font-bold text-text-secondary">Link de la videollamada</span>
+          <input
+            name="meetUrl"
+            placeholder="https://meet.google.com/..."
+            className="mt-1.5 w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 font-mono text-[12.5px] text-white outline-none placeholder:text-text-muted focus:border-brand-purple/60"
+          />
+        </label>
+      </div>
+
+      {error && (
+        <p className="mt-4 rounded-lg border border-brand-danger/30 bg-brand-danger/10 px-4 py-2.5 text-[13px] text-brand-danger">
+          {error}
+        </p>
+      )}
+
+      <div className="mt-5 flex flex-wrap gap-3">
+        <Button type="submit" disabled={pending}>
+          {pending ? 'Generando…' : 'Generar clases'}
+        </Button>
+        <Button type="button" variant="subtle" onClick={() => setAbierto(false)}>
+          Cancelar
+        </Button>
+      </div>
+    </form>
   );
 }
 

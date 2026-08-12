@@ -185,22 +185,33 @@ function GenerarCronograma({ student, yaHay }: { student: Student; yaHay: number
         <CalendarPlus className="h-4 w-4 text-brand-purpleLight" /> Generar cronograma semanal
       </h3>
       <p className="mt-1.5 text-[13px] text-text-muted">
-        Crea de una vez las {total || '—'} sesiones, una por semana desde la fecha que elijas.
-        Las que ya existen no se tocan, así que puedes volver a pulsarlo si amplías el plan.
+        Pon los horarios de la PRIMERA semana y se repiten cada 7 días. Deja el segundo
+        vacío si solo hay una 1:1 semanal. Las sesiones que ya existen no se tocan, así que
+        puedes volver a pulsarlo si amplías el plan.
       </p>
 
-      <div className="mt-5 grid gap-4 sm:grid-cols-3">
+      <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="text-[12.5px] font-bold text-text-secondary">Primera sesión</span>
-          <input type="datetime-local" name="desde" required className={campo} />
+          <span className="text-[12.5px] font-bold text-text-secondary">Primera 1:1 de la semana</span>
+          <input type="datetime-local" name="slot1" required className={campo} />
         </label>
         <label className="block">
-          <span className="text-[12.5px] font-bold text-text-secondary">Cuántas</span>
-          <input type="number" name="total" min={1} max={100} defaultValue={total || 12} className={campo} />
+          <span className="text-[12.5px] font-bold text-text-secondary">
+            Segunda 1:1 <span className="font-normal text-text-muted">(opcional)</span>
+          </span>
+          <input type="datetime-local" name="slot2" className={campo} />
+        </label>
+        <label className="block">
+          <span className="text-[12.5px] font-bold text-text-secondary">Total de sesiones</span>
+          <input type="number" name="total" min={1} max={100} defaultValue={total || 24} className={campo} />
         </label>
         <label className="block">
           <span className="text-[12.5px] font-bold text-text-secondary">Duración (min)</span>
-          <input type="number" name="duracion" min={15} max={240} defaultValue={60} className={campo} />
+          <select name="duracion" defaultValue={90} className={campo}>
+            <option value={60}>60</option>
+            <option value={90}>90</option>
+            <option value={120}>120</option>
+          </select>
         </label>
       </div>
 
