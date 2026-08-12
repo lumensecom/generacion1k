@@ -513,6 +513,15 @@ export async function getSesionesDeEstudiante(studentId: string): Promise<OneOnO
   return (data as unknown as OneOnOneSession[]) ?? [];
 }
 
+/** Todas las 1:1 del programa. Para la agenda de Juan, que filtra por estudiante. */
+export async function getTodasLasSesiones(): Promise<OneOnOneSession[]> {
+  const { data } = await supabaseAdmin()
+    .from('one_on_one_sessions')
+    .select('*')
+    .order('scheduled_at', { ascending: true });
+  return (data as unknown as OneOnOneSession[]) ?? [];
+}
+
 /** Agenda de Juan: las próximas sesiones de todos, con el estudiante resuelto. */
 export async function getProximasSesiones(limite = 20): Promise<(OneOnOneSession & { student: Student | null })[]> {
   const [sesiones, estudiantes] = await Promise.all([
@@ -534,59 +543,89 @@ export async function getProximasSesiones(limite = 20): Promise<(OneOnOneSession
 }
 
 /**
- * Crea las sesiones que falten repitiendo uno o dos horarios cada semana.
+ * Agenda las 1:1 de un estudiante a partir de una lista de fechas ya calculada.
  *
- * `anclas` son las fechas/horas de la PRIMERA semana (p. ej. lunes 7pm y
- * jueves 7pm). A partir de ahí cada una se repite sumando 7 días, y las
- * sesiones quedan numeradas en orden cronológico real.
+ * Dos reglas que importan:
  *
- * Es idempotente: las que ya existen no se tocan (de ahí ignoreDuplicates
- * sobre el unique). Así se puede volver a pulsar "completar" tras ampliar el
- * plan sin machacar lo ya agendado.
+ * - Lo que ya pasó no se toca nunca. Las fechas anteriores a ahora se
+ *   descartan y las sesiones marcadas como hechas sobreviven a cualquier
+ *   reprogramación: son el historial del acompañamiento.
+ * - `reemplazarFuturas` es lo que permite cambiar de horario a mitad del
+ *   plan. Sin él, agendar otra vez solo AÑADE lo que falte, que es lo que se
+ *   quiere al ampliar; con él, las futuras pendientes se borran y el patrón
+ *   nuevo manda.
+ *
+ * Las nuevas entran con números por encima del último ocupado y después se
+ * renumera todo en la base. La renumeración no es cosmética: sin ella, una
+ * sesión futura marcada como hecha (que sobrevive al reemplazo) se queda con
+ * un número menor que sesiones anteriores a ella, y el estudiante ve una
+ * "nº 3" después de la "nº 4". Probado.
  */
-export async function generarCronograma(
-  studentId: string,
-  total: number,
-  anclas: Date[],
-  duracionMinutos = 90
-): Promise<void> {
-  if (anclas.length === 0 || total < 1) return;
+export async function programarSesiones(input: {
+  studentId: string;
+  fechas: Date[];
+  duracionMinutos: number;
+  reemplazarFuturas: boolean;
+}): Promise<{ creadas: number; borradas: number; total: number }> {
+  const ahora = Date.now();
+  let borradas = 0;
 
-  const existentes = await getSesionesDeEstudiante(studentId);
-  const ocupados = new Set(existentes.map((s) => s.session_number));
-
-  // Se generan las fechas semana a semana y luego se ordenan: si el segundo
-  // horario cae antes que el primero en la semana (jueves y luego lunes),
-  // la numeración seguiría siendo cronológica.
-  const fechas: Date[] = [];
-  for (let semana = 0; fechas.length < total; semana++) {
-    for (const ancla of anclas) {
-      const f = new Date(ancla);
-      f.setDate(f.getDate() + semana * 7);
-      fechas.push(f);
-    }
-    if (semana > 200) break; // red de seguridad, nunca debería llegar
+  if (input.reemplazarFuturas) {
+    const { data } = await supabaseAdmin()
+      .from('one_on_one_sessions')
+      .delete()
+      .eq('student_id', input.studentId)
+      .neq('status', 'hecha')
+      .gte('scheduled_at', new Date(ahora).toISOString())
+      .select('id');
+    borradas = data?.length ?? 0;
   }
-  fechas.sort((a, b) => a.getTime() - b.getTime());
 
-  const filas = fechas.slice(0, total).flatMap((fecha, i) => {
-    const n = i + 1;
-    if (ocupados.has(n)) return [];
-    return [
-      {
-        student_id: studentId,
-        session_number: n,
-        scheduled_at: fecha.toISOString(),
-        duration_minutes: duracionMinutos,
-        status: 'agendada',
-      },
-    ];
-  });
-  if (filas.length === 0) return;
+  const existentes = await getSesionesDeEstudiante(input.studentId);
+  const ocupados = new Set(
+    existentes.map((s) => (s.scheduled_at ? new Date(s.scheduled_at).getTime() : 0))
+  );
+  const ultimoNumero = existentes.reduce((max, s) => Math.max(max, s.session_number), 0);
 
-  await supabaseAdmin()
-    .from('one_on_one_sessions')
-    .upsert(filas, { onConflict: 'student_id,session_number', ignoreDuplicates: true });
+  const nuevas = input.fechas
+    .filter((f) => f.getTime() > ahora && !ocupados.has(f.getTime()))
+    .sort((a, b) => a.getTime() - b.getTime());
+
+  if (nuevas.length > 0) {
+    await supabaseAdmin()
+      .from('one_on_one_sessions')
+      .insert(
+        nuevas.map((fecha, i) => ({
+          student_id: input.studentId,
+          session_number: ultimoNumero + i + 1,
+          scheduled_at: fecha.toISOString(),
+          duration_minutes: input.duracionMinutos,
+          status: 'agendada',
+        }))
+      );
+  }
+
+  const total = existentes.length + nuevas.length;
+  await Promise.all([
+    renumerarSesiones(input.studentId),
+    // El perfil muestra "hechas / total", así que el total tiene que seguir a
+    // lo que de verdad hay agendado y no al valor por defecto del plan.
+    supabaseAdmin().from('students').update({ sessions_total: total }).eq('id', input.studentId),
+  ]);
+
+  return { creadas: nuevas.length, borradas, total };
+}
+
+/**
+ * Deja los session_number de un estudiante en orden de fecha.
+ *
+ * Va por función de Postgres porque renumerar desde aquí sería un update por
+ * fila y, en cuanto dos sesiones se cruzan, el unique de (student_id,
+ * session_number) rechaza el paso intermedio. La función aplaza esa
+ * restricción y lo hace todo en una sentencia.
+ */
+export async function renumerarSesiones(studentId: string): Promise<void> {
+  await supabaseAdmin().rpc('renumerar_sesiones', { p_student: studentId });
 }
 
 /** Crea N clases grupales semanales desde una fecha. */
@@ -610,12 +649,28 @@ export async function generarClasesSemanales(input: {
   if (filas.length > 0) await supabaseAdmin().from('group_sessions').insert(filas);
 }
 
-export async function actualizarSesion(id: string, cambios: Partial<OneOnOneSession>): Promise<void> {
-  await supabaseAdmin().from('one_on_one_sessions').update(cambios).eq('id', id);
+/** Devuelve el estudiante de la sesión, que hace falta para renumerar. */
+export async function actualizarSesion(
+  id: string,
+  cambios: Partial<OneOnOneSession>
+): Promise<string | null> {
+  const { data } = await supabaseAdmin()
+    .from('one_on_one_sessions')
+    .update(cambios)
+    .eq('id', id)
+    .select('student_id')
+    .maybeSingle();
+  return (data as { student_id: string } | null)?.student_id ?? null;
 }
 
-export async function borrarSesion(id: string): Promise<void> {
-  await supabaseAdmin().from('one_on_one_sessions').delete().eq('id', id);
+export async function borrarSesion(id: string): Promise<string | null> {
+  const { data } = await supabaseAdmin()
+    .from('one_on_one_sessions')
+    .delete()
+    .eq('id', id)
+    .select('student_id')
+    .maybeSingle();
+  return (data as { student_id: string } | null)?.student_id ?? null;
 }
 
 /** El estudiante solo puede tocar su propio tema, y solo de su sesión. */

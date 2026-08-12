@@ -2,9 +2,12 @@ import { requireSession } from '@/app/portal/actions';
 import { PortalShell } from '@/components/portal/PortalShell';
 import { AnimatedDivider } from '@/components/animated/AnimatedDivider';
 import { Agenda } from '@/components/portal/Agenda';
+import { AgendaAdmin } from '@/components/portal/admin/AgendaAdmin';
 import { EncuestaDia } from '@/components/portal/ClasesCliente';
 import {
   getSesionesDeEstudiante,
+  getTodasLasSesiones,
+  getAllStudents,
   getClases,
   getEncuestaAbierta,
   getVotos,
@@ -15,8 +18,14 @@ export const metadata = { title: 'Mi agenda | Portal Generación 1K' };
 
 export default async function AgendaPage() {
   const session = await requireSession();
-  const [sesiones, clases, encuesta] = await Promise.all([
-    getSesionesDeEstudiante(session.sid),
+  const esAdmin = session.role === 'admin';
+
+  // Juan ve el calendario de cualquier estudiante y agenda desde aquí; el
+  // estudiante solo ve el suyo. Son dos cargas distintas de datos, así que
+  // se resuelve antes de pedir nada.
+  const [sesiones, estudiantes, clases, encuesta] = await Promise.all([
+    esAdmin ? getTodasLasSesiones() : getSesionesDeEstudiante(session.sid),
+    esAdmin ? getAllStudents() : Promise.resolve([]),
     getClases(true),
     getEncuestaAbierta(),
   ]);
@@ -26,7 +35,7 @@ export default async function AgendaPage() {
   for (const v of votos) conteos[v.option_id] = (conteos[v.option_id] ?? 0) + 1;
   const miVoto = votos.find((v) => v.student_id === session.sid)?.option_id ?? null;
 
-  const eventos = construirAgenda(sesiones, clases);
+  const eventos = esAdmin ? [] : construirAgenda(sesiones, clases);
   const hechas = sesiones.filter((s) => s.status === 'hecha').length;
 
   return (
@@ -36,25 +45,39 @@ export default async function AgendaPage() {
           Agendamiento
         </span>
         <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Mi <span className="accent-text">agenda</span>
+          {esAdmin ? (
+            <>
+              Agenda de <span className="accent-text">tus estudiantes</span>
+            </>
+          ) : (
+            <>
+              Mi <span className="accent-text">agenda</span>
+            </>
+          )}
         </h1>
         <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
-          Tres encuentros por semana: dos sesiones 1:1 contigo y una clase grupal con el resto.
-          Toca cualquiera para ver el detalle, entrar y proponer qué quieres tratar.
+          {esAdmin
+            ? 'Elige al estudiante, pon el día y la hora de cada 1:1 de la semana y se repite durante todo el plan. La clase grupal va aparte y le aparece a todos.'
+            : 'Tres sesiones 1:1 por semana conmigo, más la clase grupal con el resto. Toca cualquiera para ver el detalle, entrar y proponer qué quieres tratar.'}
         </p>
         <AnimatedDivider className="mt-4" />
       </div>
 
-      {sesiones.length > 0 && (
-        <p className="mb-5 text-[13.5px] text-text-secondary">
-          <span className="font-mono text-[16px] font-medium text-white">
-            {hechas}/{sesiones.length}
-          </span>{' '}
-          sesiones 1:1 completadas
-        </p>
+      {esAdmin ? (
+        <AgendaAdmin estudiantes={estudiantes} sesiones={sesiones} clases={clases} />
+      ) : (
+        <>
+          {sesiones.length > 0 && (
+            <p className="mb-5 text-[13.5px] text-text-secondary">
+              <span className="font-mono text-[16px] font-medium text-white">
+                {hechas}/{sesiones.length}
+              </span>{' '}
+              sesiones 1:1 completadas
+            </p>
+          )}
+          <Agenda eventos={eventos} />
+        </>
       )}
-
-      <Agenda eventos={eventos} />
 
       {encuesta && (
         <div className="mt-10">

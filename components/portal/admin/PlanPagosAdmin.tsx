@@ -1,13 +1,9 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Check, CalendarPlus, Trash2, Wallet } from 'lucide-react';
-import {
-  guardarPlanYPagos,
-  generarCronogramaAdmin,
-  guardarSesionAdmin,
-  borrarSesionAdmin,
-} from '@/app/portal/admin/actions';
+import Link from 'next/link';
+import { Check, CalendarPlus, Trash2, Wallet, ArrowRight } from 'lucide-react';
+import { guardarPlanYPagos, guardarSesionAdmin, borrarSesionAdmin } from '@/app/portal/admin/actions';
 import { LISTA_PLANES, plan as buscarPlan, sesionesDelEstudiante, formatearDinero } from '@/lib/planes';
 import { Button } from '@/components/ui/button';
 import type { Student, OneOnOneSession } from '@/lib/types';
@@ -32,7 +28,7 @@ export function PlanPagosAdmin({
   return (
     <div className="space-y-8">
       <FormPlan student={student} />
-      <GenerarCronograma student={student} yaHay={sesiones.length} />
+      <AvisoAgenda />
       <ListaSesiones sesiones={sesiones} />
     </div>
   );
@@ -165,66 +161,24 @@ function FormPlan({ student }: { student: Student }) {
   );
 }
 
-function GenerarCronograma({ student, yaHay }: { student: Student; yaHay: number }) {
-  const [error, setError] = useState<string | null>(null);
-  const [pending, start] = useTransition();
-  const total = sesionesDelEstudiante(student.plan, student.sessions_total);
-
-  function enviar(formData: FormData) {
-    setError(null);
-    formData.set('studentId', student.id);
-    start(async () => {
-      const r = await generarCronogramaAdmin(formData);
-      if (r?.error) setError(r.error);
-    });
-  }
-
+// Agendar vive en un solo sitio: la Agenda. Aquí solo se ajusta lo que ya
+// existe, sesión por sesión (título, enlace, notas, estado).
+function AvisoAgenda() {
   return (
-    <form action={enviar} className="rounded-2xl border border-brand-purple/25 bg-brand-purple/[0.05] p-6">
-      <h3 className="flex items-center gap-2 font-display text-base font-extrabold">
-        <CalendarPlus className="h-4 w-4 text-brand-purpleLight" /> Generar cronograma semanal
-      </h3>
-      <p className="mt-1.5 text-[13px] text-text-muted">
-        Pon los horarios de la PRIMERA semana y se repiten cada 7 días. Deja el segundo
-        vacío si solo hay una 1:1 semanal. Las sesiones que ya existen no se tocan, así que
-        puedes volver a pulsarlo si amplías el plan.
-      </p>
-
-      <div className="mt-5 grid gap-4 sm:grid-cols-2">
-        <label className="block">
-          <span className="text-[12.5px] font-bold text-text-secondary">Primera 1:1 de la semana</span>
-          <input type="datetime-local" name="slot1" required className={campo} />
-        </label>
-        <label className="block">
-          <span className="text-[12.5px] font-bold text-text-secondary">
-            Segunda 1:1 <span className="font-normal text-text-muted">(opcional)</span>
-          </span>
-          <input type="datetime-local" name="slot2" className={campo} />
-        </label>
-        <label className="block">
-          <span className="text-[12.5px] font-bold text-text-secondary">Total de sesiones</span>
-          <input type="number" name="total" min={1} max={100} defaultValue={total || 24} className={campo} />
-        </label>
-        <label className="block">
-          <span className="text-[12.5px] font-bold text-text-secondary">Duración (min)</span>
-          <select name="duracion" defaultValue={90} className={campo}>
-            <option value={60}>60</option>
-            <option value={90}>90</option>
-            <option value={120}>120</option>
-          </select>
-        </label>
-      </div>
-
-      {error && (
-        <p className="mt-4 rounded-lg border border-brand-danger/30 bg-brand-danger/10 px-4 py-2.5 text-[13px] text-brand-danger">
-          {error}
-        </p>
-      )}
-
-      <Button type="submit" className="mt-5" disabled={pending}>
-        {pending ? 'Generando…' : yaHay > 0 ? 'Completar cronograma' : 'Generar cronograma'}
-      </Button>
-    </form>
+    <Link
+      href="/portal/agenda"
+      className="flex items-center gap-3 rounded-2xl border border-brand-purple/25 bg-brand-purple/[0.05] p-5 transition-colors hover:border-brand-purple/50"
+    >
+      <CalendarPlus className="h-5 w-5 shrink-0 text-brand-purpleLight" />
+      <span className="min-w-0 flex-1">
+        <span className="block font-display text-[14px] font-extrabold">Agendar las 1:1</span>
+        <span className="mt-0.5 block text-[12.5px] leading-relaxed text-text-muted">
+          Se hace desde la Agenda: eliges al estudiante, el día y la hora de cada sesión de la
+          semana, y se repite durante todo el plan.
+        </span>
+      </span>
+      <ArrowRight className="h-4 w-4 shrink-0 text-text-muted" />
+    </Link>
   );
 }
 

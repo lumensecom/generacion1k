@@ -732,6 +732,7 @@ export type Database = {
         Returns: undefined;
       };
       deduct_credit: { Args: { user_id: string }; Returns: undefined };
+      renumerar_sesiones: { Args: { p_student: string }; Returns: undefined };
     };
     Enums: {
       [_ in never]: never;

@@ -15,12 +15,20 @@ import {
   crearEncuesta,
   cerrarEncuesta,
   actualizarPlanYPagos,
-  generarCronograma,
+  programarSesiones,
+  renumerarSesiones,
   generarClasesSemanales,
   actualizarSesion,
   borrarSesion,
 } from '@/lib/portal-data';
 import { aCentavos } from '@/lib/planes';
+import {
+  type Franja,
+  fechaDesdeInput,
+  fechasDelPatron,
+  franjaValida,
+  claveFranja,
+} from '@/lib/agenda';
 import { hashPassword, generarPassword, MIN_PASSWORD } from '@/lib/password';
 import { tieneVideo } from '@/lib/video';
 import type { MeetingRequest, OneOnOneSession } from '@/lib/types';
@@ -360,46 +368,69 @@ export async function guardarPlanYPagos(formData: FormData) {
   return {};
 }
 
+/** Tope de sesiones por tanda: 7 franjas × 52 semanas ya es absurdo. */
+const MAX_SESIONES = 200;
+
 /**
- * Crea de una vez las sesiones que falten, repitiendo uno o dos horarios
- * cada semana. El segundo horario es opcional: con uno solo se comporta
- * como antes.
+ * Agenda las 1:1 de un estudiante desde el patrón semanal: N franjas
+ * (día + hora) que se repiten durante las semanas que dure el plan.
  */
-export async function generarCronogramaAdmin(formData: FormData) {
+export async function programarSesionesAdmin(formData: FormData) {
   await requireAdmin();
   const studentId = String(formData.get('studentId') ?? '');
-  const total = Number(formData.get('total') ?? 0);
+  if (!studentId) return { error: 'Elige primero al estudiante.' };
+
+  const desde = fechaDesdeInput(String(formData.get('desde') ?? ''));
+  if (!desde) return { error: 'Elige la fecha desde la que arranca el patrón.' };
+
+  const semanas = Number(formData.get('semanas') ?? 0);
+  if (!Number.isInteger(semanas) || semanas < 1 || semanas > 52) {
+    return { error: 'Las semanas deben estar entre 1 y 52.' };
+  }
+
   const duracion = Number(formData.get('duracion') ?? 90);
+  const duracionMinutos = Number.isFinite(duracion) && duracion > 0 ? duracion : 90;
 
-  if (!studentId) return { error: 'Falta el estudiante.' };
-  if (!Number.isInteger(total) || total < 1 || total > 100) {
-    return { error: 'El número de sesiones debe estar entre 1 y 100.' };
+  const dias = formData.getAll('dia').map((v) => Number(v));
+  const horas = formData.getAll('hora').map((v) => String(v).trim());
+  const franjas: Franja[] = dias
+    .map((dia, i) => ({ dia, hora: horas[i] ?? '' }))
+    .filter((f) => f.hora !== '');
+
+  if (franjas.length === 0) return { error: 'Añade al menos un día y una hora.' };
+  if (franjas.some((f) => !franjaValida(f))) {
+    return { error: 'Alguno de los horarios no es válido. Revisa el día y la hora.' };
   }
 
-  const anclas: Date[] = [];
-  for (const campo of ['slot1', 'slot2']) {
-    const texto = String(formData.get(campo) ?? '').trim();
-    if (!texto) continue;
-    const d = new Date(texto);
-    if (Number.isNaN(d.getTime())) return { error: 'Alguna de las fechas no es válida.' };
-    anclas.push(d);
+  // Dos franjas iguales crearían dos sesiones encimadas a la misma hora.
+  const claves = new Set(franjas.map(claveFranja));
+  if (claves.size !== franjas.length) {
+    return { error: 'Hay dos horarios repetidos el mismo día. Cambia uno de los dos.' };
   }
-  if (anclas.length === 0) return { error: 'Elige al menos el primer horario de la semana.' };
-
-  // Dos anclas en el mismo instante generarían dos sesiones superpuestas.
-  if (anclas.length === 2 && anclas[0].getTime() === anclas[1].getTime()) {
-    return { error: 'Los dos horarios son el mismo. Cambia el segundo o déjalo vacío.' };
-  }
-  // Más de 7 días entre anclas rompe la idea de "dos veces por semana".
-  if (anclas.length === 2 && Math.abs(anclas[0].getTime() - anclas[1].getTime()) >= 7 * 864e5) {
-    return { error: 'Los dos horarios deben estar dentro de la misma semana.' };
+  if (franjas.length * semanas > MAX_SESIONES) {
+    return { error: `Eso son más de ${MAX_SESIONES} sesiones. Baja las semanas o los horarios.` };
   }
 
-  await generarCronograma(studentId, total, anclas, Number.isFinite(duracion) ? duracion : 90);
+  const fechas = fechasDelPatron(desde, franjas, semanas);
+  const r = await programarSesiones({
+    studentId,
+    fechas,
+    duracionMinutos,
+    reemplazarFuturas: formData.get('reemplazar') === 'on',
+  });
+
+  if (r.creadas === 0) {
+    return {
+      error: r.borradas > 0
+        ? 'Se borraron las futuras pero el patrón nuevo no creó ninguna: revisa que las fechas sean posteriores a hoy.'
+        : 'No se creó ninguna sesión: esas fechas ya estaban agendadas o ya pasaron.',
+    };
+  }
+
   revalidatePath('/portal/admin');
   revalidatePath('/portal/agenda');
   revalidatePath('/portal/perfil');
-  return {};
+  return { ok: `${r.creadas} sesiones agendadas${r.borradas > 0 ? `, ${r.borradas} reemplazadas` : ''}.` };
 }
 
 /** Crea las clases grupales de todo el trimestre de una sola vez. */
@@ -444,7 +475,7 @@ export async function guardarSesionAdmin(formData: FormData) {
 
   const duracion = Number(formData.get('durationMinutes') ?? 60);
 
-  await actualizarSesion(id, {
+  const studentId = await actualizarSesion(id, {
     title: String(formData.get('title') ?? '').trim() || null,
     // datetime-local entrega hora local sin zona; se pasa a ISO para que la
     // base guarde siempre UTC y el calendario no se desplace.
@@ -456,15 +487,21 @@ export async function guardarSesionAdmin(formData: FormData) {
     recording_url: recordingUrl || null,
   });
 
+  // Cambiar la fecha a mano puede cruzar dos sesiones de orden.
+  if (studentId) await renumerarSesiones(studentId);
+
   revalidatePath('/portal/admin');
+  revalidatePath('/portal/agenda');
   revalidatePath('/portal/perfil');
   return {};
 }
 
 export async function borrarSesionAdmin(id: string) {
   await requireAdmin();
-  await borrarSesion(id);
+  const studentId = await borrarSesion(id);
+  if (studentId) await renumerarSesiones(studentId);
   revalidatePath('/portal/admin');
+  revalidatePath('/portal/agenda');
   revalidatePath('/portal/perfil');
   return {};
 }

@@ -166,3 +166,91 @@ export function fechaLarga(iso: string): string {
 export function nombreMes(d: Date): string {
   return d.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
 }
+
+export function fechaCorta(d: Date): string {
+  return d.toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
+}
+
+// ---------- Patrón semanal (con esto se agenda) ----------
+//
+// Juan no piensa en 36 fechas sueltas: piensa en "lunes, miércoles y viernes
+// a las 7". Se elige el día de la semana y la hora, y el patrón se repite
+// tantas semanas como dure el plan. Todo esto es puro a propósito: el
+// formulario calcula la vista previa con las mismas funciones que el servidor
+// usa para crear las filas, así lo que se ve es exactamente lo que se guarda.
+
+/** 1 = lunes … 7 = domingo, como en ISO-8601. */
+export const DIAS_SEMANA = [
+  { valor: 1, nombre: 'Lunes' },
+  { valor: 2, nombre: 'Martes' },
+  { valor: 3, nombre: 'Miércoles' },
+  { valor: 4, nombre: 'Jueves' },
+  { valor: 5, nombre: 'Viernes' },
+  { valor: 6, nombre: 'Sábado' },
+  { valor: 7, nombre: 'Domingo' },
+] as const;
+
+export interface Franja {
+  /** 1 = lunes … 7 = domingo. */
+  dia: number;
+  /** "19:00", en hora local. */
+  hora: string;
+}
+
+export function nombreDia(dia: number): string {
+  return DIAS_SEMANA.find((d) => d.valor === dia)?.nombre ?? '';
+}
+
+/** getDay() da 0 para domingo; aquí la semana empieza en lunes. */
+export function diaISO(d: Date): number {
+  return d.getDay() === 0 ? 7 : d.getDay();
+}
+
+/**
+ * "2026-08-17" a Date local a medianoche.
+ *
+ * new Date("2026-08-17") lo interpreta como UTC, y en Colombia eso es el 16
+ * a las 7 pm: el patrón entero arrancaría un día antes.
+ */
+export function fechaDesdeInput(texto: string): Date | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(texto.trim());
+  if (!m) return null;
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+export function franjaValida(f: Franja): boolean {
+  if (!Number.isInteger(f.dia) || f.dia < 1 || f.dia > 7) return false;
+  const m = /^(\d{1,2}):(\d{2})$/.exec(f.hora);
+  return !!m && Number(m[1]) <= 23 && Number(m[2]) <= 59;
+}
+
+/** Clave para detectar dos franjas iguales, que crearían sesiones encimadas. */
+export function claveFranja(f: Franja): string {
+  const [h, m] = f.hora.split(':');
+  return `${f.dia}-${h.padStart(2, '0')}:${m}`;
+}
+
+/**
+ * Todas las fechas del patrón, en orden.
+ *
+ * Cada franja arranca en su primera aparición desde `desde` (incluido ese
+ * mismo día) y se repite sumando 7 días. Las sesiones salen ordenadas
+ * cronológicamente aunque las franjas se hayan escrito en desorden.
+ */
+export function fechasDelPatron(desde: Date, franjas: Franja[], semanas: number): Date[] {
+  const fechas: Date[] = [];
+  for (const f of franjas) {
+    if (!franjaValida(f)) continue;
+    const [h, min] = f.hora.split(':').map(Number);
+    const salto = (f.dia - diaISO(desde) + 7) % 7;
+    for (let s = 0; s < semanas; s++) {
+      // El constructor normaliza el desbordamiento de mes, así que sumar
+      // días crudos es seguro incluso pasando de agosto a noviembre.
+      fechas.push(
+        new Date(desde.getFullYear(), desde.getMonth(), desde.getDate() + salto + s * 7, h, min)
+      );
+    }
+  }
+  return fechas.sort((a, b) => a.getTime() - b.getTime());
+}

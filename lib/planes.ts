@@ -1,9 +1,10 @@
 // Los dos planes del programa, tal como se venden en la landing.
 //
-// Las sesiones salen de "una 1:1 por semana" durante los meses del plan.
-// Se guardan también en students.sessions_total para poder ajustarlas caso
-// por caso sin cambiar el plan (una semana de vacaciones, una sesión extra
-// de regalo): el plan da el valor por defecto, no la última palabra.
+// Las sesiones salen de TRES 1:1 por semana durante los meses del plan (la
+// clase grupal va aparte y no cuenta aquí). Se guardan también en
+// students.sessions_total para poder ajustarlas caso por caso sin cambiar el
+// plan: el plan da el valor por defecto, no la última palabra, y al agendar
+// desde la Agenda se sobrescribe con lo que de verdad quedó en el calendario.
 
 export type PlanId = 'start' | 'growth';
 
@@ -22,7 +23,7 @@ export const PLANES: Record<PlanId, Plan> = {
     id: 'start',
     nombre: 'Elite Start',
     meses: 3,
-    sesiones: 12,
+    sesiones: 36,
     precioCents: 250_00,
     descripcion: 'Lanzar desde cero hasta las primeras ventas.',
   },
@@ -30,7 +31,7 @@ export const PLANES: Record<PlanId, Plan> = {
     id: 'growth',
     nombre: 'Elite Growth',
     meses: 6,
-    sesiones: 24,
+    sesiones: 72,
     precioCents: 480_00,
     descripcion: 'Todo lo de Start más 3 meses para estabilizar y escalar.',
   },
