@@ -25,13 +25,7 @@ import { TestFlow } from '@/components/portal/TestFlow';
 import { markVideoWatched, togglePracticeItem, saveNotes, markModuleCompleted } from '@/app/portal/modulos/actions';
 import type { ModuleResource, ModuleRow, StudentProgress, TestAttemptRow, TheoryBlock } from '@/lib/types';
 import type { ModuleContent } from '@/lib/modules-content';
-
-function loomEmbedUrl(url: string | null): string | null {
-  if (!url) return null;
-  const match = url.match(/loom\.com\/(?:share|embed)\/([a-zA-Z0-9]+)/);
-  if (!match) return null;
-  return `https://www.loom.com/embed/${match[1]}`;
-}
+import { VideoPlayer } from '@/components/portal/VideoPlayer';
 
 export function ModuleTabsClient({
   module: mod,
@@ -64,7 +58,9 @@ export function ModuleTabsClient({
 
   const accentColor = content?.accentColor ?? '#7C3AED';
   const checklist = content?.practiceChecklist ?? ((mod.practice_checklist as unknown as string[]) ?? []);
-  const embedUrl = loomEmbedUrl(mod.loom_url);
+  // El video propio (Cloudinary) manda; loom_url solo queda por si algún
+  // módulo viejo todavía lo tenía cargado.
+  const urlVideo = mod.video_url ?? mod.loom_url;
   const legacyTheoryBlocks = (mod.theory_content as unknown as TheoryBlock[]) ?? [];
 
   function handleNotesChange(value: string) {
@@ -143,16 +139,7 @@ export function ModuleTabsClient({
       </TabPanel>
 
       <TabPanel value="video" active={tab}>
-        <div className="aspect-video w-full overflow-hidden rounded-2xl border border-border bg-bg-card">
-          {embedUrl ? (
-            <iframe src={embedUrl} frameBorder="0" allowFullScreen className="h-full w-full" title={mod.title} />
-          ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-2 text-text-muted">
-              <VideoIcon className="h-8 w-8" />
-              <p className="text-sm">Video en camino — Juan lo está grabando.</p>
-            </div>
-          )}
-        </div>
+        <VideoPlayer url={urlVideo} titulo={mod.title} />
 
         <Button
           type="button"

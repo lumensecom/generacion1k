@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { ChevronDown, Lock, Unlock } from 'lucide-react';
-import { toggleModuleLock, updateModuleLoomUrl, updateModuleContent } from '@/app/portal/admin/actions';
+import { toggleModuleLock, updateModuleVideoUrl, updateModuleContent } from '@/app/portal/admin/actions';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -11,16 +11,19 @@ import { cn } from '@/lib/utils';
 import type { ModuleRow } from '@/lib/types';
 
 function ModuleEditor({ mod }: { mod: ModuleRow }) {
-  const [loomUrl, setLoomUrl] = useState(mod.loom_url ?? '');
+  // El video propio (Cloudinary) manda; loom_url solo se lee por si quedaba
+  // uno cargado de antes.
+  const [videoUrl, setVideoUrl] = useState(mod.video_url ?? mod.loom_url ?? '');
   const [theoryJson, setTheoryJson] = useState(JSON.stringify(mod.theory_content ?? [], null, 2));
   const [checklist, setChecklist] = useState(((mod.practice_checklist as unknown as string[]) ?? []).join('\n'));
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  function saveLoom() {
+  function saveVideo() {
     startTransition(async () => {
-      await updateModuleLoomUrl(mod.id, loomUrl);
-      toast.success('Link de Loom guardado');
+      const r = await updateModuleVideoUrl(mod.id, videoUrl);
+      if (r?.error) toast.error(r.error);
+      else toast.success('Video guardado');
     });
   }
 
@@ -36,10 +39,14 @@ function ModuleEditor({ mod }: { mod: ModuleRow }) {
   return (
     <div className="space-y-5 border-t border-border p-6">
       <div className="space-y-2">
-        <label className="text-xs font-bold uppercase tracking-widest text-text-muted">Link de Loom</label>
+        <label className="text-xs font-bold uppercase tracking-widest text-text-muted">Video (Cloudinary)</label>
         <div className="flex gap-2">
-          <Input value={loomUrl} onChange={(e) => setLoomUrl(e.target.value)} placeholder="https://www.loom.com/share/..." />
-          <Button type="button" variant="subtle" onClick={saveLoom} disabled={pending}>
+          <Input
+            value={videoUrl}
+            onChange={(e) => setVideoUrl(e.target.value)}
+            placeholder="https://res.cloudinary.com/.../video/upload/..."
+          />
+          <Button type="button" variant="subtle" onClick={saveVideo} disabled={pending}>
             Guardar
           </Button>
         </div>

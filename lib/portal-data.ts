@@ -11,6 +11,12 @@ import type {
   StudentIntake,
   StudentProgress,
   TestAttemptRow,
+  StudentQuestion,
+  MeetingRequest,
+  GroupSession,
+  SessionPoll,
+  SessionPollVote,
+  OpcionEncuesta,
 } from '@/lib/types';
 
 // Capa de acceso a datos. Todo corre en el servidor con la service_role key
@@ -307,4 +313,188 @@ export async function getStudentActivity(studentId: string, limit = 30): Promise
     .order('created_at', { ascending: false })
     .limit(limit);
   return (data as unknown as ActivityLogRow[]) ?? [];
+}
+
+// ============================================================
+// Panel de ayuda, reuniones y clases grupales
+// ============================================================
+
+export async function crearPregunta(input: {
+  studentId: string;
+  question: string;
+  moduleSlug?: string | null;
+}): Promise<void> {
+  await supabaseAdmin().from('student_questions').insert({
+    student_id: input.studentId,
+    question: input.question,
+    module_slug: input.moduleSlug ?? null,
+  });
+}
+
+export async function getPreguntasDeEstudiante(studentId: string): Promise<StudentQuestion[]> {
+  const { data } = await supabaseAdmin()
+    .from('student_questions')
+    .select('*')
+    .eq('student_id', studentId)
+    .order('created_at', { ascending: false });
+  return (data as unknown as StudentQuestion[]) ?? [];
+}
+
+/** Para el admin: todas las preguntas, con el nombre del estudiante resuelto. */
+export async function getPreguntasConEstudiante(): Promise<(StudentQuestion & { student: Student | null })[]> {
+  const [preguntas, estudiantes] = await Promise.all([
+    supabaseAdmin().from('student_questions').select('*').order('created_at', { ascending: false }),
+    getAllStudents(),
+  ]);
+  const porId = new Map(estudiantes.map((s) => [s.id, s]));
+  return ((preguntas.data as unknown as StudentQuestion[]) ?? []).map((p) => ({
+    ...p,
+    student: porId.get(p.student_id) ?? null,
+  }));
+}
+
+export async function responderPregunta(input: {
+  id: string;
+  reply: string | null;
+  videoUrl: string | null;
+}): Promise<void> {
+  // El estado sale de lo que Juan haya rellenado: si adjuntó video es una
+  // respuesta grabada, si solo escribió es una recomendación de texto.
+  const status = input.videoUrl ? 'en_video' : input.reply ? 'respondida' : 'nueva';
+  await supabaseAdmin()
+    .from('student_questions')
+    .update({
+      admin_reply: input.reply,
+      reply_video_url: input.videoUrl,
+      status,
+      replied_at: input.reply || input.videoUrl ? new Date().toISOString() : null,
+    })
+    .eq('id', input.id);
+}
+
+export async function cerrarPregunta(id: string): Promise<void> {
+  await supabaseAdmin().from('student_questions').update({ status: 'cerrada' }).eq('id', id);
+}
+
+// ---------- Reuniones 1:1 ----------
+
+export async function crearSolicitudReunion(input: {
+  studentId: string;
+  question: string;
+  availability: string | null;
+}): Promise<void> {
+  await supabaseAdmin().from('meeting_requests').insert({
+    student_id: input.studentId,
+    question: input.question,
+    availability: input.availability,
+  });
+}
+
+export async function getReunionesDeEstudiante(studentId: string): Promise<MeetingRequest[]> {
+  const { data } = await supabaseAdmin()
+    .from('meeting_requests')
+    .select('*')
+    .eq('student_id', studentId)
+    .order('created_at', { ascending: false });
+  return (data as unknown as MeetingRequest[]) ?? [];
+}
+
+export async function getReunionesConEstudiante(): Promise<(MeetingRequest & { student: Student | null })[]> {
+  const [reuniones, estudiantes] = await Promise.all([
+    supabaseAdmin().from('meeting_requests').select('*').order('created_at', { ascending: false }),
+    getAllStudents(),
+  ]);
+  const porId = new Map(estudiantes.map((s) => [s.id, s]));
+  return ((reuniones.data as unknown as MeetingRequest[]) ?? []).map((r) => ({
+    ...r,
+    student: porId.get(r.student_id) ?? null,
+  }));
+}
+
+export async function actualizarReunion(input: {
+  id: string;
+  status: MeetingRequest['status'];
+  adminNote: string | null;
+  scheduledAt: string | null;
+}): Promise<void> {
+  await supabaseAdmin()
+    .from('meeting_requests')
+    .update({ status: input.status, admin_note: input.adminNote, scheduled_at: input.scheduledAt })
+    .eq('id', input.id);
+}
+
+// ---------- Clase grupal semanal ----------
+
+export async function getClases(soloPublicadas = false): Promise<GroupSession[]> {
+  let q = supabaseAdmin().from('group_sessions').select('*');
+  if (soloPublicadas) q = q.eq('is_published', true);
+  const { data } = await q.order('scheduled_at', { ascending: false, nullsFirst: false });
+  return (data as unknown as GroupSession[]) ?? [];
+}
+
+export async function crearClase(input: {
+  title: string;
+  description: string | null;
+  scheduledAt: string | null;
+  meetUrl: string | null;
+  recordingUrl: string | null;
+  durationMinutes: number;
+}): Promise<void> {
+  await supabaseAdmin().from('group_sessions').insert({
+    title: input.title,
+    description: input.description,
+    scheduled_at: input.scheduledAt,
+    meet_url: input.meetUrl,
+    recording_url: input.recordingUrl,
+    duration_minutes: input.durationMinutes,
+  });
+}
+
+export async function actualizarClase(id: string, cambios: Partial<GroupSession>): Promise<void> {
+  await supabaseAdmin().from('group_sessions').update(cambios).eq('id', id);
+}
+
+export async function borrarClase(id: string): Promise<void> {
+  await supabaseAdmin().from('group_sessions').delete().eq('id', id);
+}
+
+// ---------- Encuesta del día de clase ----------
+
+export async function getEncuestaAbierta(): Promise<SessionPoll | null> {
+  const { data } = await supabaseAdmin()
+    .from('session_polls')
+    .select('*')
+    .eq('is_open', true)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  return (data as unknown as SessionPoll) ?? null;
+}
+
+export async function getVotos(pollId: string): Promise<SessionPollVote[]> {
+  const { data } = await supabaseAdmin().from('session_poll_votes').select('*').eq('poll_id', pollId);
+  return (data as unknown as SessionPollVote[]) ?? [];
+}
+
+export async function votar(pollId: string, studentId: string, optionId: string): Promise<void> {
+  // Un voto por estudiante: si ya votó, cambiar de opinión reemplaza el voto
+  // en vez de sumar otro (de ahí el unique(poll_id, student_id) del esquema).
+  await supabaseAdmin()
+    .from('session_poll_votes')
+    .upsert(
+      { poll_id: pollId, student_id: studentId, option_id: optionId },
+      { onConflict: 'poll_id,student_id' }
+    );
+}
+
+export async function crearEncuesta(question: string, opciones: OpcionEncuesta[]): Promise<void> {
+  const admin = supabaseAdmin();
+  // Solo una encuesta abierta a la vez: si no, el estudiante no sabe cuál
+  // contesta y los votos quedan repartidos entre dos.
+  await admin.from('session_polls').update({ is_open: false }).eq('is_open', true);
+  await admin.from('session_polls').insert({ question, options: opciones as unknown as Json });
+}
+
+export async function cerrarEncuesta(id: string): Promise<void> {
+  await supabaseAdmin().from('session_polls').update({ is_open: false }).eq('id', id);
 }

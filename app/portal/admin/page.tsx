@@ -8,20 +8,42 @@ import { ModulesManager } from '@/components/portal/admin/ModulesManager';
 import { ConfigPanel } from '@/components/portal/admin/ConfigPanel';
 import { AnimatedNumber } from '@/components/animated/AnimatedNumber';
 import { AnimatedDivider } from '@/components/animated/AnimatedDivider';
-import { getAdminSummary, getAllStudents, getModules, getPortalConfig } from '@/lib/portal-data';
+import {
+  getAdminSummary,
+  getAllStudents,
+  getModules,
+  getPortalConfig,
+  getPreguntasConEstudiante,
+  getReunionesConEstudiante,
+  getClases,
+  getEncuestaAbierta,
+  getVotos,
+} from '@/lib/portal-data';
+import { AyudaAdmin } from '@/components/portal/admin/AyudaAdmin';
+import { ClasesAdmin } from '@/components/portal/admin/ClasesAdmin';
+import { CrearEstudiante } from '@/components/portal/admin/CrearEstudiante';
 
 export const metadata = { title: 'Admin | Portal Generación 1K' };
 
 export default async function AdminPage() {
   const session = await requireSession();
-  const [summary, students, modules, accessCode, isActive, generation] = await Promise.all([
-    getAdminSummary(),
-    getAllStudents(),
-    getModules(),
-    getPortalConfig('access_code'),
-    getPortalConfig('is_active'),
-    getPortalConfig('current_generation'),
-  ]);
+  const [summary, students, modules, accessCode, isActive, generation, preguntas, reuniones, clases, encuesta] =
+    await Promise.all([
+      getAdminSummary(),
+      getAllStudents(),
+      getModules(),
+      getPortalConfig('access_code'),
+      getPortalConfig('is_active'),
+      getPortalConfig('current_generation'),
+      getPreguntasConEstudiante(),
+      getReunionesConEstudiante(),
+      getClases(),
+      getEncuestaAbierta(),
+    ]);
+
+  const votos = encuesta ? await getVotos(encuesta.id) : [];
+  const conteos: Record<string, number> = {};
+  for (const v of votos) conteos[v.option_id] = (conteos[v.option_id] ?? 0) + 1;
 
   const resumen = (
     <div className="space-y-8">
@@ -79,7 +101,14 @@ export default async function AdminPage() {
 
       <AdminTabs
         resumen={resumen}
-        estudiantes={<StudentsTable students={students} progressByStudent={summary.progressByStudent} />}
+        estudiantes={
+          <>
+            <CrearEstudiante />
+            <StudentsTable students={students} progressByStudent={summary.progressByStudent} />
+          </>
+        }
+        ayuda={<AyudaAdmin preguntas={preguntas} reuniones={reuniones} />}
+        clases={<ClasesAdmin clases={clases} encuesta={encuesta} conteos={conteos} />}
         modulos={<ModulesManager modules={modules} />}
         configuracion={
           <ConfigPanel

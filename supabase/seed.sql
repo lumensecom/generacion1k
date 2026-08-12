@@ -32,10 +32,6 @@ update modules set
 where theory_content = '[]'::jsonb;
 
 insert into mentors (slug, name, role, bio, years_experience, companies, order_index) values
-  ('adma', 'ADMA', 'Especialista en fulfillment y logística',
-   'Sesión invitada sobre cómo montar un fulfillment que no te deja mal con el cliente.', null, null, 1),
-  ('ronhal', 'Ronhal', 'Country Manager de Dropi Colombia',
-   'Sesión invitada sobre cómo sacarle el máximo provecho a Dropi como estudiante de Generación 1K.', null, null, 2),
-  ('jorge-arias', 'Jorge Arias', 'EAN · especialista en escalamiento',
-   'Sesión invitada sobre cómo escalar campañas sin perder rentabilidad.', null, null, 3)
+  ('adma', 'ADMA', 'Proveedor aliado · fulfillment y logística',
+   'Nuestro aliado de fulfillment. Su sesión cubre cómo montar una operación de entregas que no te deje mal con el cliente: tiempos, novedades y devoluciones.', null, null, 1)
 on conflict (slug) do nothing;

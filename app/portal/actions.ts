@@ -5,6 +5,7 @@ import { timingSafeEqual } from 'node:crypto';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { setSessionCookie, clearSessionCookie, getSession } from '@/lib/session';
 import { getStudentByEmail, getStudentIntake, logActivity, getPortalConfig } from '@/lib/portal-data';
+import { verifyPassword } from '@/lib/password';
 
 export interface ActionResult {
   error?: string;
@@ -157,4 +158,36 @@ export async function requireSession() {
   const session = await getSession();
   if (!session) redirect('/portal');
   return session;
+}
+
+/**
+ * Entrada con correo y contraseña — el camino normal desde que Juan crea
+ * las cuentas él mismo desde el panel.
+ *
+ * El mensaje de error es el mismo para "no existe ese correo" y "la clave
+ * está mal": distinguirlos le diría a cualquiera qué correos tienen cuenta.
+ */
+export async function submitPasswordLogin(formData: FormData): Promise<ActionResult> {
+  const email = String(formData.get('email') ?? '').trim().toLowerCase();
+  const password = String(formData.get('password') ?? '');
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'Ese correo no parece válido.' };
+  if (!password) return { error: 'Escribe tu contraseña.' };
+
+  const student = await getStudentByEmail(email);
+  const ok = await verifyPassword(password, student?.password_hash ?? null);
+
+  if (!student || !ok) return { error: 'Correo o contraseña incorrectos.' };
+  if (!student.is_active) return { error: 'Tu cuenta está desactivada. Escríbele a Juan.' };
+
+  await supabaseAdmin()
+    .from('students')
+    .update({
+      last_login_at: new Date().toISOString(),
+      first_login_at: student.first_login_at ?? new Date().toISOString(),
+    })
+    .eq('id', student.id);
+
+  await afterLogin(student.id, student.email, student.full_name, student.role);
+  return {};
 }

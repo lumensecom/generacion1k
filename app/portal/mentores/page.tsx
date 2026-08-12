@@ -1,18 +1,12 @@
-import { CalendarClock, PlayCircle } from 'lucide-react';
+import { CalendarClock } from 'lucide-react';
 import { requireSession } from '@/app/portal/actions';
 import { PortalShell } from '@/components/portal/PortalShell';
 import { RevealCard } from '@/components/animated/RevealCard';
 import { AnimatedDivider } from '@/components/animated/AnimatedDivider';
 import { getMentors } from '@/lib/portal-data';
+import { VideoPlayer } from '@/components/portal/VideoPlayer';
 
-export const metadata = { title: 'Mentores invitados | Portal Generación 1K' };
-
-function loomEmbedUrl(url: string | null): string | null {
-  if (!url) return null;
-  const match = url.match(/loom\.com\/(?:share|embed)\/([a-zA-Z0-9]+)/);
-  if (!match) return null;
-  return `https://www.loom.com/embed/${match[1]}`;
-}
+export const metadata = { title: 'Aliado del programa | Portal Generación 1K' };
 
 export default async function MentoresPage() {
   const session = await requireSession();
@@ -22,17 +16,21 @@ export default async function MentoresPage() {
     <PortalShell session={session} theme="light">
       <div className="mb-10">
         <span className="font-mono text-[11px] uppercase tracking-widest text-brand-purple">
-          Mentores invitados
+          Aliado del programa
         </span>
         <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight text-light-text sm:text-4xl">
-          Aprende de <span className="accent-text-light">quienes ya lo hicieron</span>
+          Nuestro <span className="accent-text-light">proveedor aliado</span>
         </h1>
+        <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-light-text2">
+          La operación es la parte que hunde a la mayoría de tiendas de contra entrega.
+          Por eso trabajamos con un aliado de fulfillment en vez de improvisar los envíos.
+        </p>
         <AnimatedDivider className="mt-4" />
       </div>
 
       <div className="space-y-6">
         {mentors.map((mentor, i) => {
-          const embedUrl = loomEmbedUrl(mentor.session_loom_url);
+          const urlVideo = mentor.video_url ?? mentor.session_loom_url;
           return (
             <RevealCard key={mentor.id} variant="light" delay={i * 0.08} hover={false} className="overflow-hidden">
               <div className="grid grid-cols-1 gap-0 md:grid-cols-[280px_1fr]">
@@ -62,21 +60,12 @@ export default async function MentoresPage() {
                   </div>
                 </div>
 
-                <div className="aspect-video bg-bg-primary md:aspect-auto">
-                  {embedUrl ? (
-                    <iframe
-                      src={embedUrl}
-                      frameBorder="0"
-                      allowFullScreen
-                      className="h-full w-full"
-                      title={`Sesión de ${mentor.name}`}
-                    />
-                  ) : (
-                    <div className="flex h-full min-h-[220px] flex-col items-center justify-center gap-2 text-text-muted">
-                      <PlayCircle className="h-8 w-8" />
-                      <p className="text-sm">Sesión por grabar — vuelve pronto.</p>
-                    </div>
-                  )}
+                <div className="p-4 md:p-6">
+                  <VideoPlayer
+                    url={urlVideo}
+                    titulo={`Sesión de ${mentor.name}`}
+                    vacio="Sesión por grabar — vuelve pronto."
+                  />
                 </div>
               </div>
             </RevealCard>

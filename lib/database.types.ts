@@ -44,8 +44,193 @@ export type Database = {
           },
         ];
       };
+      group_sessions: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_minutes: number
+          id: string
+          is_published: boolean
+          meet_url: string | null
+          recording_url: string | null
+          scheduled_at: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          is_published?: boolean
+          meet_url?: string | null
+          recording_url?: string | null
+          scheduled_at?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          is_published?: boolean
+          meet_url?: string | null
+          recording_url?: string | null
+          scheduled_at?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      meeting_requests: {
+        Row: {
+          admin_note: string | null
+          availability: string | null
+          created_at: string
+          id: string
+          question: string
+          scheduled_at: string | null
+          status: string
+          student_id: string
+        }
+        Insert: {
+          admin_note?: string | null
+          availability?: string | null
+          created_at?: string
+          id?: string
+          question: string
+          scheduled_at?: string | null
+          status?: string
+          student_id: string
+        }
+        Update: {
+          admin_note?: string | null
+          availability?: string | null
+          created_at?: string
+          id?: string
+          question?: string
+          scheduled_at?: string | null
+          status?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_requests_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_poll_votes: {
+        Row: {
+          created_at: string
+          id: string
+          option_id: string
+          poll_id: string
+          student_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          option_id: string
+          poll_id: string
+          student_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          option_id?: string
+          poll_id?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_poll_votes_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "session_polls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_poll_votes_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_polls: {
+        Row: {
+          created_at: string
+          id: string
+          is_open: boolean
+          options: Json
+          question: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_open?: boolean
+          options?: Json
+          question?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_open?: boolean
+          options?: Json
+          question?: string
+        }
+        Relationships: []
+      }
+      student_questions: {
+        Row: {
+          admin_reply: string | null
+          created_at: string
+          id: string
+          module_slug: string | null
+          question: string
+          replied_at: string | null
+          reply_video_url: string | null
+          status: string
+          student_id: string
+        }
+        Insert: {
+          admin_reply?: string | null
+          created_at?: string
+          id?: string
+          module_slug?: string | null
+          question: string
+          replied_at?: string | null
+          reply_video_url?: string | null
+          status?: string
+          student_id: string
+        }
+        Update: {
+          admin_reply?: string | null
+          created_at?: string
+          id?: string
+          module_slug?: string | null
+          question?: string
+          replied_at?: string | null
+          reply_video_url?: string | null
+          status?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_questions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentors: {
         Row: {
+          video_url: string | null
           bio: string | null;
           companies: string | null;
           id: string;
@@ -59,6 +244,7 @@ export type Database = {
           years_experience: string | null;
         };
         Insert: {
+          video_url?: string | null
           bio?: string | null;
           companies?: string | null;
           id?: string;
@@ -72,6 +258,7 @@ export type Database = {
           years_experience?: string | null;
         };
         Update: {
+          video_url?: string | null
           bio?: string | null;
           companies?: string | null;
           id?: string;
@@ -126,6 +313,7 @@ export type Database = {
       };
       modules: {
         Row: {
+          video_url: string | null
           created_at: string;
           id: string;
           is_locked: boolean;
@@ -139,6 +327,7 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          video_url?: string | null
           created_at?: string;
           id?: string;
           is_locked?: boolean;
@@ -152,6 +341,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          video_url?: string | null
           created_at?: string;
           id?: string;
           is_locked?: boolean;
@@ -349,6 +539,9 @@ export type Database = {
       };
       students: {
         Row: {
+          password_set_at: string | null
+          password_hash: string | null
+          created_by_admin: boolean
           age: number | null;
           city: string | null;
           email: string;
@@ -363,6 +556,9 @@ export type Database = {
           role: string;
         };
         Insert: {
+          password_set_at?: string | null
+          password_hash?: string | null
+          created_by_admin?: boolean
           age?: number | null;
           city?: string | null;
           email: string;
@@ -377,6 +573,9 @@ export type Database = {
           role?: string;
         };
         Update: {
+          password_set_at?: string | null
+          password_hash?: string | null
+          created_by_admin?: boolean
           age?: number | null;
           city?: string | null;
           email?: string;

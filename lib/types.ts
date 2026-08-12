@@ -19,6 +19,10 @@ export interface Student {
   last_login_at: string | null;
   is_active: boolean;
   personal_notes: string | null;
+  /** Hash scrypt; null si la cuenta todavía entra por clave de acceso. */
+  password_hash: string | null;
+  password_set_at: string | null;
+  created_by_admin: boolean;
 }
 
 export interface StudentIntake {
@@ -49,6 +53,8 @@ export interface ModuleRow {
   subtitle: string | null;
   order_index: number;
   loom_url: string | null;
+  /** Video propio (Cloudinary). Tiene prioridad sobre loom_url. */
+  video_url: string | null;
   theory_content: TheoryBlock[] | null;
   practice_checklist: string[] | null;
   is_locked: boolean;
@@ -135,6 +141,71 @@ export interface Mentor {
   years_experience: string | null;
   companies: string | null;
   session_loom_url: string | null;
+  video_url: string | null;
   session_date: string | null;
   order_index: number;
+}
+
+// ---------- Panel de ayuda, reuniones y clases grupales ----------
+
+export type EstadoPregunta = 'nueva' | 'respondida' | 'en_video' | 'cerrada';
+
+export interface StudentQuestion {
+  id: string;
+  student_id: string;
+  question: string;
+  module_slug: string | null;
+  status: EstadoPregunta;
+  admin_reply: string | null;
+  /** Video de Cloudinary para las preguntas que se responden grabando. */
+  reply_video_url: string | null;
+  replied_at: string | null;
+  created_at: string;
+}
+
+export type EstadoReunion = 'pendiente' | 'agendada' | 'hecha' | 'cancelada';
+
+export interface MeetingRequest {
+  id: string;
+  student_id: string;
+  question: string;
+  availability: string | null;
+  status: EstadoReunion;
+  admin_note: string | null;
+  scheduled_at: string | null;
+  created_at: string;
+}
+
+export interface GroupSession {
+  id: string;
+  title: string;
+  description: string | null;
+  scheduled_at: string | null;
+  duration_minutes: number;
+  meet_url: string | null;
+  /** Grabación en Cloudinary, para quien no pudo asistir. */
+  recording_url: string | null;
+  is_published: boolean;
+  created_at: string;
+}
+
+export interface OpcionEncuesta {
+  id: string;
+  label: string;
+}
+
+export interface SessionPoll {
+  id: string;
+  question: string;
+  options: OpcionEncuesta[];
+  is_open: boolean;
+  created_at: string;
+}
+
+export interface SessionPollVote {
+  id: string;
+  poll_id: string;
+  student_id: string;
+  option_id: string;
+  created_at: string;
 }

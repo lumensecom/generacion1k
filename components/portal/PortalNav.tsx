@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTransition } from 'react';
-import { LayoutDashboard, BookOpen, TrendingUp, Users, UserCircle, ShieldCheck, LogOut } from 'lucide-react';
+import { LayoutDashboard, BookOpen, TrendingUp, Users, UserCircle, ShieldCheck, LogOut, CalendarDays, LifeBuoy } from 'lucide-react';
 import { logoutAction } from '@/app/portal/actions';
 import { cn } from '@/lib/utils';
 
@@ -11,7 +11,9 @@ const links = [
   { href: '/portal/inicio', label: 'Inicio', icon: LayoutDashboard },
   { href: '/portal/modulos', label: 'Módulos', icon: BookOpen },
   { href: '/portal/mi-progreso', label: 'Mi progreso', icon: TrendingUp },
-  { href: '/portal/mentores', label: 'Mentores', icon: Users },
+  { href: '/portal/clases', label: 'Clase grupal', icon: CalendarDays },
+  { href: '/portal/ayuda', label: 'Ayuda', icon: LifeBuoy },
+  { href: '/portal/mentores', label: 'Aliado', icon: Users },
   { href: '/portal/perfil', label: 'Perfil', icon: UserCircle },
 ];
 

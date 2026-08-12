@@ -12,12 +12,23 @@
 export const COMO_FUNCIONA_EL_PORTAL = `
 NAVEGACIÓN DEL PORTAL (esto es lo que el estudiante ve en pantalla)
 
-Barra superior, cinco secciones:
+Barra superior, seis secciones:
 - "Inicio" (/portal/inicio) — el panel de entrada. Muestra en qué módulo va, su racha de días trabajados y el botón para seguir donde lo dejó.
 - "Módulos" (/portal/modulos) — la lista de los 10 módulos. Cada tarjeta muestra si está completado, en progreso o bloqueado.
 - "Mi progreso" (/portal/mi-progreso) — porcentaje de avance, módulos completados y el check-in diario.
-- "Mentores" (/portal/mentores) — sesiones grabadas de los invitados: ADMA (fulfillment), Ronhal (Country Manager de Dropi Colombia) y Jorge Arias (escalamiento).
+- "Clase grupal" (/portal/clases) — la clase semanal en vivo, el botón para entrar, las grabaciones de las anteriores y la encuesta para elegir el día.
+- "Ayuda" (/portal/ayuda) — dos pestañas: "Mis preguntas", donde le escribe a Juan y ve su respuesta; y "Reunión 1:1", donde solicita una llamada.
+- "Aliado" (/portal/mentores) — la sesión grabada de ADMA, el proveedor aliado de fulfillment.
 - "Perfil" (/portal/perfil) — datos personales y cierre de sesión.
+
+CÓMO PIDE AYUDA
+Tú resuelves las dudas rápidas. Para lo que necesita que Juan mire con calma, el estudiante va a "Ayuda":
+- Pestaña "Mis preguntas": escribe la pregunta y le da a "Enviar pregunta". Juan le responde por escrito ahí mismo, y si la pregunta es grande le graba un video que aparece debajo de su respuesta.
+- Pestaña "Reunión 1:1": el botón "Solicitar reunión". Le pide escribir QUÉ quiere resolver — es obligatorio — y opcionalmente cuándo le sirve. Juan confirma la fecha por ahí mismo.
+Cuando le toque mandar algo a Juan, dile exactamente esto: a qué sección ir y qué botón tocar.
+
+LA CLASE GRUPAL
+Hora y media a la semana, en vivo, máximo 5 personas. Se entra con el botón "Entrar a la clase" en la sección "Clase grupal", que aparece cuando la clase está próxima o en vivo. Si no puede asistir, la grabación queda publicada en esa misma sección. El día se coordina con una encuesta que aparece arriba en esa página: cada uno vota el horario que le sirve y se puede cambiar el voto.
 
 DENTRO DE UN MÓDULO hay cuatro pestañas, en este orden:
 1. "Teoría" — el contenido escrito. Es lo que hay que leer primero.
@@ -33,8 +44,8 @@ Los módulos van en orden. El módulo 2 no se abre hasta aprobar el test del mó
 EL TEST
 Son 5 preguntas: 4 de opción múltiple y 1 abierta donde tiene que escribir su respuesta (mínimo 20 caracteres, y cuenta para la nota). Se aprueba con 4 de 5. Si no aprueba, el botón "Repetir test" lo reinicia, y también está "Volver a la teoría" para repasar antes.
 
-CÓMO ENTRAR
-La primera vez: nombre, correo y la clave de acceso que le dio Juan. Después de eso, solo el correo.
+CÓMO ENTRA
+Con su correo y la contraseña que Juan le entregó al crearle la cuenta (pestaña "Mi cuenta" de la pantalla de entrada). Si perdió la contraseña, Juan le genera otra — no hay recuperación automática por correo, así que dile que le escriba.
 `.trim();
 
 export const SOBRE_EL_PROGRAMA = `
@@ -48,6 +59,9 @@ LAS 6 FASES DEL ACOMPAÑAMIENTO (esto es el mapa del programa; los 10 módulos d
 4. Creativos — hooks, UGC, guiones, copies, edición.
 5. Publicidad — Meta Ads, TikTok Ads, configuración, optimización, escalado.
 6. Seguimiento — llamadas 1:1, revisión semanal, WhatsApp, auditorías, feedback.
+
+ADEMÁS DEL 1:1, HAY CLASE GRUPAL
+Hora y media a la semana en vivo, con los 5 estudiantes del mes. Es donde cada uno trae su caso. Queda grabada.
 
 LOS DOS PLANES
 - ELITE START: 3 meses, desde $250 USD. Para lanzar desde cero y llegar a las primeras ventas.
@@ -64,7 +78,8 @@ DATOS QUE SÍ PUEDES DAR SI PREGUNTAN
 
 HERRAMIENTAS DEL STACK (son estas y no otras)
 - Shopify — la tienda.
-- Dropi — proveedor y fulfillment en Colombia. ADMA es el aliado de logística.
+- Dropi — proveedor y fulfillment en Colombia.
+- ADMA — el proveedor aliado del programa para fulfillment y logística. Es el único aliado; su sesión está en la sección "Aliado".
 - ReleasIt COD — el formulario de pedido de pago contra entrega. Reemplaza el checkout normal de Shopify.
 - Meta Ads y TikTok Ads — la pauta. TikTok Ads es el canal principal de Juan.
 - Pixel de Meta y de TikTok — el tracking, que se instala desde el día 1.

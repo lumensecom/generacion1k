@@ -3,14 +3,16 @@
 import { useState, useTransition } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, KeyRound, Mail, GraduationCap, ShieldCheck, Lock } from 'lucide-react';
-import { submitAccessCode, submitReturningEmail, submitAdminLogin } from '@/app/portal/actions';
+import { submitAccessCode, submitPasswordLogin, submitAdminLogin } from '@/app/portal/actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 export function AccessGate() {
   const [portalRole, setPortalRole] = useState<'student' | 'admin'>('student');
-  const [mode, setMode] = useState<'first' | 'returning'>('first');
+  // Desde que Juan crea las cuentas él mismo, lo normal es entrar con correo
+  // y contraseña. La clave de acceso queda como camino secundario.
+  const [mode, setMode] = useState<'password' | 'code'>('password');
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -20,7 +22,7 @@ export function AccessGate() {
     setError(null);
     startTransition(async () => {
       const action =
-        portalRole === 'admin' ? submitAdminLogin : mode === 'first' ? submitAccessCode : submitReturningEmail;
+        portalRole === 'admin' ? submitAdminLogin : mode === 'password' ? submitPasswordLogin : submitAccessCode;
       const result = await action(formData);
       if (result?.error) setError(result.error);
     });
@@ -116,33 +118,80 @@ export function AccessGate() {
               <button
                 type="button"
                 onClick={() => {
-                  setMode('first');
+                  setMode('password');
                   setError(null);
                 }}
                 className={`flex-1 rounded-lg py-2.5 text-sm font-bold transition-colors ${
-                  mode === 'first' ? 'bg-brand-purple text-white' : 'text-text-secondary hover:text-white'
+                  mode === 'password' ? 'bg-brand-purple text-white' : 'text-text-secondary hover:text-white'
                 }`}
               >
-                Primera vez
+                Mi cuenta
               </button>
               <button
                 type="button"
                 onClick={() => {
-                  setMode('returning');
+                  setMode('code');
                   setError(null);
                 }}
                 className={`flex-1 rounded-lg py-2.5 text-sm font-bold transition-colors ${
-                  mode === 'returning' ? 'bg-brand-purple text-white' : 'text-text-secondary hover:text-white'
+                  mode === 'code' ? 'bg-brand-purple text-white' : 'text-text-secondary hover:text-white'
                 }`}
               >
-                Ya tengo cuenta
+                Tengo clave de acceso
               </button>
             </div>
 
             <AnimatePresence mode="wait">
-              {mode === 'first' ? (
+              {mode === 'password' ? (
                 <motion.form
-                  key="first"
+                  key="password"
+                  onSubmit={handleSubmit}
+                  initial={{ opacity: 0, x: 16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -16 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-5"
+                >
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="flex items-center gap-1.5">
+                      <Mail className="h-3.5 w-3.5" /> Correo
+                    </Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="tucorreo@gmail.com"
+                      required
+                      autoComplete="username"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password" className="flex items-center gap-1.5">
+                      <Lock className="h-3.5 w-3.5" /> Contraseña
+                    </Label>
+                    <Input
+                      id="password"
+                      name="password"
+                      type="password"
+                      placeholder="••••••••"
+                      required
+                      autoComplete="current-password"
+                    />
+                    <p className="text-xs text-text-muted">
+                      Juan te la envió al crear tu cuenta. Si la perdiste, escríbele y te genera otra.
+                    </p>
+                  </div>
+
+                  {error && <p className="text-sm font-medium text-brand-danger">{error}</p>}
+
+                  <Button type="submit" variant="primary" size="lg" className="w-full" disabled={pending}>
+                    {pending ? 'Entrando…' : 'Entrar al portal'}
+                    {!pending && <ArrowRight className="h-4 w-4" />}
+                  </Button>
+                </motion.form>
+              ) : (
+                <motion.form
+                  key="code"
                   onSubmit={handleSubmit}
                   initial={{ opacity: 0, x: 16 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -155,39 +204,14 @@ export function AccessGate() {
                     <Input id="fullName" name="fullName" placeholder="Tu nombre y apellido" required />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" placeholder="tucorreo@gmail.com" required />
+                    <Label htmlFor="email2">Correo</Label>
+                    <Input id="email2" name="email" type="email" placeholder="tucorreo@gmail.com" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="code" className="flex items-center gap-1.5">
                       <KeyRound className="h-3.5 w-3.5" /> Clave de acceso
                     </Label>
                     <Input id="code" name="code" placeholder="GEN1K-2026" required autoComplete="off" />
-                    <p className="text-xs text-text-muted">Te la compartió Juan al confirmar tu cupo.</p>
-                  </div>
-
-                  {error && <p className="text-sm font-medium text-brand-danger">{error}</p>}
-
-                  <Button type="submit" variant="primary" size="lg" className="w-full" disabled={pending}>
-                    {pending ? 'Entrando…' : 'Entrar al portal'}
-                    {!pending && <ArrowRight className="h-4 w-4" />}
-                  </Button>
-                </motion.form>
-              ) : (
-                <motion.form
-                  key="returning"
-                  onSubmit={handleSubmit}
-                  initial={{ opacity: 0, x: 16 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -16 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-5"
-                >
-                  <div className="space-y-2">
-                    <Label htmlFor="email2" className="flex items-center gap-1.5">
-                      <Mail className="h-3.5 w-3.5" /> Email con el que te registraste
-                    </Label>
-                    <Input id="email2" name="email" type="email" placeholder="tucorreo@gmail.com" required />
                   </div>
 
                   {error && <p className="text-sm font-medium text-brand-danger">{error}</p>}
