@@ -18,11 +18,19 @@ export function VideoPlayer({
   titulo,
   vacio = 'Video en camino — Juan lo está grabando.',
   className,
+  onProgreso,
 }: {
   url: string | null | undefined;
   titulo?: string;
   vacio?: string;
   className?: string;
+  /**
+   * Fracción vista, de 0 a 1. Solo llega en los videos que se reproducen con
+   * <video> nativo (Cloudinary y archivos sueltos): en un iframe de YouTube o
+   * Loom no hay forma de saberlo desde fuera. Usa puedeMedirProgreso() antes
+   * de condicionar nada a esto.
+   */
+  onProgreso?: (fraccion: number) => void;
 }) {
   const video = normalizarVideo(url);
   // El póster se sustituye por el reproductor real al primer clic: así la
@@ -94,10 +102,23 @@ export function VideoPlayer({
         autoPlay={reproduciendo}
         playsInline
         preload={reproduciendo ? 'auto' : 'metadata'}
+        onTimeUpdate={
+          onProgreso &&
+          ((e) => {
+            const v = e.currentTarget;
+            if (v.duration > 0) onProgreso(v.currentTime / v.duration);
+          })
+        }
+        onEnded={onProgreso && (() => onProgreso(1))}
         className="absolute inset-0 h-full w-full bg-black"
       >
         Tu navegador no puede reproducir este video.
       </video>
     </div>
   );
+}
+
+/** Si este video puede informar de cuánto se ha visto. Los iframes no pueden. */
+export function puedeMedirProgreso(url: string | null | undefined): boolean {
+  return normalizarVideo(url).src !== null;
 }

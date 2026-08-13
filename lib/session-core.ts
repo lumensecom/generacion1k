@@ -12,6 +12,18 @@ export interface SessionPayload {
   name: string;
   role: 'student' | 'admin';
   intakeDone: boolean;
+  /**
+   * Si ya vio el video de bienvenida. Va en la cookie y no se consulta a la
+   * base en cada petición porque quien decide es el middleware, que corre en
+   * el Edge y no puede hablar con Supabase.
+   *
+   * Opcional porque las cookies firmadas antes de que esto existiera siguen
+   * siendo válidas 90 días y no lo traen. Ahí `undefined` cuenta como "no lo
+   * ha visto", que es lo que se quiere: el video es nuevo, no lo ha visto
+   * nadie todavía, y la puerta no debería poder saltarse por tener una sesión
+   * vieja abierta.
+   */
+  videoDone?: boolean;
   exp: number; // unix ms
 }
 

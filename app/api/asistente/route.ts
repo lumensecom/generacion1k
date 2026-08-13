@@ -80,7 +80,11 @@ export async function POST(request: Request) {
   // si no, una conversación larga arrastra siempre los módulos del principio.
   const contexto = construirContexto(pregunta, slug);
 
-  const sistema = systemPrompt(session.name.split(' ')[0] || session.name, moduloActual);
+  const sistema = systemPrompt(
+    session.name.split(' ')[0] || session.name,
+    moduloActual,
+    session.role === 'admin'
+  );
   const mensajes: Mensaje[] = [
     ...historial,
     { role: 'user', content: `${bloqueDeMaterial(contexto)}\n\nPREGUNTA DE ${session.name}:\n${pregunta}` },

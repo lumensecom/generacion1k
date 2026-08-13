@@ -2,9 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifySessionToken, SESSION_COOKIE } from '@/lib/session-core';
 
 // Protege todo /portal/**. La pantalla de acceso (/portal) siempre es
-// pública. El resto exige sesión válida; /portal/admin exige role=admin;
-// y si el estudiante no completó el cuestionario inicial, se le fuerza a
-// /portal/bienvenida antes de ver cualquier otro contenido.
+// pública. El resto exige sesión válida y /portal/admin exige role=admin.
+//
+// El estudiante pasa además por dos puertas, en este orden: el cuestionario
+// inicial (/portal/bienvenida) y el video de bienvenida (/portal/onboarding).
+// Hasta que no cruza las dos no ve ningún otro contenido. El orden importa:
+// el video da la bienvenida por su nombre, y ese nombre lo escribe él en el
+// cuestionario.
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
@@ -24,10 +28,21 @@ export async function middleware(req: NextRequest) {
   }
 
   if (session.role !== 'admin') {
-    if (!session.intakeDone && pathname !== '/portal/bienvenida') {
-      return NextResponse.redirect(new URL('/portal/bienvenida', req.url));
+    if (!session.intakeDone) {
+      return pathname === '/portal/bienvenida'
+        ? NextResponse.next()
+        : NextResponse.redirect(new URL('/portal/bienvenida', req.url));
     }
-    if (session.intakeDone && pathname === '/portal/bienvenida') {
+    if (pathname === '/portal/bienvenida') {
+      return NextResponse.redirect(new URL('/portal/onboarding', req.url));
+    }
+
+    if (!session.videoDone) {
+      return pathname === '/portal/onboarding'
+        ? NextResponse.next()
+        : NextResponse.redirect(new URL('/portal/onboarding', req.url));
+    }
+    if (pathname === '/portal/onboarding') {
       return NextResponse.redirect(new URL('/portal/inicio', req.url));
     }
   }

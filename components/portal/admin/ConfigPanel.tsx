@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
-import { toggleActiveGeneration, updateAccessCode } from '@/app/portal/admin/actions';
+import { toggleActiveGeneration, updateAccessCode, updateOnboardingVideo } from '@/app/portal/admin/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -10,14 +10,17 @@ import { Label } from '@/components/ui/label';
 export function ConfigPanel({
   initialActive,
   initialCode,
+  initialVideo,
   generation,
 }: {
   initialActive: boolean;
   initialCode: string;
+  initialVideo: string;
   generation: string;
 }) {
   const [active, setActive] = useState(initialActive);
   const [code, setCode] = useState(initialCode);
+  const [video, setVideo] = useState(initialVideo);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -36,6 +39,15 @@ export function ConfigPanel({
       const result = await updateAccessCode(code);
       if (result?.error) setError(result.error);
       else toast.success('Clave de acceso actualizada');
+    });
+  }
+
+  function handleSaveVideo() {
+    setError(null);
+    startTransition(async () => {
+      const result = await updateOnboardingVideo(video);
+      if (result?.error) setError(result.error);
+      else toast.success(video.trim() ? 'Video de bienvenida actualizado' : 'Video de bienvenida quitado');
     });
   }
 
@@ -76,6 +88,25 @@ export function ConfigPanel({
         </div>
         {error && <p className="mt-2 text-sm font-medium text-brand-danger">{error}</p>}
         <p className="mt-2 text-xs text-text-muted">Compártela con los nuevos estudiantes al confirmar su cupo.</p>
+      </div>
+
+      <div className="rounded-2xl border border-border bg-bg-card p-6">
+        <Label htmlFor="onboardingVideo">Video de bienvenida</Label>
+        <div className="mt-2 flex gap-2">
+          <Input
+            id="onboardingVideo"
+            value={video}
+            onChange={(e) => setVideo(e.target.value)}
+            placeholder="https://res.cloudinary.com/.../video/upload/..."
+          />
+          <Button type="button" variant="subtle" onClick={handleSaveVideo} disabled={pending}>
+            Guardar
+          </Button>
+        </div>
+        <p className="mt-2 text-xs text-text-muted">
+          Es la primera pantalla del estudiante después del cuestionario, y no puede entrar al
+          resto del portal sin terminarlo. Si lo dejas vacío, la pantalla deja pasar sin más.
+        </p>
       </div>
     </div>
   );

@@ -28,7 +28,7 @@ export const metadata = { title: 'Admin | Portal Generación 1K' };
 
 export default async function AdminPage() {
   const session = await requireSession();
-  const [summary, students, modules, accessCode, isActive, generation, preguntas, reuniones, clases, encuesta, proximasSesiones] =
+  const [summary, students, modules, accessCode, isActive, generation, videoBienvenida, preguntas, reuniones, clases, encuesta, proximasSesiones] =
     await Promise.all([
       getAdminSummary(),
       getAllStudents(),
@@ -36,6 +36,7 @@ export default async function AdminPage() {
       getPortalConfig('access_code'),
       getPortalConfig('is_active'),
       getPortalConfig('current_generation'),
+      getPortalConfig('onboarding_video_url'),
       getPreguntasConEstudiante(),
       getReunionesConEstudiante(),
       getClases(),
@@ -157,6 +158,7 @@ export default async function AdminPage() {
           <ConfigPanel
             initialActive={isActive === 'true'}
             initialCode={accessCode ?? ''}
+            initialVideo={videoBienvenida ?? ''}
             generation={generation ?? '1'}
           />
         }

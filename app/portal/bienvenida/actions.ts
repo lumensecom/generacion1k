@@ -56,5 +56,6 @@ export async function submitIntake(answers: IntakeAnswers): Promise<{ error?: st
   const { exp: _exp, ...rest } = session;
   await setSessionCookie({ ...rest, intakeDone: true });
 
-  redirect('/portal/inicio');
+  // La segunda puerta: el video de bienvenida.
+  redirect('/portal/onboarding');
 }

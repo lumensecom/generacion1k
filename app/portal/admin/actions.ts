@@ -56,6 +56,23 @@ export async function updateAccessCode(code: string) {
   return {};
 }
 
+/**
+ * El video de bienvenida, la puerta por la que pasa todo estudiante nuevo.
+ * Vaciarlo abre la puerta de par en par: sin enlace no hay nada que ver, y la
+ * página deja pasar en vez de encerrar a nadie.
+ */
+export async function updateOnboardingVideo(url: string) {
+  await requireAdmin();
+  const limpia = url.trim();
+  if (limpia && !tieneVideo(limpia)) {
+    return { error: 'Esa URL no se reconoce. Pega el enlace del video en Cloudinary.' };
+  }
+  await setPortalConfig('onboarding_video_url', limpia);
+  revalidatePath('/portal/admin');
+  revalidatePath('/portal/onboarding');
+  return {};
+}
+
 export async function toggleModuleLock(moduleId: string, isLocked: boolean) {
   await requireAdmin();
   await supabaseAdmin().from('modules').update({ is_locked: isLocked }).eq('id', moduleId);

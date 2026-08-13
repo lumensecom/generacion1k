@@ -22,6 +22,8 @@ export interface Student {
   /** Hash scrypt; null si la cuenta todavía entra por clave de acceso. */
   password_hash: string | null;
   password_set_at: string | null;
+  /** Cuándo vio el video de bienvenida. Null = todavía no ha pasado la puerta. */
+  onboarding_video_at: string | null;
   created_by_admin: boolean;
   plan: 'start' | 'growth' | null;
   plan_started_at: string | null;
@@ -121,6 +123,7 @@ export interface ActivityLogRow {
     | 'practice_completed'
     | 'module_completed'
     | 'intake_completed'
+    | 'onboarding_video_watched'
     | 'test_passed'
     | 'test_failed';
   metadata: Record<string, unknown> | null;

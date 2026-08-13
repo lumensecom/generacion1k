@@ -21,13 +21,28 @@ function safeCompare(a: string, b: string): boolean {
   return timingSafeEqual(bufA, bufB);
 }
 
-async function afterLogin(studentId: string, email: string, fullName: string, role: 'student' | 'admin') {
+async function afterLogin(
+  studentId: string,
+  email: string,
+  fullName: string,
+  role: 'student' | 'admin',
+  videoDone = false
+) {
   const intake = role === 'admin' ? null : await getStudentIntake(studentId);
-  await setSessionCookie({ sid: studentId, email, name: fullName, role, intakeDone: Boolean(intake) });
+  await setSessionCookie({
+    sid: studentId,
+    email,
+    name: fullName,
+    role,
+    intakeDone: Boolean(intake),
+    // Juan no pasa por la puerta del video: es suyo.
+    videoDone: role === 'admin' || videoDone,
+  });
   await logActivity(studentId, 'login');
 
   if (role === 'admin') redirect('/portal/admin');
-  redirect(intake ? '/portal/inicio' : '/portal/bienvenida');
+  if (!intake) redirect('/portal/bienvenida');
+  redirect(videoDone ? '/portal/inicio' : '/portal/onboarding');
 }
 
 /** Primera vez: nombre + email + clave de acceso general. */
@@ -64,7 +79,7 @@ export async function submitAccessCode(formData: FormData): Promise<ActionResult
       .from('students')
       .update({ full_name: fullName, last_login_at: new Date().toISOString() })
       .eq('id', existing.id);
-    await afterLogin(existing.id, email, fullName, existing.role as 'student' | 'admin');
+    await afterLogin(existing.id, email, fullName, existing.role as 'student' | 'admin', Boolean(existing.onboarding_video_at));
     return {};
   }
 
@@ -100,7 +115,7 @@ export async function submitReturningEmail(formData: FormData): Promise<ActionRe
 
   const admin = supabaseAdmin();
   await admin.from('students').update({ last_login_at: new Date().toISOString() }).eq('id', student.id);
-  await afterLogin(student.id, student.email, student.full_name, 'student');
+  await afterLogin(student.id, student.email, student.full_name, 'student', Boolean(student.onboarding_video_at));
   return {};
 }
 
@@ -188,6 +203,6 @@ export async function submitPasswordLogin(formData: FormData): Promise<ActionRes
     })
     .eq('id', student.id);
 
-  await afterLogin(student.id, student.email, student.full_name, student.role);
+  await afterLogin(student.id, student.email, student.full_name, student.role, Boolean(student.onboarding_video_at));
   return {};
 }

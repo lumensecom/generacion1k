@@ -595,6 +595,7 @@ export type Database = {
       };
       students: {
         Row: {
+          onboarding_video_at: string | null
           sessions_total: number | null
           plan_started_at: string | null
           plan: string | null
@@ -619,6 +620,7 @@ export type Database = {
           role: string;
         };
         Insert: {
+          onboarding_video_at?: string | null
           sessions_total?: number | null
           plan_started_at?: string | null
           plan?: string | null
@@ -643,6 +645,7 @@ export type Database = {
           role?: string;
         };
         Update: {
+          onboarding_video_at?: string | null
           sessions_total?: number | null
           plan_started_at?: string | null
           plan?: string | null

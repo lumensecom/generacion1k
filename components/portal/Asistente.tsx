@@ -262,7 +262,7 @@ export function Asistente({ nombre }: { nombre: string }) {
                           : 'border border-border bg-bg-card text-text-secondary'
                       )}
                     >
-                      {t.content ? <TextoConNegritas texto={t.content} /> : <Escribiendo />}
+                      {t.content ? <TextoDelAsistente texto={t.content} /> : <Escribiendo />}
                     </div>
                   </div>
                 ))}
@@ -327,11 +327,24 @@ export function Asistente({ nombre }: { nombre: string }) {
 // que es justo donde ayuda. Como el mensaje se pinta con whitespace-pre-wrap,
 // sin esto se verían los asteriscos literales.
 //
-// Se resuelven **negrita** y *cursiva* y nada más: es lo único que usa. Una
-// librería de markdown aquí pesaría más que el componente entero y además
-// traería enlaces e imágenes, que no queremos renderizar desde el modelo.
-function TextoConNegritas({ texto }: { texto: string }) {
-  const partes = texto.split(/(\*\*[^*]+\*\*|\*[^*\n]+\*)/g);
+// Se resuelven **negrita** y *cursiva* y nada más. Una librería de markdown
+// aquí pesaría más que el componente entero y además renderizaría enlaces e
+// imágenes, que es justo lo que no queremos venir de un modelo.
+//
+// Los encabezados y los enlaces se limpian antes de pintar. El prompt los
+// prohíbe, pero el asistente corre sobre el router de modelos gratis de
+// OpenRouter, que reparte entre modelos distintos en cada llamada y algunos
+// obedecen el formato peor que otros. En una prueba real uno se inventó un
+// "[Módulo 8](https://ejemplo.com/modulo8)": la URL no existía. Del enlace se
+// conserva el texto y se tira el destino — nunca se convierte en <a>.
+function limpiarMarkdown(texto: string): string {
+  return texto
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/^#{1,6}[ \t]+/gm, '');
+}
+
+function TextoDelAsistente({ texto }: { texto: string }) {
+  const partes = limpiarMarkdown(texto).split(/(\*\*[^*]+\*\*|\*[^*\n]+\*)/g);
   return (
     <>
       {partes.map((p, i) => {
