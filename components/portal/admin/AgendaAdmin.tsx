@@ -17,6 +17,7 @@ import {
   claveFranja,
   fechaCorta,
   hora as formatearHora,
+  claveLocal,
   diaISO,
 } from '@/lib/agenda';
 import type { Student, OneOnOneSession, GroupSession } from '@/lib/types';
@@ -24,11 +25,14 @@ import type { Student, OneOnOneSession, GroupSession } from '@/lib/types';
 const campo =
   'mt-1.5 w-full rounded-xl border border-border bg-bg-secondary px-3 py-2.5 text-[13.5px] text-white outline-none focus:border-brand-purple/60';
 
-/** El lunes que viene: el arranque natural de un patrón semanal. */
+/**
+ * El lunes que viene: el arranque natural de un patrón semanal. En hora de
+ * Bogotá, que si no el servidor pinta un día y el navegador otro.
+ */
 function proximoLunes(): string {
-  const d = new Date();
-  d.setDate(d.getDate() + ((8 - diaISO(d)) % 7 || 7));
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const hoy = new Date();
+  const salto = (8 - diaISO(hoy)) % 7 || 7;
+  return claveLocal(new Date(hoy.getTime() + salto * 24 * 60 * 60_000));
 }
 
 // Tres 1:1 a la semana es el ritmo del programa. Se pueden quitar o añadir,
@@ -51,11 +55,14 @@ export function AgendaAdmin({
   const [studentId, setStudentId] = useState(estudiantes[0]?.id ?? '');
   const estudiante = estudiantes.find((e) => e.id === studentId) ?? null;
 
+  // El calendario es el de la semana de Juan entera, no el de un estudiante:
+  // lo que necesita ver es si el martes a las 7 ya tiene a alguien. El
+  // selector de arriba elige a quién se le agenda, no a quién se mira.
   const eventos: EventoAgenda[] = useMemo(() => {
-    const suyas = sesiones.filter((s) => s.student_id === studentId);
+    const nombres = new Map(estudiantes.map((e) => [e.id, e.full_name.split(' ')[0]]));
     // Juan no propone temas: eso es del estudiante, y la acción lo rechazaría.
-    return construirAgenda(suyas, clases).map((e) => ({ ...e, puedeProponerTema: false }));
-  }, [sesiones, clases, studentId]);
+    return construirAgenda(sesiones, clases, nombres).map((e) => ({ ...e, puedeProponerTema: false }));
+  }, [sesiones, clases, estudiantes]);
 
   const suyasCount = sesiones.filter((s) => s.student_id === studentId).length;
 
@@ -86,7 +93,7 @@ export function AgendaAdmin({
         </select>
         <span className="mt-2 block text-[12.5px] text-text-muted">
           {suyasCount > 0
-            ? `${suyasCount} sesiones 1:1 agendadas. El calendario de abajo es el suyo.`
+            ? `${suyasCount} sesiones 1:1 agendadas.`
             : 'Sin sesiones todavía. Agéndaselas con el formulario de abajo.'}
         </span>
       </label>
@@ -94,9 +101,12 @@ export function AgendaAdmin({
       {estudiante && <ProgramarSesiones estudiante={estudiante} yaHay={suyasCount} />}
 
       <div>
-        <h2 className="mb-4 font-display text-lg font-extrabold tracking-tight">
-          Calendario de {estudiante?.full_name.split(' ')[0] ?? '—'}
+        <h2 className="mb-1 font-display text-lg font-extrabold tracking-tight">
+          Todas las sesiones
         </h2>
+        <p className="mb-4 text-[13px] text-text-muted">
+          Cada 1:1 lleva el nombre de quién es. La clase grupal es la misma para todos.
+        </p>
         <Agenda eventos={eventos} />
       </div>
     </div>

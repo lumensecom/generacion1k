@@ -17,6 +17,13 @@ export interface EventoAgenda {
   duracionMinutos: number;
   meetUrl: string | null;
   descripcion: string | null;
+  /**
+   * De quién es la 1:1. Solo se llena en la vista de Juan, que ve las de
+   * todos a la vez: sin el nombre en el chip, el calendario es una pared de
+   * "Sesión 1:1" imposible de leer. Al estudiante le llega en null porque en
+   * su agenda todas son suyas.
+   */
+  persona: string | null;
   /** Solo en las 1:1: lo que el estudiante pidió tratar. */
   temaEstudiante: string | null;
   /** Solo en las 1:1: su número dentro del plan. */
@@ -27,7 +34,7 @@ export interface EventoAgenda {
   puedeProponerTema: boolean;
 }
 
-export function eventoDeSesion(s: OneOnOneSession): EventoAgenda | null {
+export function eventoDeSesion(s: OneOnOneSession, persona: string | null = null): EventoAgenda | null {
   if (!s.scheduled_at) return null;
   return {
     id: s.id,
@@ -38,6 +45,7 @@ export function eventoDeSesion(s: OneOnOneSession): EventoAgenda | null {
     meetUrl: s.meet_url,
     // admin_notes son privadas de Juan: no se exponen al estudiante.
     descripcion: null,
+    persona,
     temaEstudiante: s.student_topic,
     numero: s.session_number,
     estado: s.status,
@@ -56,6 +64,7 @@ export function eventoDeClase(c: GroupSession): EventoAgenda | null {
     duracionMinutos: c.duration_minutes,
     meetUrl: c.meet_url,
     descripcion: c.description,
+    persona: null,
     temaEstudiante: null,
     numero: null,
     estado: 'agendada',
@@ -64,9 +73,17 @@ export function eventoDeClase(c: GroupSession): EventoAgenda | null {
   };
 }
 
-export function construirAgenda(sesiones: OneOnOneSession[], clases: GroupSession[]): EventoAgenda[] {
+/**
+ * `nombres` mapea student_id a cómo llamarle en el chip. Solo lo pasa la
+ * agenda de Juan, que mezcla las 1:1 de todos los estudiantes.
+ */
+export function construirAgenda(
+  sesiones: OneOnOneSession[],
+  clases: GroupSession[],
+  nombres?: Map<string, string>
+): EventoAgenda[] {
   return [
-    ...sesiones.map(eventoDeSesion),
+    ...sesiones.map((s) => eventoDeSesion(s, nombres?.get(s.student_id) ?? null)),
     ...clases.map(eventoDeClase),
   ]
     .filter((e): e is EventoAgenda => e !== null)
@@ -87,20 +104,62 @@ export function yaPaso(e: EventoAgenda): boolean {
   return new Date(e.inicio).getTime() + e.duracionMinutos * 60_000 < Date.now();
 }
 
+// ---------- Hora de Colombia ----------
+//
+// Todo lo de abajo va en hora de Bogotá, fijada a mano y no heredada del
+// proceso. Mientras se usó la hora local del proceso, el calendario decía dos
+// cosas distintas según dónde corriera el código: tu portátil va en hora de
+// Bogotá, pero Vercel va en UTC. En producción eso significaba que elegir las
+// 7 pm guardaba las 2 pm, y que una sesión de las 7 pm se pintaba a las 12 de
+// la noche del día siguiente.
+//
+// Colombia va en UTC-5 el año entero: no tiene horario de verano desde 1993.
+
+export const ZONA = 'America/Bogota';
+const DESFASE = -5 * 60 * 60_000;
+
+/** El mismo instante corrido, para que sus getters UTC den la hora de Bogotá. */
+function civil(d: Date): Date {
+  return new Date(d.getTime() + DESFASE);
+}
+
+/**
+ * El instante de una fecha y hora civiles de Bogotá; el inverso de civil().
+ *
+ * El mes va de 1 a 12 y los desbordamientos se normalizan solos, así que
+ * sumar días crudos es seguro: el 32 de agosto es el 1 de septiembre.
+ */
+export function instante(anio: number, mes: number, dia: number, h = 0, min = 0): Date {
+  return new Date(Date.UTC(anio, mes - 1, dia, h, min) - DESFASE);
+}
+
+/** Año, mes (1-12) y día de un instante, en Bogotá. */
+function partes(d: Date): [number, number, number] {
+  const c = civil(d);
+  return [c.getUTCFullYear(), c.getUTCMonth() + 1, c.getUTCDate()];
+}
+
 // ---------- Rejilla del mes ----------
 
 export interface Dia {
   fecha: Date;
-  /** Clave YYYY-MM-DD en hora local, para agrupar sin líos de zona. */
+  /** El número que se pinta en la celda. */
+  numero: number;
+  /** Clave YYYY-MM-DD en Bogotá, para agrupar sin líos de zona. */
   clave: string;
   delMes: boolean;
   esHoy: boolean;
 }
 
 export function claveLocal(d: Date): string {
-  // toISOString() pasa a UTC y en Colombia (UTC-5) eso mueve de día a
-  // cualquier evento de después de las 7 pm. Se compone a mano en local.
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const [anio, mes, dia] = partes(d);
+  return `${anio}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+}
+
+/** El primer día del mes que está a `meses` del ancla. Para los flechazos. */
+export function mesRelativo(ancla: Date, meses: number): Date {
+  const [anio, mes] = partes(ancla);
+  return instante(anio, mes + meses, 1);
 }
 
 /**
@@ -108,20 +167,24 @@ export function claveLocal(d: Date): string {
  * Siempre 42 celdas para que la altura no salte al cambiar de mes.
  */
 export function rejillaDelMes(ancla: Date): Dia[] {
-  const primero = new Date(ancla.getFullYear(), ancla.getMonth(), 1);
-  // getDay() da 0 para domingo; aquí la semana empieza en lunes.
-  const desplazamiento = (primero.getDay() + 6) % 7;
-  const inicio = new Date(primero);
-  inicio.setDate(primero.getDate() - desplazamiento);
+  const [anio, mes] = partes(ancla);
+  const desplazamiento = diaISO(instante(anio, mes, 1)) - 1;
 
   const hoy = claveLocal(new Date());
   const dias: Dia[] = [];
   for (let i = 0; i < 42; i++) {
-    const f = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate() + i);
-    const clave = claveLocal(f);
-    dias.push({ fecha: f, clave, delMes: f.getMonth() === ancla.getMonth(), esHoy: clave === hoy });
+    const f = instante(anio, mes, 1 - desplazamiento + i);
+    const [, mesF, diaF] = partes(f);
+    dias.push({ fecha: f, numero: diaF, clave: claveLocal(f), delMes: mesF === mes, esHoy: claveLocal(f) === hoy });
   }
   return dias;
+}
+
+/** ¿Cae este instante en el mes del ancla? */
+export function mismoMes(d: Date, ancla: Date): boolean {
+  const [anioD, mesD] = partes(d);
+  const [anioA, mesA] = partes(ancla);
+  return anioD === anioA && mesD === mesA;
 }
 
 export function agruparPorDia(eventos: EventoAgenda[]): Map<string, EventoAgenda[]> {
@@ -145,9 +208,9 @@ export function agruparPorDia(eventos: EventoAgenda[]): Map<string, EventoAgenda
  * salida del locale, que cambia entre plataformas.
  */
 export function hora(iso: string): string {
-  const d = new Date(iso);
-  const h = d.getHours();
-  const m = d.getMinutes();
+  const c = civil(new Date(iso));
+  const h = c.getUTCHours();
+  const m = c.getUTCMinutes();
   const sufijo = h < 12 ? 'am' : 'pm';
   const h12 = h % 12 === 0 ? 12 : h % 12;
   return m === 0 ? `${h12}${sufijo}` : `${h12}:${String(m).padStart(2, '0')}${sufijo}`;
@@ -160,15 +223,26 @@ export function fechaLarga(iso: string): string {
     month: 'long',
     hour: '2-digit',
     minute: '2-digit',
+    timeZone: ZONA,
+  });
+}
+
+/** El encabezado de día de la lista: "lunes, 17 de agosto". */
+export function fechaDia(iso: string): string {
+  return new Date(iso).toLocaleDateString('es-CO', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    timeZone: ZONA,
   });
 }
 
 export function nombreMes(d: Date): string {
-  return d.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
+  return d.toLocaleDateString('es-CO', { month: 'long', year: 'numeric', timeZone: ZONA });
 }
 
 export function fechaCorta(d: Date): string {
-  return d.toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
+  return d.toLocaleDateString('es-CO', { day: 'numeric', month: 'short', timeZone: ZONA });
 }
 
 // ---------- Patrón semanal (con esto se agenda) ----------
@@ -201,13 +275,14 @@ export function nombreDia(dia: number): string {
   return DIAS_SEMANA.find((d) => d.valor === dia)?.nombre ?? '';
 }
 
-/** getDay() da 0 para domingo; aquí la semana empieza en lunes. */
+/** getUTCDay() da 0 para domingo; aquí la semana empieza en lunes. */
 export function diaISO(d: Date): number {
-  return d.getDay() === 0 ? 7 : d.getDay();
+  const n = civil(d).getUTCDay();
+  return n === 0 ? 7 : n;
 }
 
 /**
- * "2026-08-17" a Date local a medianoche.
+ * "2026-08-17" (input date, sin zona) a la medianoche de ese día en Bogotá.
  *
  * new Date("2026-08-17") lo interpreta como UTC, y en Colombia eso es el 16
  * a las 7 pm: el patrón entero arrancaría un día antes.
@@ -215,8 +290,29 @@ export function diaISO(d: Date): number {
 export function fechaDesdeInput(texto: string): Date | null {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(texto.trim());
   if (!m) return null;
-  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  const d = instante(Number(m[1]), Number(m[2]), Number(m[3]));
   return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/**
+ * "2026-08-17T19:00" (input datetime-local, sin zona) como hora de Bogotá.
+ *
+ * new Date(texto) lo leería con la zona del proceso, que en Vercel es UTC:
+ * las 7 pm escritas a mano se guardaban como las 2 pm.
+ */
+export function fechaHoraDesdeInput(texto: string): Date | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/.exec(texto.trim());
+  if (!m) return null;
+  const d = instante(+m[1], +m[2], +m[3], +m[4], +m[5]);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/** Un instante de vuelta a lo que espera <input type="datetime-local">. */
+export function paraInputFechaHora(iso: string | null): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  return civil(d).toISOString().slice(0, 16);
 }
 
 export function franjaValida(f: Franja): boolean {
@@ -239,18 +335,22 @@ export function claveFranja(f: Franja): string {
  * cronológicamente aunque las franjas se hayan escrito en desorden.
  */
 export function fechasDelPatron(desde: Date, franjas: Franja[], semanas: number): Date[] {
+  const [anio, mes, dia] = partes(desde);
   const fechas: Date[] = [];
   for (const f of franjas) {
     if (!franjaValida(f)) continue;
     const [h, min] = f.hora.split(':').map(Number);
     const salto = (f.dia - diaISO(desde) + 7) % 7;
     for (let s = 0; s < semanas; s++) {
-      // El constructor normaliza el desbordamiento de mes, así que sumar
-      // días crudos es seguro incluso pasando de agosto a noviembre.
-      fechas.push(
-        new Date(desde.getFullYear(), desde.getMonth(), desde.getDate() + salto + s * 7, h, min)
-      );
+      // instante() normaliza el desbordamiento de mes, así que sumar días
+      // crudos es seguro incluso pasando de agosto a noviembre.
+      fechas.push(instante(anio, mes, dia + salto + s * 7, h, min));
     }
   }
   return fechas.sort((a, b) => a.getTime() - b.getTime());
+}
+
+/** Un instante N semanas después. En zona de desfase fijo son 7×24 h justas. */
+export function masSemanas(d: Date, semanas: number): Date {
+  return new Date(d.getTime() + semanas * 7 * 24 * 60 * 60_000);
 }

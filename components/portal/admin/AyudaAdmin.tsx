@@ -10,6 +10,7 @@ import {
 import { VideoPlayer } from '@/components/portal/VideoPlayer';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { paraInputFechaHora as paraInput } from '@/lib/agenda';
 import type { StudentQuestion, MeetingRequest, Student } from '@/lib/types';
 
 type Pregunta = StudentQuestion & { student: Student | null };
@@ -23,14 +24,6 @@ function fecha(iso: string | null) {
     hour: '2-digit',
     minute: '2-digit',
   });
-}
-
-/** Un ISO a lo que espera <input type="datetime-local"> (hora local). */
-function paraInput(iso: string | null): string {
-  if (!iso) return '';
-  const d = new Date(iso);
-  const off = d.getTimezoneOffset() * 60_000;
-  return new Date(d.getTime() - off).toISOString().slice(0, 16);
 }
 
 export function AyudaAdmin({ preguntas, reuniones }: { preguntas: Pregunta[]; reuniones: Reunion[] }) {

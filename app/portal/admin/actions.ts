@@ -25,6 +25,7 @@ import { aCentavos } from '@/lib/planes';
 import {
   type Franja,
   fechaDesdeInput,
+  fechaHoraDesdeInput,
   fechasDelPatron,
   franjaValida,
   claveFranja,
@@ -224,9 +225,9 @@ export async function actualizarReunionAdmin(formData: FormData) {
     id,
     status,
     adminNote: adminNote || null,
-    // El input datetime-local entrega hora local sin zona; se convierte a
-    // ISO aquí para que la base guarde siempre UTC.
-    scheduledAt: scheduledAt ? new Date(scheduledAt).toISOString() : null,
+    // datetime-local no lleva zona, así que se lee como hora de Bogotá y no
+    // como hora del proceso, que en Vercel es UTC.
+    scheduledAt: fechaHoraDesdeInput(scheduledAt)?.toISOString() ?? null,
   });
   revalidatePath('/portal/admin');
   revalidatePath('/portal/ayuda');
@@ -254,7 +255,7 @@ export async function crearClaseAdmin(formData: FormData) {
   await crearClase({
     title,
     description: description || null,
-    scheduledAt: scheduledAt ? new Date(scheduledAt).toISOString() : null,
+    scheduledAt: fechaHoraDesdeInput(scheduledAt)?.toISOString() ?? null,
     meetUrl: meetUrl || null,
     recordingUrl: recordingUrl || null,
     durationMinutes: Number.isFinite(duration) && duration > 0 ? duration : 90,
@@ -443,8 +444,8 @@ export async function generarClasesAdmin(formData: FormData) {
   const meetUrl = String(formData.get('meetUrl') ?? '').trim();
 
   if (!desdeTexto) return { error: 'Elige la fecha y hora de la primera clase.' };
-  const desde = new Date(desdeTexto);
-  if (Number.isNaN(desde.getTime())) return { error: 'Esa fecha no es válida.' };
+  const desde = fechaHoraDesdeInput(desdeTexto);
+  if (!desde) return { error: 'Esa fecha no es válida.' };
   if (!Number.isInteger(semanas) || semanas < 1 || semanas > 52) {
     return { error: 'Las semanas deben estar entre 1 y 52.' };
   }
@@ -477,9 +478,8 @@ export async function guardarSesionAdmin(formData: FormData) {
 
   const studentId = await actualizarSesion(id, {
     title: String(formData.get('title') ?? '').trim() || null,
-    // datetime-local entrega hora local sin zona; se pasa a ISO para que la
-    // base guarde siempre UTC y el calendario no se desplace.
-    scheduled_at: scheduledAt ? new Date(scheduledAt).toISOString() : null,
+    // datetime-local no lleva zona: se lee como hora de Bogotá.
+    scheduled_at: fechaHoraDesdeInput(scheduledAt)?.toISOString() ?? null,
     duration_minutes: Number.isFinite(duracion) && duracion > 0 ? duracion : 60,
     meet_url: String(formData.get('meetUrl') ?? '').trim() || null,
     status: String(formData.get('status') ?? 'pendiente') as OneOnOneSession['status'],

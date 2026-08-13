@@ -1,6 +1,7 @@
 import 'server-only';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import type { Json } from '@/lib/database.types';
+import { masSemanas } from '@/lib/agenda';
 import type {
   ActivityLogRow,
   Mentor,
@@ -637,11 +638,9 @@ export async function generarClasesSemanales(input: {
   meetUrl: string | null;
 }): Promise<void> {
   const filas = Array.from({ length: input.semanas }, (_, i) => {
-    const f = new Date(input.desde);
-    f.setDate(f.getDate() + i * 7);
     return {
       title: `${input.titulo} ${i + 1}`,
-      scheduled_at: f.toISOString(),
+      scheduled_at: masSemanas(input.desde, i).toISOString(),
       duration_minutes: input.duracionMinutos,
       meet_url: input.meetUrl,
     };

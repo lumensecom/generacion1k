@@ -28,7 +28,10 @@ import {
   claveLocal,
   hora,
   fechaLarga,
+  fechaDia,
   nombreMes,
+  mesRelativo,
+  mismoMes,
   enVivo,
   yaPaso,
 } from '@/lib/agenda';
@@ -64,8 +67,7 @@ export function Agenda({ eventos }: { eventos: EventoAgenda[] }) {
   const porDia = useMemo(() => agruparPorDia(eventos), [eventos]);
   const dias = useMemo(() => rejillaDelMes(ancla), [ancla]);
 
-  const mover = (meses: number) =>
-    setAncla((a) => new Date(a.getFullYear(), a.getMonth() + meses, 1));
+  const mover = (meses: number) => setAncla((a) => mesRelativo(a, meses));
 
   return (
     <>
@@ -157,7 +159,7 @@ export function Agenda({ eventos }: { eventos: EventoAgenda[] }) {
                           : 'text-text-muted/50'
                     )}
                   >
-                    {dia.fecha.getDate()}
+                    {dia.numero}
                   </span>
 
                   <div className="space-y-0.5">
@@ -175,7 +177,11 @@ export function Agenda({ eventos }: { eventos: EventoAgenda[] }) {
                         >
                           <span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', st.punto)} />
                           <span className="shrink-0 font-mono text-[10px] opacity-80">{hora(e.inicio)}</span>
-                          <span className="truncate text-white/85">{e.titulo}</span>
+                          {/* En una celda de calendario solo cabe una cosa. Si
+                              hay nombre gana el nombre: en la agenda de Juan
+                              lo que distingue una sesión de otra es de quién
+                              es, no que ponga "Sesión 1:1". */}
+                          <span className="truncate text-white/85">{e.persona ?? e.titulo}</span>
                         </button>
                       );
                     })}
@@ -224,10 +230,7 @@ function ListaAgenda({
 }) {
   // La lista sigue al mes que se está mirando, para que los botones de
   // navegación signifiquen lo mismo en las dos vistas.
-  const delMes = eventos.filter((e) => {
-    const d = new Date(e.inicio);
-    return d.getFullYear() === ancla.getFullYear() && d.getMonth() === ancla.getMonth();
-  });
+  const delMes = eventos.filter((e) => mismoMes(new Date(e.inicio), ancla));
 
   if (delMes.length === 0) {
     return (
@@ -253,11 +256,7 @@ function ListaAgenda({
           <div key={e.id}>
             {nuevoDia && (
               <p className="bg-black/20 px-5 py-2 font-mono text-[11px] uppercase tracking-wider text-text-muted">
-                {new Date(e.inicio).toLocaleDateString('es-CO', {
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long',
-                })}
+                {fechaDia(e.inicio)}
                 {clave === hoy && <span className="ml-2 text-brand-purpleLight">· hoy</span>}
               </p>
             )}
@@ -271,7 +270,9 @@ function ListaAgenda({
               <span className={cn('h-2 w-2 shrink-0 rounded-full', st.punto)} />
               <span className="w-16 shrink-0 font-mono text-[12px] text-text-secondary">{hora(e.inicio)}</span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-[14px] font-semibold text-white">{e.titulo}</span>
+                <span className="block truncate text-[14px] font-semibold text-white">
+                  {e.persona ? `${e.persona} · ${e.titulo}` : e.titulo}
+                </span>
                 <span className="text-[12px] text-text-muted">
                   {st.etiqueta} · {e.duracionMinutos} min
                 </span>
@@ -387,6 +388,11 @@ function DetalleEvento({ evento, onClose }: { evento: EventoAgenda | null; onClo
               <h3 className="mt-2 font-display text-xl font-extrabold leading-tight tracking-tight">
                 {evento.titulo}
               </h3>
+              {evento.persona && (
+                <p className="mt-1 text-[13.5px] font-semibold text-brand-purpleLight">
+                  {evento.persona}
+                </p>
+              )}
               <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] capitalize text-text-secondary">
                 <CalendarDays className="h-3.5 w-3.5 shrink-0" /> {fechaLarga(evento.inicio)}
                 <span className="normal-case text-text-muted">· {evento.duracionMinutos} min</span>

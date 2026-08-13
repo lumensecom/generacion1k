@@ -6,14 +6,8 @@ import { Check, CalendarPlus, Trash2, Wallet, ArrowRight } from 'lucide-react';
 import { guardarPlanYPagos, guardarSesionAdmin, borrarSesionAdmin } from '@/app/portal/admin/actions';
 import { LISTA_PLANES, plan as buscarPlan, sesionesDelEstudiante, formatearDinero } from '@/lib/planes';
 import { Button } from '@/components/ui/button';
+import { paraInputFechaHora as paraInput } from '@/lib/agenda';
 import type { Student, OneOnOneSession } from '@/lib/types';
-
-/** Un ISO a lo que espera <input type="datetime-local"> (hora local). */
-function paraInput(iso: string | null): string {
-  if (!iso) return '';
-  const d = new Date(iso);
-  return new Date(d.getTime() - d.getTimezoneOffset() * 60_000).toISOString().slice(0, 16);
-}
 
 const campo =
   'mt-1.5 w-full rounded-xl border border-border bg-bg-secondary px-3 py-2.5 text-[13.5px] text-white outline-none focus:border-brand-purple/60';
