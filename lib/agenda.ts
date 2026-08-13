@@ -295,6 +295,28 @@ export function fechaDesdeInput(texto: string): Date | null {
 }
 
 /**
+ * true si ese día (YYYY-MM-DD, en Bogotá) todavía no ha empezado.
+ *
+ * Se compara contra la medianoche de Bogotá: el 17 se abre a las 00:00 hora
+ * colombiana, no a las 7 de la tarde del 16, que es lo que pasaría midiendo
+ * en UTC.
+ */
+export function aunNoLlega(dia: string | null | undefined): boolean {
+  if (!dia) return false;
+  const d = fechaDesdeInput(dia);
+  return !!d && Date.now() < d.getTime();
+}
+
+/** "lunes 17 de agosto" a partir de un YYYY-MM-DD. Para anunciar estrenos. */
+export function diaLargo(dia: string): string {
+  const d = fechaDesdeInput(dia);
+  if (!d) return dia;
+  return d
+    .toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long', timeZone: ZONA })
+    .replace(',', '');
+}
+
+/**
  * "2026-08-17T19:00" (input datetime-local, sin zona) como hora de Bogotá.
  *
  * new Date(texto) lo leería con la zona del proceso, que en Vercel es UTC:

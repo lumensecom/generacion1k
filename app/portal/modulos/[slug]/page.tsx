@@ -15,7 +15,9 @@ import {
   getAttemptsForModule,
   getPassedModuleIds,
   isModuleUnlocked,
+  getPortalConfig,
 } from '@/lib/portal-data';
+import { aunNoLlega } from '@/lib/agenda';
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const mod = await getModuleBySlug(params.slug);
@@ -27,12 +29,18 @@ export default async function ModuloDetailPage({ params }: { params: { slug: str
   const [mod, allModules] = await Promise.all([getModuleBySlug(params.slug), getModules()]);
   if (!mod) notFound();
 
-  const [resources, progress, allAttempts, moduleAttempts] = await Promise.all([
+  const [resources, progress, allAttempts, moduleAttempts, videosDesde] = await Promise.all([
     getModuleResources(mod.id),
     getProgressForModule(session.sid, mod.id),
     getTestAttempts(session.sid),
     getAttemptsForModule(session.sid, mod.id),
+    getPortalConfig('videos_desde'),
   ]);
+
+  // Los videos tienen fecha de estreno. Juan los ve siempre, para poder
+  // revisar que cada uno quedó bien cargado antes de que se abran.
+  const videoDesde =
+    session.role !== 'admin' && aunNoLlega(videosDesde) ? videosDesde : null;
 
   const orderedIndex = allModules.findIndex((m) => m.id === mod.id);
   const prevSlug = orderedIndex > 0 ? allModules[orderedIndex - 1].slug : null;
@@ -92,6 +100,7 @@ export default async function ModuloDetailPage({ params }: { params: { slug: str
           latestAttempt={latestAttempt}
           prevSlug={prevSlug}
           nextSlug={nextSlug}
+          videoDesde={videoDesde}
         />
       )}
     </PortalShell>

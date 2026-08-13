@@ -26,6 +26,7 @@ import { markVideoWatched, togglePracticeItem, saveNotes, markModuleCompleted } 
 import type { ModuleResource, ModuleRow, StudentProgress, TestAttemptRow, TheoryBlock } from '@/lib/types';
 import type { ModuleContent } from '@/lib/modules-content';
 import { VideoPlayer, puedeMedirProgreso } from '@/components/portal/VideoPlayer';
+import { VideoProximamente } from '@/components/portal/VideoProximamente';
 
 export function ModuleTabsClient({
   module: mod,
@@ -35,6 +36,7 @@ export function ModuleTabsClient({
   latestAttempt,
   prevSlug,
   nextSlug,
+  videoDesde,
 }: {
   module: ModuleRow;
   content: ModuleContent | null;
@@ -43,6 +45,8 @@ export function ModuleTabsClient({
   latestAttempt: TestAttemptRow | null;
   prevSlug: string | null;
   nextSlug: string | null;
+  /** YYYY-MM-DD en que se abren los videos. null = ya están abiertos. */
+  videoDesde: string | null;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -165,13 +169,17 @@ export function ModuleTabsClient({
       </TabPanel>
 
       <TabPanel value="video" active={tab}>
-        <VideoPlayer
-          url={urlVideo}
-          titulo={mod.title}
-          onProgreso={mideAvance ? alAvanzar : undefined}
-        />
+        {videoDesde ? (
+          <VideoProximamente dia={videoDesde} />
+        ) : (
+          <VideoPlayer
+            url={urlVideo}
+            titulo={mod.title}
+            onProgreso={mideAvance ? alAvanzar : undefined}
+          />
+        )}
 
-        {mideAvance && !videoWatched && (
+        {!videoDesde && mideAvance && !videoWatched && (
           <div className="mt-4">
             <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.07]">
               <div
@@ -187,7 +195,7 @@ export function ModuleTabsClient({
           </div>
         )}
 
-        {mideAvance ? (
+        {videoDesde ? null : mideAvance ? (
           videoWatched && (
             <p className="mt-5 flex items-center gap-2 text-[13.5px] font-semibold text-brand-success">
               <CheckCircle2 className="h-4 w-4" /> Video visto

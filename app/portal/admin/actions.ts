@@ -73,6 +73,24 @@ export async function updateOnboardingVideo(url: string) {
   return {};
 }
 
+/**
+ * El día en que se abren los videos de los módulos y del aliado. Vacío = ya
+ * están abiertos. Es una fecha y no un interruptor para que se abra sola el
+ * día que toca, sin que Juan tenga que acordarse de venir a pulsar nada.
+ */
+export async function updateVideosDesde(dia: string) {
+  await requireAdmin();
+  const limpia = dia.trim();
+  if (limpia && !/^\d{4}-\d{2}-\d{2}$/.test(limpia)) {
+    return { error: 'Elige una fecha válida.' };
+  }
+  await setPortalConfig('videos_desde', limpia);
+  revalidatePath('/portal/admin');
+  revalidatePath('/portal/modulos', 'layout');
+  revalidatePath('/portal/mentores');
+  return {};
+}
+
 export async function toggleModuleLock(moduleId: string, isLocked: boolean) {
   await requireAdmin();
   await supabaseAdmin().from('modules').update({ is_locked: isLocked }).eq('id', moduleId);

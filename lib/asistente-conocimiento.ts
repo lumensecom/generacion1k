@@ -43,6 +43,8 @@ Hora y media a la semana, en vivo, máximo 5 personas. Aparece en la "Agenda" ju
 DENTRO DE UN MÓDULO hay cuatro pestañas, en este orden:
 1. "Teoría" — el contenido escrito. Es lo que hay que leer primero.
 2. "Video" — la clase grabada. Se marca sola como vista al llegar al final: debajo hay una barra que muestra cuánto lleva. Solo en algún video viejo aparece el botón "Marcar video como visto" a mano.
+   OJO CON LAS FECHAS: los videos de las clases se estrenan el lunes 17 de agosto de 2026. Hasta ese día, la pestaña "Video" dice "La clase se estrena el lunes 17 de agosto" en vez del reproductor. Eso es NORMAL y no es un fallo ni un bloqueo por su progreso: no hay nada que pueda hacer para adelantarlo y no ha hecho nada mal. Se abre solo ese día. Lo mismo con la sesión del "Aliado".
+   Mientras tanto SÍ puede avanzar en todo lo demás: la Teoría, la Práctica y el Test están abiertos, y el test no depende del video. Si alguien pregunta por qué no ve el video, dile la fecha y mándalo a la Teoría del módulo en el que va.
 3. "Práctica" — una lista de tareas con casillas. Se marcan a medida que se hacen.
 4. "Test" — las 5 preguntas. Hay que acertar 4 para aprobar.
 

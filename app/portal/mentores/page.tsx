@@ -3,14 +3,18 @@ import { requireSession } from '@/app/portal/actions';
 import { PortalShell } from '@/components/portal/PortalShell';
 import { RevealCard } from '@/components/animated/RevealCard';
 import { AnimatedDivider } from '@/components/animated/AnimatedDivider';
-import { getMentors } from '@/lib/portal-data';
+import { getMentors, getPortalConfig } from '@/lib/portal-data';
+import { aunNoLlega } from '@/lib/agenda';
+import { VideoProximamente } from '@/components/portal/VideoProximamente';
 import { VideoPlayer } from '@/components/portal/VideoPlayer';
 
 export const metadata = { title: 'Aliado del programa | Portal Generación 1K' };
 
 export default async function MentoresPage() {
   const session = await requireSession();
-  const mentors = await getMentors();
+  const [mentors, videosDesde] = await Promise.all([getMentors(), getPortalConfig('videos_desde')]);
+  // Misma fecha de estreno que las clases de los módulos.
+  const videoDesde = session.role !== 'admin' && aunNoLlega(videosDesde) ? videosDesde : null;
 
   return (
     <PortalShell session={session} theme="light">
@@ -61,11 +65,15 @@ export default async function MentoresPage() {
                 </div>
 
                 <div className="p-4 md:p-6">
-                  <VideoPlayer
-                    url={urlVideo}
-                    titulo={`Sesión de ${mentor.name}`}
-                    vacio="Sesión por grabar — vuelve pronto."
-                  />
+                  {videoDesde ? (
+                    <VideoProximamente dia={videoDesde} />
+                  ) : (
+                    <VideoPlayer
+                      url={urlVideo}
+                      titulo={`Sesión de ${mentor.name}`}
+                      vacio="Sesión por grabar — vuelve pronto."
+                    />
+                  )}
                 </div>
               </div>
             </RevealCard>
