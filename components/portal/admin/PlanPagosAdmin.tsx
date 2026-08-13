@@ -306,7 +306,7 @@ function FilaSesion({ sesion: s }: { sesion: OneOnOneSession }) {
             </label>
             <label className="block sm:col-span-2">
               <span className="text-[12px] font-bold text-text-secondary">
-                Grabación <span className="font-normal text-text-muted">(Cloudinary, opcional)</span>
+                Grabación <span className="font-normal text-text-muted">(Bunny o Cloudinary, opcional)</span>
               </span>
               <input name="recordingUrl" defaultValue={s.recording_url ?? ''} className={`${campo} font-mono text-[12px]`} />
             </label>

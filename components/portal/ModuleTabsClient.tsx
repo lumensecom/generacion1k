@@ -25,7 +25,7 @@ import { TestFlow } from '@/components/portal/TestFlow';
 import { markVideoWatched, togglePracticeItem, saveNotes, markModuleCompleted } from '@/app/portal/modulos/actions';
 import type { ModuleResource, ModuleRow, StudentProgress, TestAttemptRow, TheoryBlock } from '@/lib/types';
 import type { ModuleContent } from '@/lib/modules-content';
-import { VideoPlayer } from '@/components/portal/VideoPlayer';
+import { VideoPlayer, puedeMedirProgreso } from '@/components/portal/VideoPlayer';
 
 export function ModuleTabsClient({
   module: mod,
@@ -48,6 +48,7 @@ export function ModuleTabsClient({
   const [pending, startTransition] = useTransition();
   const [tab, setTab] = useState('intro');
   const [videoWatched, setVideoWatched] = useState(Boolean(progress?.video_watched));
+  const [avance, setAvance] = useState(0);
   const [checked, setChecked] = useState<Set<number>>(
     new Set(((progress?.practice_checked_items as unknown as number[]) ?? []))
   );
@@ -61,6 +62,9 @@ export function ModuleTabsClient({
   // El video propio (Cloudinary) manda; loom_url solo queda por si algún
   // módulo viejo todavía lo tenía cargado.
   const urlVideo = mod.video_url ?? mod.loom_url;
+  // Con Bunny y Cloudinary se sabe cuánto lleva visto; con YouTube o Loom no,
+  // y ahí el botón manual sigue siendo la única forma de marcarlo.
+  const mideAvance = puedeMedirProgreso(urlVideo);
   const legacyTheoryBlocks = (mod.theory_content as unknown as TheoryBlock[]) ?? [];
 
   function handleNotesChange(value: string) {
@@ -75,10 +79,32 @@ export function ModuleTabsClient({
 
   useEffect(() => () => notesTimer.current && clearTimeout(notesTimer.current), []);
 
+  // Se da por visto al 90%: el final suele ser la despedida, y exigir el
+  // 100% deja sin marcar a quien cierre unos segundos antes.
+  //
+  // El guardia es una ref y no el estado: onTimeUpdate dispara unas cuatro
+  // veces por segundo y setVideoWatched no se refleja hasta el siguiente
+  // render, así que mirando el estado se dispararían varias llamadas
+  // seguidas a la acción y otras tantas líneas de actividad duplicadas.
+  const marcando = useRef(false);
+  function alAvanzar(fraccion: number) {
+    setAvance(fraccion);
+    if (fraccion >= 0.9 && !marcando.current && !videoWatched) handleMarkVideo();
+  }
+
   function handleMarkVideo() {
+    if (marcando.current) return;
+    marcando.current = true;
     setVideoWatched(true);
     startTransition(async () => {
-      await markVideoWatched(mod.slug);
+      const r = await markVideoWatched(mod.slug);
+      // Si no se pudo guardar, la marca vuelve atrás: dejarla puesta le haría
+      // creer que ya está hecho cuando el progreso real sigue sin moverse.
+      if (r?.error) {
+        marcando.current = false;
+        setVideoWatched(false);
+        toast.error(r.error);
+      }
     });
   }
 
@@ -139,25 +165,53 @@ export function ModuleTabsClient({
       </TabPanel>
 
       <TabPanel value="video" active={tab}>
-        <VideoPlayer url={urlVideo} titulo={mod.title} />
+        <VideoPlayer
+          url={urlVideo}
+          titulo={mod.title}
+          onProgreso={mideAvance ? alAvanzar : undefined}
+        />
 
-        <Button
-          type="button"
-          variant={videoWatched ? 'subtle' : 'primary'}
-          className="mt-5"
-          onClick={handleMarkVideo}
-          disabled={videoWatched || pending}
-        >
-          {videoWatched ? (
-            <>
-              <CheckCircle2 className="h-4 w-4 text-brand-success" /> Video visto
-            </>
-          ) : (
-            <>
-              <PlayCircle className="h-4 w-4" /> Marcar video como visto
-            </>
-          )}
-        </Button>
+        {mideAvance && !videoWatched && (
+          <div className="mt-4">
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.07]">
+              <div
+                className="h-full rounded-full bg-brand-purpleLight transition-[width] duration-300"
+                style={{ width: `${Math.round(avance * 100)}%` }}
+              />
+            </div>
+            <p className="mt-2 text-[12.5px] text-text-muted">
+              {avance > 0
+                ? `Llevas ${Math.round(avance * 100)}%. Se marca solo al llegar al final.`
+                : 'Se marca solo cuando termines el video.'}
+            </p>
+          </div>
+        )}
+
+        {mideAvance ? (
+          videoWatched && (
+            <p className="mt-5 flex items-center gap-2 text-[13.5px] font-semibold text-brand-success">
+              <CheckCircle2 className="h-4 w-4" /> Video visto
+            </p>
+          )
+        ) : (
+          <Button
+            type="button"
+            variant={videoWatched ? 'subtle' : 'primary'}
+            className="mt-5"
+            onClick={handleMarkVideo}
+            disabled={videoWatched || pending}
+          >
+            {videoWatched ? (
+              <>
+                <CheckCircle2 className="h-4 w-4 text-brand-success" /> Video visto
+              </>
+            ) : (
+              <>
+                <PlayCircle className="h-4 w-4" /> Marcar video como visto
+              </>
+            )}
+          </Button>
+        )}
 
         <div className="mt-8">
           <p className="mb-2 text-sm font-bold text-text-secondary">Tus notas (privadas, solo tú y Juan)</p>

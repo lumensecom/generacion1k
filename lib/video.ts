@@ -5,7 +5,7 @@
 // nativo: sin cookies de terceros, sin logo ajeno, y con control real sobre
 // el reproductor.
 
-export type TipoVideo = 'cloudinary' | 'archivo' | 'loom' | 'youtube' | null;
+export type TipoVideo = 'bunny' | 'cloudinary' | 'archivo' | 'loom' | 'youtube' | null;
 
 export interface VideoNormalizado {
   tipo: TipoVideo;
@@ -48,9 +48,56 @@ function posterDeCloudinary(url: string): string | null {
   return `${base}so_0,f_jpg,q_auto,w_1280/${sinExtension}.jpg`;
 }
 
+/**
+ * Bunny Stream da dos formas de la misma clase y Juan puede pegar cualquiera:
+ * el reproductor embebido (iframe.mediadelivery.net/embed/BIBLIOTECA/GUID) o
+ * el HLS directo de la pull zone (vz-XXXX.b-cdn.net/GUID/playlist.m3u8).
+ *
+ * El HLS directo es el bueno: se reproduce con el <video> propio del portal,
+ * con su póster y midiendo cuánto se ha visto. Del embed no se puede deducir
+ * el HLS — el dominio de la pull zone es otro y no viene en la URL — así que
+ * ese cae al iframe. No se pierde la medición: el reproductor de Bunny habla
+ * player.js y el VideoPlayer lo escucha.
+ */
+function deBunny(url: string): VideoNormalizado | null {
+  // La pull zone sirve el HLS y también los MP4 sueltos. Los dos llevan el
+  // GUID en la ruta, que es lo que hace falta para armar la miniatura.
+  const cdn = url.match(/^(https?:\/\/[\w-]+\.b-cdn\.net)\/([0-9a-f-]{36})\/.+\.(m3u8|mp4)(\?|$)/i);
+  if (cdn) {
+    return {
+      tipo: 'bunny',
+      src: url,
+      embed: null,
+      // Bunny genera esta miniatura para todos los videos de la biblioteca.
+      poster: `${cdn[1]}/${cdn[2]}/thumbnail.jpg`,
+    };
+  }
+
+  const embed = url.match(/iframe\.mediadelivery\.net\/(?:embed|play)\/(\d+)\/([0-9a-f-]{36})/i);
+  if (embed) {
+    return {
+      tipo: 'bunny',
+      src: null,
+      // autoplay=false para que abrir la página no arranque el video solo.
+      embed: `https://iframe.mediadelivery.net/embed/${embed[1]}/${embed[2]}?autoplay=false&preload=false&responsive=true`,
+      poster: null,
+    };
+  }
+
+  return null;
+}
+
 export function normalizarVideo(url: string | null | undefined): VideoNormalizado {
-  const limpia = url?.trim();
+  let limpia = url?.trim();
   if (!limpia) return VACIO;
+
+  // Bunny entrega el reproductor como un <iframe ...> entero para copiar y
+  // pegar. Si viene así, se saca el src y se sigue con la URL a secas.
+  const iframe = limpia.match(/<iframe[^>]+src=["']([^"']+)["']/i);
+  if (iframe) limpia = iframe[1].trim();
+
+  const bunny = deBunny(limpia);
+  if (bunny) return bunny;
 
   // Cloudinary — el caso normal a partir de ahora.
   if (/res\.cloudinary\.com\/.+\/video\/upload\//i.test(limpia)) {

@@ -164,7 +164,7 @@ function TarjetaPregunta({ pregunta: p }: { pregunta: Pregunta }) {
           <label className="block">
             <span className="flex items-center gap-1.5 text-[12.5px] font-bold text-text-secondary">
               <Video className="h-3.5 w-3.5" /> Video de respuesta
-              <span className="font-normal text-text-muted">(URL de Cloudinary, opcional)</span>
+              <span className="font-normal text-text-muted">(URL de Bunny o Cloudinary, opcional)</span>
             </span>
             <input
               name="videoUrl"

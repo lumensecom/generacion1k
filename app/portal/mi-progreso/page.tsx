@@ -13,7 +13,9 @@ import {
   getCheckins,
   computeStreak,
   getStudentById,
+  diasAntes,
 } from '@/lib/portal-data';
+import { claveLocal } from '@/lib/agenda';
 import { cn } from '@/lib/utils';
 
 export const metadata = { title: 'Mi progreso | Portal Generación 1K' };
@@ -34,14 +36,14 @@ export default async function MiProgresoPage() {
 
   const stats = computeProgressStats(modules, progress);
   const streak = computeStreak(checkins);
-  const today = new Date().toISOString().slice(0, 10);
+  // Días en hora de Bogotá: en UTC, la noche colombiana ya cuenta como el
+  // día siguiente y la rejilla marcaba la casilla equivocada.
+  const today = claveLocal(new Date());
   const checkinMap = new Map(checkins.map((c) => [c.date, c.worked_today]));
   const checkedInToday = checkinMap.get(today) === true;
 
   const last30 = Array.from({ length: 30 }).map((_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (29 - i));
-    const key = d.toISOString().slice(0, 10);
+    const key = claveLocal(diasAntes(29 - i));
     return { date: key, worked: checkinMap.get(key) === true };
   });
 

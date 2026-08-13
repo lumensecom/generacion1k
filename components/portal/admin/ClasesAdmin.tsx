@@ -225,7 +225,7 @@ function NuevaClase() {
         </label>
         <label className="block sm:col-span-2">
           <span className="text-[12.5px] font-bold text-text-secondary">
-            Grabación <span className="font-normal text-text-muted">(URL de Cloudinary, se puede añadir después)</span>
+            Grabación <span className="font-normal text-text-muted">(URL de Bunny o Cloudinary, se puede añadir después)</span>
           </span>
           <input
             name="recordingUrl"
@@ -299,7 +299,7 @@ function FilaClase({ clase }: { clase: GroupSession }) {
 
       <div className="mt-4 flex flex-wrap items-end gap-2">
         <label className="min-w-[240px] flex-1">
-          <span className="text-[11.5px] font-bold text-text-secondary">Grabación (Cloudinary)</span>
+          <span className="text-[11.5px] font-bold text-text-secondary">Grabación (Bunny o Cloudinary)</span>
           <input
             value={url}
             onChange={(e) => setUrl(e.target.value)}

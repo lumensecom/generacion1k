@@ -1,7 +1,7 @@
 import 'server-only';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import type { Json } from '@/lib/database.types';
-import { masSemanas } from '@/lib/agenda';
+import { masSemanas, claveLocal } from '@/lib/agenda';
 import type {
   ActivityLogRow,
   Mentor,
@@ -133,32 +133,38 @@ export async function logActivity(
 }
 
 export async function getCheckins(studentId: string, days = 30): Promise<StudentCheckin[]> {
-  const since = new Date();
-  since.setDate(since.getDate() - days);
   const { data } = await supabaseAdmin()
     .from('student_checkins')
     .select('*')
     .eq('student_id', studentId)
-    .gte('date', since.toISOString().slice(0, 10))
+    .gte('date', claveLocal(diasAntes(days)))
     .order('date', { ascending: true });
   return (data as unknown as StudentCheckin[]) ?? [];
 }
 
+/** N días antes de ahora. En zona de desfase fijo son 24 h justas por día. */
+export function diasAntes(dias: number, desde = new Date()): Date {
+  return new Date(desde.getTime() - dias * 24 * 60 * 60_000);
+}
+
+/**
+ * Días seguidos trabajados, contando hacia atrás desde hoy.
+ *
+ * Si hoy todavía no ha marcado, la cuenta arranca ayer en vez de dar cero: a
+ * las 8 de la mañana nadie ha marcado nada aún, y ver la racha en cero por
+ * eso es sencillamente falso — el día no ha terminado.
+ */
 export function computeStreak(checkins: StudentCheckin[]): number {
   if (checkins.length === 0) return 0;
-  const dates = new Set(checkins.filter((c) => c.worked_today).map((c) => c.date));
-  let streak = 0;
-  const cursor = new Date();
-  for (;;) {
-    const key = cursor.toISOString().slice(0, 10);
-    if (dates.has(key)) {
-      streak += 1;
-      cursor.setDate(cursor.getDate() - 1);
-    } else {
-      break;
-    }
+  const dias = new Set(checkins.filter((c) => c.worked_today).map((c) => c.date));
+
+  let atras = dias.has(claveLocal(new Date())) ? 0 : 1;
+  let racha = 0;
+  while (dias.has(claveLocal(diasAntes(atras)))) {
+    racha += 1;
+    atras += 1;
   }
-  return streak;
+  return racha;
 }
 
 // ---------- Tests por módulo ----------

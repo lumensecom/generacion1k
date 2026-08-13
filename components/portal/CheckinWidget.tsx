@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Flame } from 'lucide-react';
 import { toast } from 'sonner';
 import { checkinToday } from '@/app/portal/mi-progreso/actions';
+import { claveLocal } from '@/lib/agenda';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -26,7 +27,10 @@ export function CheckinWidget({
 
   function handleCheckin() {
     setDone(true);
-    const today = new Date().toISOString().slice(0, 10);
+    // El mismo día que va a guardar el servidor. Con toISOString() la casilla
+    // que se pintaba de noche era la de mañana, que ni siquiera está en la
+    // rejilla: el check-in parecía no hacer nada hasta recargar.
+    const today = claveLocal(new Date());
     setLast30((prev) => {
       const rest = prev.filter((d) => d.date !== today);
       return [...rest, { date: today, worked: true }];

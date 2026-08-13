@@ -42,7 +42,7 @@ Hora y media a la semana, en vivo, máximo 5 personas. Aparece en la "Agenda" ju
 
 DENTRO DE UN MÓDULO hay cuatro pestañas, en este orden:
 1. "Teoría" — el contenido escrito. Es lo que hay que leer primero.
-2. "Video" — la clase grabada. Debajo está el botón "Marcar video como visto".
+2. "Video" — la clase grabada. Se marca sola como vista al llegar al final: debajo hay una barra que muestra cuánto lleva. Solo en algún video viejo aparece el botón "Marcar video como visto" a mano.
 3. "Práctica" — una lista de tareas con casillas. Se marcan a medida que se hacen.
 4. "Test" — las 5 preguntas. Hay que acertar 4 para aprobar.
 

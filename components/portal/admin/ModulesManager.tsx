@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 import type { ModuleRow } from '@/lib/types';
 
 function ModuleEditor({ mod }: { mod: ModuleRow }) {
-  // El video propio (Cloudinary) manda; loom_url solo se lee por si quedaba
+  // El video propio (Bunny o Cloudinary) manda; loom_url solo se lee por si quedaba
   // uno cargado de antes.
   const [videoUrl, setVideoUrl] = useState(mod.video_url ?? mod.loom_url ?? '');
   const [theoryJson, setTheoryJson] = useState(JSON.stringify(mod.theory_content ?? [], null, 2));
@@ -39,7 +39,7 @@ function ModuleEditor({ mod }: { mod: ModuleRow }) {
   return (
     <div className="space-y-5 border-t border-border p-6">
       <div className="space-y-2">
-        <label className="text-xs font-bold uppercase tracking-widest text-text-muted">Video (Cloudinary)</label>
+        <label className="text-xs font-bold uppercase tracking-widest text-text-muted">Video (Bunny o Cloudinary)</label>
         <div className="flex gap-2">
           <Input
             value={videoUrl}

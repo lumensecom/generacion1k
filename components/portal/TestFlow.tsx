@@ -46,6 +46,7 @@ export function TestFlow({
   const [answers, setAnswers] = useState<TestAnswerValue[]>(() => questions.map(() => null));
   const [phase, setPhase] = useState<'quiz' | 'results'>('quiz');
   const [result, setResult] = useState<{ score: number; passed: boolean } | null>(null);
+  const [noGuardado, setNoGuardado] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const [startedAt] = useState(() => Date.now());
 
@@ -68,16 +69,31 @@ export function TestFlow({
     setPhase('results');
 
     startTransition(async () => {
-      await submitTest(slug, {
-        score,
-        totalQuestions: questions.length,
-        answers,
-        durationSeconds: Math.round((Date.now() - startedAt) / 1000),
-      });
+      // Si esto falla en silencio, el estudiante ve "aprobaste" y el módulo
+      // siguiente le sigue saliendo bloqueado, sin ninguna explicación: el
+      // desbloqueo se calcula desde los intentos guardados, no desde lo que
+      // diga la pantalla. Así que el fallo tiene que verse.
+      try {
+        const r = await submitTest(slug, {
+          score,
+          totalQuestions: questions.length,
+          answers,
+          durationSeconds: Math.round((Date.now() - startedAt) / 1000),
+        });
+        if (r?.error) {
+          setNoGuardado(r.error);
+          return;
+        }
+        setNoGuardado(null);
+        router.refresh();
+      } catch {
+        setNoGuardado('No pudimos guardar tu resultado. Revisa tu conexión y repite el test.');
+      }
     });
   }
 
   function retry() {
+    setNoGuardado(null);
     setAnswers(questions.map(() => null));
     setIndex(0);
     setResult(null);
@@ -86,6 +102,13 @@ export function TestFlow({
 
   if (phase === 'results' && result) {
     return (
+      <>
+        {noGuardado && (
+          <p className="mb-5 rounded-xl border border-brand-danger/30 bg-brand-danger/10 px-4 py-3 text-[13.5px] text-brand-danger">
+            {noGuardado} Tu resultado no quedó guardado, así que el módulo siguiente seguirá
+            bloqueado hasta que repitas el test.
+          </p>
+        )}
       <ResultsScreen
         score={result.score}
         total={questions.length}
@@ -96,6 +119,7 @@ export function TestFlow({
         onRetry={retry}
         onReviewTheory={onReviewTheory}
       />
+      </>
     );
   }
 

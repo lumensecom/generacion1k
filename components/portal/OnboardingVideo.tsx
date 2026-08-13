@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useEffect, useRef, useTransition } from 'react';
 import { ArrowRight, Lock, Check } from 'lucide-react';
 import { marcarVideoVisto } from '@/app/portal/onboarding/actions';
 import { VideoPlayer, puedeMedirProgreso } from '@/components/portal/VideoPlayer';
@@ -20,6 +20,25 @@ export function OnboardingVideo({ url, nombre }: { url: string | null; nombre: s
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
+  // Red de seguridad. La medición dentro del iframe de Bunny depende de que
+  // su reproductor conteste por player.js, y eso no se puede dar por hecho:
+  // basta un cambio suyo o una biblioteca configurada distinto para que no
+  // llegue un solo evento. Si a los 75 segundos no ha llegado NINGUNO, la
+  // integración está rota y el botón se abre.
+  //
+  // No es un agujero para saltarse el video: mientras lleguen eventos, la
+  // puerta sigue cerrada hasta el 90%. Solo distingue "está rota" de "no la
+  // ha visto", y ante la duda prefiere dejar entrar. Un estudiante atrapado
+  // en una puerta que no puede cruzar es mucho peor que uno que se la salta.
+  const huboEvento = useRef(false);
+  useEffect(() => {
+    if (!medible) return;
+    const t = setTimeout(() => {
+      if (!huboEvento.current) setVisto(true);
+    }, 75_000);
+    return () => clearTimeout(t);
+  }, [medible]);
+
   function entrar() {
     setError(null);
     start(async () => {
@@ -34,7 +53,14 @@ export function OnboardingVideo({ url, nombre }: { url: string | null; nombre: s
         url={url}
         titulo="Bienvenido a Generación 1K Elite"
         vacio="El video de bienvenida está en camino. Puedes entrar al portal mientras tanto."
-        onProgreso={medible ? (f) => f >= VISTO && setVisto(true) : undefined}
+        onProgreso={
+          medible
+            ? (f) => {
+                huboEvento.current = true;
+                if (f >= VISTO) setVisto(true);
+              }
+            : undefined
+        }
       />
 
       <div className="mt-8 flex flex-col items-center gap-4">

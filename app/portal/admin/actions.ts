@@ -65,7 +65,7 @@ export async function updateOnboardingVideo(url: string) {
   await requireAdmin();
   const limpia = url.trim();
   if (limpia && !tieneVideo(limpia)) {
-    return { error: 'Esa URL no se reconoce. Pega el enlace del video en Cloudinary.' };
+    return { error: 'Esa URL no se reconoce. Pega el enlace de Bunny (el embed o el .m3u8) o el de Cloudinary.' };
   }
   await setPortalConfig('onboarding_video_url', limpia);
   revalidatePath('/portal/admin');
@@ -208,7 +208,7 @@ export async function responderPreguntaAdmin(formData: FormData) {
   if (!id) return { error: 'Falta la pregunta.' };
   if (!reply && !videoUrl) return { error: 'Escribe una recomendación o adjunta un video.' };
   if (videoUrl && !tieneVideo(videoUrl)) {
-    return { error: 'Esa URL de video no se reconoce. Pega el enlace del video en Cloudinary.' };
+    return { error: 'Esa URL de video no se reconoce. Pega el enlace de Bunny (el embed o el .m3u8) o el de Cloudinary.' };
   }
 
   await responderPregunta({ id, reply: reply || null, videoUrl: videoUrl || null });
@@ -266,7 +266,7 @@ export async function crearClaseAdmin(formData: FormData) {
 
   if (!title) return { error: 'Ponle un título a la clase.' };
   if (recordingUrl && !tieneVideo(recordingUrl)) {
-    return { error: 'Esa URL de grabación no se reconoce. Pega el enlace del video en Cloudinary.' };
+    return { error: 'Esa URL de grabación no se reconoce. Pega el enlace de Bunny o el de Cloudinary.' };
   }
 
   await crearClase({
@@ -286,7 +286,7 @@ export async function guardarGrabacionClase(id: string, recordingUrl: string) {
   await requireAdmin();
   const url = recordingUrl.trim();
   if (url && !tieneVideo(url)) {
-    return { error: 'Esa URL de video no se reconoce. Pega el enlace de Cloudinary.' };
+    return { error: 'Esa URL de video no se reconoce. Pega el enlace de Bunny o el de Cloudinary.' };
   }
   await actualizarClase(id, { recording_url: url || null });
   revalidatePath('/portal/admin');
@@ -343,7 +343,7 @@ export async function updateModuleVideoUrl(moduleId: string, videoUrl: string) {
   await requireAdmin();
   const url = videoUrl.trim();
   if (url && !tieneVideo(url)) {
-    return { error: 'Esa URL no se reconoce. Pega el enlace del video en Cloudinary.' };
+    return { error: 'Esa URL no se reconoce. Pega el enlace de Bunny (el embed o el .m3u8) o el de Cloudinary.' };
   }
   await supabaseAdmin().from('modules').update({ video_url: url || null }).eq('id', moduleId);
   revalidatePath('/portal/admin');
@@ -488,7 +488,7 @@ export async function guardarSesionAdmin(formData: FormData) {
   const scheduledAt = String(formData.get('scheduledAt') ?? '').trim();
   const recordingUrl = String(formData.get('recordingUrl') ?? '').trim();
   if (recordingUrl && !tieneVideo(recordingUrl)) {
-    return { error: 'Esa URL de grabación no se reconoce. Pega el enlace de Cloudinary.' };
+    return { error: 'Esa URL de grabación no se reconoce. Pega el enlace de Bunny o el de Cloudinary.' };
   }
 
   const duracion = Number(formData.get('durationMinutes') ?? 60);
