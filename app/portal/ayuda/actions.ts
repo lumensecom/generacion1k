@@ -62,6 +62,8 @@ export async function votarEncuesta(optionId: string) {
 
   await votar(encuesta.id, session.sid, optionId);
   revalidatePath('/portal/clases');
+  // La encuesta también se vota desde debajo del calendario.
+  revalidatePath('/portal/agenda');
   return {};
 }
 
@@ -78,5 +80,8 @@ export async function guardarTema(sessionId: string, tema: string) {
   if (!ok) return { error: 'Esa sesión no es tuya.' };
 
   revalidatePath('/portal/perfil');
+  // El tema se escribe DESDE la agenda: sin esto, al reabrir la sesión
+  // seguía apareciendo el texto viejo.
+  revalidatePath('/portal/agenda');
   return {};
 }

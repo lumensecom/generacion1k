@@ -99,16 +99,6 @@ export async function toggleModuleLock(moduleId: string, isLocked: boolean) {
   return {};
 }
 
-export async function updateModuleLoomUrl(moduleId: string, loomUrl: string) {
-  await requireAdmin();
-  await supabaseAdmin()
-    .from('modules')
-    .update({ loom_url: loomUrl.trim() || null })
-    .eq('id', moduleId);
-  revalidatePath('/portal/admin');
-  return {};
-}
-
 /**
  * Editor simple: el contenido teórico se edita como JSON (array de bloques
  * que entiende TheoryRenderer) y la práctica como una lista, un ítem por

@@ -33,8 +33,12 @@ export async function middleware(req: NextRequest) {
         ? NextResponse.next()
         : NextResponse.redirect(new URL('/portal/bienvenida', req.url));
     }
+    // Quien ya cruzó las dos puertas va directo a inicio. Mandarlo primero a
+    // onboarding para que este rebote otra vez sería un salto de más.
     if (pathname === '/portal/bienvenida') {
-      return NextResponse.redirect(new URL('/portal/onboarding', req.url));
+      return NextResponse.redirect(
+        new URL(session.videoDone ? '/portal/inicio' : '/portal/onboarding', req.url)
+      );
     }
 
     if (!session.videoDone) {

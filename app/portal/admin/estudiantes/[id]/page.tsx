@@ -4,6 +4,7 @@ import { MessageCircle, CheckCircle2, XCircle } from 'lucide-react';
 import { requireSession } from '@/app/portal/actions';
 import { PortalShell } from '@/components/portal/PortalShell';
 import { StudentActiveToggle } from '@/components/portal/admin/StudentActiveToggle';
+import { ResetPassword } from '@/components/portal/admin/ResetPassword';
 import { Button } from '@/components/ui/button';
 import { getModuleContent } from '@/lib/modules-content';
 import type { TestAnswerValue } from '@/lib/modules-content';
@@ -90,7 +91,7 @@ export default async function AdminStudentDetailPage({ params }: { params: { id:
             {student.email} {student.city && `· ${student.city}`} {student.age && `· ${student.age} años`}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap items-start justify-end gap-2">
           {waLink && (
             <a href={waLink} target="_blank" rel="noopener noreferrer">
               <Button type="button" variant="subtle" size="sm">
@@ -98,6 +99,7 @@ export default async function AdminStudentDetailPage({ params }: { params: { id:
               </Button>
             </a>
           )}
+          <ResetPassword studentId={student.id} nombre={student.full_name} />
           <StudentActiveToggle studentId={student.id} isActive={student.is_active} />
         </div>
       </div>

@@ -98,27 +98,6 @@ export async function submitAccessCode(formData: FormData): Promise<ActionResult
   return {};
 }
 
-/** Sesiones futuras: solo el email (ya existe la cuenta). */
-export async function submitReturningEmail(formData: FormData): Promise<ActionResult> {
-  const email = String(formData.get('email') ?? '')
-    .trim()
-    .toLowerCase();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'Ese correo no parece válido.' };
-
-  const student = await getStudentByEmail(email);
-  if (!student || !student.is_active) {
-    return { error: 'No encontramos una cuenta activa con ese correo. Usa la clave de acceso si es tu primera vez.' };
-  }
-  if (student.role === 'admin') {
-    return { error: 'Esa cuenta es de administrador. Usa la pestaña "Soy admin" para entrar.' };
-  }
-
-  const admin = supabaseAdmin();
-  await admin.from('students').update({ last_login_at: new Date().toISOString() }).eq('id', student.id);
-  await afterLogin(student.id, student.email, student.full_name, 'student', Boolean(student.onboarding_video_at));
-  return {};
-}
-
 /** Login del admin: correo fijo (ADMIN_EMAIL) + contraseña (ADMIN_PASSWORD). */
 export async function submitAdminLogin(formData: FormData): Promise<ActionResult> {
   const email = String(formData.get('email') ?? '')
