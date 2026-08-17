@@ -33,6 +33,15 @@ export const metadata: Metadata = {
   title: 'Portal de Estudiantes | Generación 1K Elite',
   description: 'Portal privado de estudiantes 1:1 de Generación 1K Elite.',
   robots: { index: false, follow: false },
+  // El icono se declara a mano y no por el archivo app/icon.png, porque el
+  // landing y /programa se sirven como HTML crudo sin pasar por este layout:
+  // así los tres apuntan al mismo archivo de public/ en vez de a la ruta con
+  // hash que genera Next.
+  icons: {
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
