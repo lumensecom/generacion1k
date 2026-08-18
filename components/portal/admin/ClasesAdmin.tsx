@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { CalendarPlus, Trash2, Check, BarChart3 } from 'lucide-react';
+import { CalendarPlus, Trash2, Check, BarChart3, Plus } from 'lucide-react';
 import {
   crearClaseAdmin,
   generarClasesAdmin,
@@ -11,6 +11,8 @@ import {
   cerrarEncuestaAdmin,
 } from '@/app/portal/admin/actions';
 import { Button } from '@/components/ui/button';
+import { DIAS_SEMANA, type Franja } from '@/lib/agenda';
+import { GRUPAL_DIAS, GRUPAL_HORA, GRUPAL_DURACION, GRUPAL_MEET } from '@/lib/reuniones';
 import type { GroupSession, SessionPoll } from '@/lib/types';
 
 function fecha(iso: string | null) {
@@ -57,8 +59,17 @@ export function ClasesAdmin({
   );
 }
 
+const campo =
+  'mt-1.5 w-full rounded-xl border border-border bg-bg-secondary px-3 py-2.5 text-[14px] text-white outline-none focus:border-brand-cyan/60';
+
 function GenerarClases() {
   const [abierto, setAbierto] = useState(false);
+  // Martes, jueves y domingo a las 7:30 — el ritmo del programa.
+  const [franjas, setFranjas] = useState<Franja[]>(
+    GRUPAL_DIAS.map((dia) => ({ dia, hora: GRUPAL_HORA }))
+  );
+  const cambiar = (i: number, c: Partial<Franja>) =>
+    setFranjas((f) => f.map((x, j) => (j === i ? { ...x, ...c } : x)));
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
@@ -81,51 +92,85 @@ function GenerarClases() {
 
   return (
     <form action={enviar} className="rounded-2xl border border-brand-cyan/25 bg-brand-cyan/[0.05] p-6">
-      <h3 className="font-display text-base font-extrabold">Clases semanales de una vez</h3>
-      <p className="mt-1.5 text-[13px] text-text-muted">
-        Crea las clases de todo el trimestre repitiendo el mismo día y hora cada semana.
-        Después le pones la grabación a cada una.
+      <h3 className="font-display text-base font-extrabold">Las clases del trimestre, de una vez</h3>
+      <p className="mt-1.5 text-[13px] leading-relaxed text-text-muted">
+        Tres a la semana. El patrón se repite hasta completar las semanas que pongas, y después
+        le añades la grabación a cada una.
       </p>
 
-      <div className="mt-5 grid gap-4 sm:grid-cols-2">
+      <div className="mt-5 space-y-3">
+        {franjas.map((f, i) => (
+          <div key={i} className="flex flex-wrap items-end gap-3">
+            <span className="mb-3 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/[0.07] font-mono text-[11px] text-text-secondary">
+              {i + 1}
+            </span>
+            <label className="min-w-[130px] flex-1">
+              <span className="text-[12.5px] font-bold text-text-secondary">Día</span>
+              <select
+                name="dia"
+                value={f.dia}
+                onChange={(e) => cambiar(i, { dia: Number(e.target.value) })}
+                className={campo}
+              >
+                {DIAS_SEMANA.map((d) => (
+                  <option key={d.valor} value={d.valor}>
+                    {d.nombre}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="w-[130px]">
+              <span className="text-[12.5px] font-bold text-text-secondary">Hora</span>
+              <input
+                type="time"
+                name="hora"
+                value={f.hora}
+                onChange={(e) => cambiar(i, { hora: e.target.value })}
+                className={campo}
+              />
+            </label>
+            <button
+              type="button"
+              onClick={() => setFranjas((x) => x.filter((_, j) => j !== i))}
+              disabled={franjas.length === 1}
+              aria-label={`Quitar la clase ${i + 1}`}
+              className="mb-1 rounded-lg p-2.5 text-text-muted transition-colors hover:bg-brand-danger/10 hover:text-brand-danger disabled:opacity-30"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {franjas.length < 7 && (
+        <button
+          type="button"
+          onClick={() => setFranjas((f) => [...f, { dia: 1, hora: GRUPAL_HORA }])}
+          className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-border px-3.5 py-2 text-[12.5px] font-semibold text-text-secondary transition-colors hover:border-brand-cyan/50 hover:text-white"
+        >
+          <Plus className="h-3.5 w-3.5" /> Añadir otra clase semanal
+        </button>
+      )}
+
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <label className="block sm:col-span-2">
           <span className="text-[12.5px] font-bold text-text-secondary">Título base</span>
-          <input
-            name="titulo"
-            defaultValue="Clase grupal · semana"
-            className="mt-1.5 w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-[14px] text-white outline-none focus:border-brand-purple/60"
-          />
+          <input name="titulo" defaultValue="Clase grupal · ÉLITE 1K" className={campo} />
           <span className="mt-1 block text-[11.5px] text-text-muted">
-            Se le añade el número: &ldquo;Clase grupal · semana 1&rdquo;, &ldquo;… 2&rdquo;, etc.
+            Se le añade el número en orden de fecha: &ldquo;… 1&rdquo;, &ldquo;… 2&rdquo;, etc.
           </span>
         </label>
         <label className="block">
-          <span className="text-[12.5px] font-bold text-text-secondary">Primera clase</span>
-          <input
-            type="datetime-local"
-            name="desde"
-            required
-            className="mt-1.5 w-full rounded-xl border border-border bg-bg-secondary px-3 py-2.5 text-[14px] text-white outline-none focus:border-brand-purple/60"
-          />
+          <span className="text-[12.5px] font-bold text-text-secondary">Desde</span>
+          <input type="date" name="desde" required className={campo} />
         </label>
         <label className="block">
           <span className="text-[12.5px] font-bold text-text-secondary">Cuántas semanas</span>
-          <input
-            type="number"
-            name="semanas"
-            min={1}
-            max={52}
-            defaultValue={12}
-            className="mt-1.5 w-full rounded-xl border border-border bg-bg-secondary px-3 py-2.5 text-[14px] text-white outline-none focus:border-brand-purple/60"
-          />
+          <input type="number" name="semanas" min={1} max={52} defaultValue={12} className={campo} />
         </label>
         <label className="block">
           <span className="text-[12.5px] font-bold text-text-secondary">Duración (min)</span>
-          <select
-            name="duracion"
-            defaultValue={90}
-            className="mt-1.5 w-full rounded-xl border border-border bg-bg-secondary px-3 py-2.5 text-[14px] text-white outline-none focus:border-brand-purple/60"
-          >
+          <select name="duracion" defaultValue={GRUPAL_DURACION} className={campo}>
             <option value={60}>60</option>
             <option value={90}>90</option>
             <option value={120}>120</option>
@@ -133,13 +178,20 @@ function GenerarClases() {
         </label>
         <label className="block">
           <span className="text-[12.5px] font-bold text-text-secondary">Link de la videollamada</span>
-          <input
-            name="meetUrl"
-            placeholder="https://meet.google.com/..."
-            className="mt-1.5 w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 font-mono text-[12.5px] text-white outline-none placeholder:text-text-muted focus:border-brand-purple/60"
-          />
+          <input name="meetUrl" defaultValue={GRUPAL_MEET} className={`${campo} font-mono text-[12px]`} />
         </label>
       </div>
+
+      <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-bg-secondary/60 p-4">
+        <input type="checkbox" name="reemplazar" className="mt-0.5 h-4 w-4 shrink-0 accent-brand-cyan" />
+        <span>
+          <span className="block text-[13px] font-bold text-white">Reemplazar las clases futuras</span>
+          <span className="mt-0.5 block text-[12.5px] leading-relaxed text-text-muted">
+            Borra las que aún no han pasado antes de crear estas. Sin marcar, se añaden a las que
+            ya hay y quedarán duplicadas.
+          </span>
+        </span>
+      </label>
 
       {error && (
         <p className="mt-4 rounded-lg border border-brand-danger/30 bg-brand-danger/10 px-4 py-2.5 text-[13px] text-brand-danger">

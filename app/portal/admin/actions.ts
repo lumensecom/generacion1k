@@ -18,6 +18,7 @@ import {
   programarSesiones,
   renumerarSesiones,
   generarClasesSemanales,
+  borrarClasesFuturas,
   actualizarSesion,
   borrarSesion,
 } from '@/lib/portal-data';
@@ -30,6 +31,7 @@ import {
   franjaValida,
   claveFranja,
 } from '@/lib/agenda';
+import { GRUPAL_DURACION } from '@/lib/reuniones';
 import { hashPassword, generarPassword, MIN_PASSWORD } from '@/lib/password';
 import { tieneVideo } from '@/lib/video';
 import type { MeetingRequest, OneOnOneSession } from '@/lib/types';
@@ -460,32 +462,55 @@ export async function programarSesionesAdmin(formData: FormData) {
 }
 
 /** Crea las clases grupales de todo el trimestre de una sola vez. */
+/**
+ * Crea las clases grupales del trimestre. Son TRES por semana (martes, jueves
+ * y domingo), no una: el peso del acompañamiento está aquí y las 1:1 pasaron
+ * a pedirse. Las franjas llegan del formulario, con esas tres por defecto.
+ */
 export async function generarClasesAdmin(formData: FormData) {
   await requireAdmin();
   const titulo = String(formData.get('titulo') ?? '').trim() || 'Clase grupal';
   const desdeTexto = String(formData.get('desde') ?? '').trim();
   const semanas = Number(formData.get('semanas') ?? 12);
-  const duracion = Number(formData.get('duracion') ?? 90);
+  const duracion = Number(formData.get('duracion') ?? GRUPAL_DURACION);
   const meetUrl = String(formData.get('meetUrl') ?? '').trim();
+  const reemplazar = formData.get('reemplazar') === 'on';
 
-  if (!desdeTexto) return { error: 'Elige la fecha y hora de la primera clase.' };
-  const desde = fechaHoraDesdeInput(desdeTexto);
+  if (!desdeTexto) return { error: 'Elige la fecha desde la que arrancan las clases.' };
+  const desde = fechaDesdeInput(desdeTexto);
   if (!desde) return { error: 'Esa fecha no es válida.' };
   if (!Number.isInteger(semanas) || semanas < 1 || semanas > 52) {
     return { error: 'Las semanas deben estar entre 1 y 52.' };
   }
 
-  await generarClasesSemanales({
+  const dias = formData.getAll('dia').map((v) => Number(v));
+  const horas = formData.getAll('hora').map((v) => String(v).trim());
+  const franjas: Franja[] = dias
+    .map((dia, i) => ({ dia, hora: horas[i] ?? '' }))
+    .filter((f) => f.hora !== '');
+
+  if (franjas.length === 0) return { error: 'Añade al menos un día y una hora.' };
+  if (franjas.some((f) => !franjaValida(f))) {
+    return { error: 'Alguno de los horarios no es válido. Revisa el día y la hora.' };
+  }
+  if (new Set(franjas.map(claveFranja)).size !== franjas.length) {
+    return { error: 'Hay dos horarios repetidos el mismo día. Cambia uno.' };
+  }
+
+  const borradas = reemplazar ? await borrarClasesFuturas() : 0;
+  const creadas = await generarClasesSemanales({
     titulo,
     desde,
+    franjas,
     semanas,
-    duracionMinutos: Number.isFinite(duracion) && duracion > 0 ? duracion : 90,
+    duracionMinutos: Number.isFinite(duracion) && duracion > 0 ? duracion : GRUPAL_DURACION,
     meetUrl: meetUrl || null,
   });
+
   revalidatePath('/portal/admin');
-  revalidatePath('/portal/agenda');
   revalidatePath('/portal/clases');
-  return {};
+  revalidatePath('/portal/agenda');
+  return { ok: `${creadas} clases creadas${borradas > 0 ? `, ${borradas} futuras reemplazadas` : ''}.` };
 }
 
 export async function guardarSesionAdmin(formData: FormData) {

@@ -1,4 +1,4 @@
-import type { OneOnOneSession, GroupSession } from '@/lib/types';
+import type { OneOnOneSession, GroupSession, MeetingRequest } from '@/lib/types';
 
 // Une los dos tipos de sesión en una sola lista para el calendario.
 //
@@ -74,17 +74,49 @@ export function eventoDeClase(c: GroupSession): EventoAgenda | null {
 }
 
 /**
+ * Una 1:1 pedida por el estudiante y ya confirmada por Juan.
+ *
+ * Las solicitudes viven en su propia tabla, no en one_on_one_sessions, y sin
+ * esto no salían en ningún calendario: el estudiante pedía la reunión, Juan
+ * le ponía fecha, y esa fecha solo se veía en la pestaña de Ayuda. Ahora que
+ * las 1:1 se piden en vez de programarse, esta ES la 1:1.
+ */
+export function eventoDeReunion(r: MeetingRequest, persona: string | null = null): EventoAgenda | null {
+  if (!r.scheduled_at || r.status === 'pendiente' || r.status === 'cancelada') return null;
+  return {
+    id: `reunion-${r.id}`,
+    tipo: 'individual',
+    titulo: 'Sesión 1:1',
+    inicio: r.scheduled_at,
+    duracionMinutos: 60,
+    meetUrl: null,
+    // admin_note es la nota privada de Juan; lo que se enseña es lo que el
+    // propio estudiante escribió al pedirla.
+    descripcion: null,
+    persona,
+    temaEstudiante: r.question,
+    numero: null,
+    estado: r.status,
+    grabacionUrl: null,
+    // El tema ya lo escribió al solicitarla: no hay nada que proponer aquí.
+    puedeProponerTema: false,
+  };
+}
+
+/**
  * `nombres` mapea student_id a cómo llamarle en el chip. Solo lo pasa la
- * agenda de Juan, que mezcla las 1:1 de todos los estudiantes.
+ * agenda de Juan, que mezcla las de todos los estudiantes.
  */
 export function construirAgenda(
   sesiones: OneOnOneSession[],
   clases: GroupSession[],
-  nombres?: Map<string, string>
+  nombres?: Map<string, string>,
+  reuniones: MeetingRequest[] = []
 ): EventoAgenda[] {
   return [
     ...sesiones.map((s) => eventoDeSesion(s, nombres?.get(s.student_id) ?? null)),
     ...clases.map(eventoDeClase),
+    ...reuniones.map((r) => eventoDeReunion(r, nombres?.get(r.student_id) ?? null)),
   ]
     .filter((e): e is EventoAgenda => e !== null)
     .sort((a, b) => a.inicio.localeCompare(b.inicio));

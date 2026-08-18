@@ -1,7 +1,7 @@
 import 'server-only';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import type { Json } from '@/lib/database.types';
-import { masSemanas, claveLocal } from '@/lib/agenda';
+import { masSemanas, claveLocal, fechasDelPatron, type Franja } from '@/lib/agenda';
 import type {
   ActivityLogRow,
   Mentor,
@@ -635,23 +635,41 @@ export async function renumerarSesiones(studentId: string): Promise<void> {
   await supabaseAdmin().rpc('renumerar_sesiones', { p_student: studentId });
 }
 
-/** Crea N clases grupales semanales desde una fecha. */
+/**
+ * Crea las clases grupales de todo el plan desde el patrón semanal.
+ *
+ * Ahora son varias por semana (martes, jueves y domingo), así que usa el mismo
+ * motor de patrones que las 1:1 en vez de sumar siete días en bucle. Se
+ * numeran en orden cronológico, no por franja: al estudiante le importa que
+ * la 5 vaya después de la 4, no de qué día de la semana es cada una.
+ */
 export async function generarClasesSemanales(input: {
   titulo: string;
   desde: Date;
+  franjas: Franja[];
   semanas: number;
   duracionMinutos: number;
   meetUrl: string | null;
-}): Promise<void> {
-  const filas = Array.from({ length: input.semanas }, (_, i) => {
-    return {
-      title: `${input.titulo} ${i + 1}`,
-      scheduled_at: masSemanas(input.desde, i).toISOString(),
-      duration_minutes: input.duracionMinutos,
-      meet_url: input.meetUrl,
-    };
-  });
+}): Promise<number> {
+  const fechas = fechasDelPatron(input.desde, input.franjas, input.semanas);
+  const filas = fechas.map((f, i) => ({
+    title: `${input.titulo} ${i + 1}`,
+    scheduled_at: f.toISOString(),
+    duration_minutes: input.duracionMinutos,
+    meet_url: input.meetUrl,
+  }));
   if (filas.length > 0) await supabaseAdmin().from('group_sessions').insert(filas);
+  return filas.length;
+}
+
+/** Borra las clases grupales que aún no han pasado. Devuelve cuántas. */
+export async function borrarClasesFuturas(): Promise<number> {
+  const { data } = await supabaseAdmin()
+    .from('group_sessions')
+    .delete()
+    .gte('scheduled_at', new Date().toISOString())
+    .select('id');
+  return data?.length ?? 0;
 }
 
 /** Devuelve el estudiante de la sesión, que hace falta para renumerar. */

@@ -20,7 +20,7 @@ import {
   claveLocal,
   diaISO,
 } from '@/lib/agenda';
-import type { Student, OneOnOneSession, GroupSession } from '@/lib/types';
+import type { Student, OneOnOneSession, GroupSession, MeetingRequest } from '@/lib/types';
 
 const campo =
   'mt-1.5 w-full rounded-xl border border-border bg-bg-secondary px-3 py-2.5 text-[13.5px] text-white outline-none focus:border-brand-purple/60';
@@ -35,22 +35,20 @@ function proximoLunes(): string {
   return claveLocal(new Date(hoy.getTime() + salto * 24 * 60 * 60_000));
 }
 
-// Tres 1:1 a la semana es el ritmo del programa. Se pueden quitar o añadir,
-// pero el formulario abre con las tres puestas para no teclear de más.
-const FRANJAS_INICIALES: Franja[] = [
-  { dia: 1, hora: '19:00' },
-  { dia: 3, hora: '19:00' },
-  { dia: 5, hora: '19:00' },
-];
+// Una sola franja por defecto: las 1:1 se piden, y abrir con tres invitaba a
+// volver a programar el patrón semanal del modelo anterior.
+const FRANJAS_INICIALES: Franja[] = [{ dia: 1, hora: '19:00' }];
 
 export function AgendaAdmin({
   estudiantes,
   sesiones,
   clases,
+  reuniones,
 }: {
   estudiantes: Student[];
   sesiones: OneOnOneSession[];
   clases: GroupSession[];
+  reuniones: MeetingRequest[];
 }) {
   const [studentId, setStudentId] = useState(estudiantes[0]?.id ?? '');
   const estudiante = estudiantes.find((e) => e.id === studentId) ?? null;
@@ -61,8 +59,11 @@ export function AgendaAdmin({
   const eventos: EventoAgenda[] = useMemo(() => {
     const nombres = new Map(estudiantes.map((e) => [e.id, e.full_name.split(' ')[0]]));
     // Juan no propone temas: eso es del estudiante, y la acción lo rechazaría.
-    return construirAgenda(sesiones, clases, nombres).map((e) => ({ ...e, puedeProponerTema: false }));
-  }, [sesiones, clases, estudiantes]);
+    return construirAgenda(sesiones, clases, nombres, reuniones).map((e) => ({
+      ...e,
+      puedeProponerTema: false,
+    }));
+  }, [sesiones, clases, estudiantes, reuniones]);
 
   const suyasCount = sesiones.filter((s) => s.student_id === studentId).length;
 
@@ -158,8 +159,9 @@ function ProgramarSesiones({ estudiante, yaHay }: { estudiante: Student; yaHay: 
         <CalendarPlus className="h-4 w-4 text-brand-purpleLight" /> Agendar sesiones 1:1
       </h2>
       <p className="mt-1.5 text-[13px] leading-relaxed text-text-muted">
-        Elige el día y la hora de cada 1:1 de la semana. Ese patrón se repite hasta completar
-        las semanas del plan. La clase grupal es aparte y le sale a todos.
+        <strong className="font-semibold text-white">Normalmente no necesitas esto.</strong> Las
+        1:1 las pide el estudiante desde Ayuda —dos por semana, sin acumular— y tú les pones fecha
+        al confirmarlas. Este formulario es para dejar un bloque fijo con alguien concreto.
       </p>
 
       <div className="mt-5 space-y-3">

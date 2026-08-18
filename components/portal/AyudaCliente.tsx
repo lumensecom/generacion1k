@@ -7,6 +7,7 @@ import { enviarPregunta, solicitarReunion } from '@/app/portal/ayuda/actions';
 import { VideoPlayer } from '@/components/portal/VideoPlayer';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { cupoRestante, CUPO_SEMANAL_1A1 } from '@/lib/reuniones';
 import type { StudentQuestion, MeetingRequest } from '@/lib/types';
 
 const ESTADO_PREGUNTA: Record<string, { texto: string; clase: string }> = {
@@ -192,6 +193,11 @@ function Preguntas({ preguntas }: { preguntas: StudentQuestion[] }) {
 }
 
 function Reuniones({ reuniones }: { reuniones: MeetingRequest[] }) {
+  // El cupo se calcula aquí y también en el servidor. Este es para que se vea
+  // antes de escribir; el que manda es el del servidor.
+  const restante = cupoRestante(reuniones);
+  const sinCupo = restante <= 0;
+
   const [pregunta, setPregunta] = useState('');
   const [disponibilidad, setDisponibilidad] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -216,11 +222,30 @@ function Reuniones({ reuniones }: { reuniones: MeetingRequest[] }) {
   return (
     <div className="space-y-8">
       <div className="rounded-2xl border border-brand-purple/30 bg-gradient-to-b from-brand-purple/[0.09] to-transparent p-6">
-        <h2 className="font-display text-lg font-extrabold tracking-tight">Solicitar reunión 1:1</h2>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <h2 className="font-display text-lg font-extrabold tracking-tight">Solicitar reunión 1:1</h2>
+          <span
+            className={cn(
+              'shrink-0 rounded-full px-3 py-1 font-mono text-[11px] font-bold',
+              sinCupo ? 'bg-white/[0.07] text-text-muted' : 'bg-brand-yellow/15 text-brand-yellow'
+            )}
+          >
+            {restante} de {CUPO_SEMANAL_1A1} esta semana
+          </span>
+        </div>
         <p className="mt-1.5 text-[13.5px] leading-relaxed text-text-muted">
-          Dime qué quieres resolver antes de la llamada. Así Juan llega con la respuesta
-          preparada y no se gasta la reunión entendiendo el problema.
+          Tienes {CUPO_SEMANAL_1A1} sesiones de una hora por semana. Dime qué quieres resolver
+          antes de la llamada: así Juan llega con la respuesta preparada y no se gasta la reunión
+          entendiendo el problema.
         </p>
+
+        {sinCupo && (
+          <p className="mt-4 rounded-xl border border-border bg-bg-secondary/60 px-4 py-3 text-[13px] leading-relaxed text-text-secondary">
+            Ya usaste tus {CUPO_SEMANAL_1A1} de esta semana. Vuelven el lunes — no se acumulan, así
+            que aprovecha las tres clases grupales y déjame lo que puedas por{' '}
+            <strong className="font-semibold text-white">Mis preguntas</strong>, que eso no tiene tope.
+          </p>
+        )}
 
         <label className="mt-5 block text-[12.5px] font-bold text-text-secondary">
           ¿Qué quieres resolver? <span className="text-brand-danger">*</span>
@@ -245,8 +270,13 @@ function Reuniones({ reuniones }: { reuniones: MeetingRequest[] }) {
           className="mt-2 w-full rounded-xl border border-border bg-bg-secondary px-4 py-3 text-[14px] text-white outline-none placeholder:text-text-muted focus:border-brand-purple/60"
         />
 
-        <Button onClick={enviar} disabled={pending || pregunta.trim().length < 10} className="mt-5">
-          <CalendarPlus className="mr-2 h-4 w-4" /> {pending ? 'Enviando…' : 'Solicitar reunión'}
+        <Button
+          onClick={enviar}
+          disabled={pending || sinCupo || pregunta.trim().length < 10}
+          className="mt-5"
+        >
+          <CalendarPlus className="mr-2 h-4 w-4" />
+          {pending ? 'Enviando…' : sinCupo ? 'Sin cupo hasta el lunes' : 'Solicitar reunión'}
         </Button>
 
         <AnimatePresence>

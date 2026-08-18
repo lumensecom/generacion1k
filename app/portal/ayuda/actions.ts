@@ -5,10 +5,12 @@ import { getSession } from '@/lib/session';
 import {
   crearPregunta,
   crearSolicitudReunion,
+  getReunionesDeEstudiante,
   votar,
   getEncuestaAbierta,
   guardarTemaSesion,
 } from '@/lib/portal-data';
+import { cupoRestante, CUPO_SEMANAL_1A1 } from '@/lib/reuniones';
 
 async function requireStudent() {
   const session = await getSession();
@@ -34,6 +36,10 @@ export async function enviarPregunta(formData: FormData) {
 /**
  * La pregunta es obligatoria a propósito: obliga a llegar a la reunión con
  * algo concreto en vez de un "hablemos", y le permite a Juan prepararla.
+ *
+ * El cupo se comprueba aquí y no solo en la pantalla: el botón se puede
+ * esquivar, y dos estudiantes pidiendo a la vez pasarían los dos el control
+ * del cliente.
  */
 export async function solicitarReunion(formData: FormData) {
   const session = await requireStudent();
@@ -42,6 +48,13 @@ export async function solicitarReunion(formData: FormData) {
 
   if (question.length < 10) return { error: 'Escribe qué quieres resolver en la reunión.' };
   if (question.length > MAX) return { error: 'Resúmelo un poco para que quepa.' };
+
+  const restante = cupoRestante(await getReunionesDeEstudiante(session.sid));
+  if (restante <= 0) {
+    return {
+      error: `Ya usaste tus ${CUPO_SEMANAL_1A1} sesiones 1:1 de esta semana. El cupo se reinicia el lunes. Mientras tanto nos vemos en la grupal, o escríbeme por "Mis preguntas".`,
+    };
+  }
 
   await crearSolicitudReunion({
     studentId: session.sid,
