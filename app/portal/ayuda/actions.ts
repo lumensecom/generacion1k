@@ -10,7 +10,7 @@ import {
   getEncuestaAbierta,
   guardarTemaSesion,
 } from '@/lib/portal-data';
-import { cupoRestante, CUPO_SEMANAL_1A1 } from '@/lib/reuniones';
+import { cupoRestante } from '@/lib/reuniones';
 
 async function requireStudent() {
   const session = await getSession();
@@ -52,7 +52,8 @@ export async function solicitarReunion(formData: FormData) {
   const restante = cupoRestante(await getReunionesDeEstudiante(session.sid));
   if (restante <= 0) {
     return {
-      error: `Ya usaste tus ${CUPO_SEMANAL_1A1} sesiones 1:1 de esta semana. El cupo se reinicia el lunes. Mientras tanto nos vemos en la grupal, o escríbeme por "Mis preguntas".`,
+      error:
+        'Ya usaste tu 1:1 de esta semana. El cupo se reinicia el lunes. Mientras tanto nos vemos en las grupales del martes, jueves y domingo, o escríbeme por "Mis preguntas", que no tiene tope.',
     };
   }
 

@@ -5,14 +5,14 @@ import type { MeetingRequest } from '@/lib/types';
 // 1:1 son un recurso que el estudiante pide cuando le hace falta.
 //
 // TRES grupales a la semana (martes, jueves y domingo) de hora y media, más
-// hasta DOS 1:1 semanales de una hora que pide él.
+// UNA 1:1 semanal de una hora que pide él.
 //
 // "Sin acumular" es la parte que manda: el cupo es de la semana, no del plan.
-// Si esta semana no pide ninguna, esas dos no se guardan para la siguiente —
-// arranca otra vez en dos. Es lo que evita que alguien desaparezca dos meses
-// y reaparezca reclamando dieciséis sesiones.
+// Si esta semana no la pide, no se guarda para la siguiente — el lunes vuelve
+// a haber una. Es lo que evita que alguien desaparezca dos meses y reaparezca
+// reclamando ocho sesiones.
 
-export const CUPO_SEMANAL_1A1 = 2;
+export const CUPO_SEMANAL_1A1 = 1;
 export const DURACION_1A1 = 60;
 
 export const GRUPAL_DURACION = 90;

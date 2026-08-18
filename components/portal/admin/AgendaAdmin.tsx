@@ -160,7 +160,7 @@ function ProgramarSesiones({ estudiante, yaHay }: { estudiante: Student; yaHay: 
       </h2>
       <p className="mt-1.5 text-[13px] leading-relaxed text-text-muted">
         <strong className="font-semibold text-white">Normalmente no necesitas esto.</strong> Las
-        1:1 las pide el estudiante desde Ayuda —dos por semana, sin acumular— y tú les pones fecha
+        1:1 las pide el estudiante desde Ayuda —una por semana, sin acumular— y tú le pones fecha
         al confirmarlas. Este formulario es para dejar un bloque fijo con alguien concreto.
       </p>
 

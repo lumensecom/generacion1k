@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, TrendingUp, CalendarClock, PlayCircle } from 'lucide-react';
 import { requireSession } from '@/app/portal/actions';
 import { PortalShell } from '@/components/portal/PortalShell';
+import { RitmoSemanal } from '@/components/portal/RitmoSemanal';
 import { ModuleCard } from '@/components/portal/ModuleCard';
 import { Progress } from '@/components/ui/progress';
 import { RevealCard } from '@/components/animated/RevealCard';
@@ -56,6 +57,10 @@ export default async function InicioPage() {
             </p>
           )}
         </div>
+      </section>
+
+      <section className="mb-12">
+        <RitmoSemanal />
       </section>
 
       <section className="mb-12 grid grid-cols-1 gap-4 sm:grid-cols-3">

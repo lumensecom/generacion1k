@@ -7,7 +7,7 @@ import { enviarPregunta, solicitarReunion } from '@/app/portal/ayuda/actions';
 import { VideoPlayer } from '@/components/portal/VideoPlayer';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { cupoRestante, CUPO_SEMANAL_1A1 } from '@/lib/reuniones';
+import { cupoRestante } from '@/lib/reuniones';
 import type { StudentQuestion, MeetingRequest } from '@/lib/types';
 
 const ESTADO_PREGUNTA: Record<string, { texto: string; clase: string }> = {
@@ -230,19 +230,20 @@ function Reuniones({ reuniones }: { reuniones: MeetingRequest[] }) {
               sinCupo ? 'bg-white/[0.07] text-text-muted' : 'bg-brand-yellow/15 text-brand-yellow'
             )}
           >
-            {restante} de {CUPO_SEMANAL_1A1} esta semana
+            {sinCupo ? 'Ya la usaste esta semana' : 'Te queda 1 esta semana'}
           </span>
         </div>
         <p className="mt-1.5 text-[13.5px] leading-relaxed text-text-muted">
-          Tienes {CUPO_SEMANAL_1A1} sesiones de una hora por semana. Dime qué quieres resolver
-          antes de la llamada: así Juan llega con la respuesta preparada y no se gasta la reunión
+          Tienes <strong className="font-semibold text-white">una sesión 1:1 de una hora por
+          semana</strong>, además de las tres clases grupales. Dime qué quieres resolver antes de
+          la llamada: así Juan llega con la respuesta preparada y no se gasta la reunión
           entendiendo el problema.
         </p>
 
         {sinCupo && (
           <p className="mt-4 rounded-xl border border-border bg-bg-secondary/60 px-4 py-3 text-[13px] leading-relaxed text-text-secondary">
-            Ya usaste tus {CUPO_SEMANAL_1A1} de esta semana. Vuelven el lunes — no se acumulan, así
-            que aprovecha las tres clases grupales y déjame lo que puedas por{' '}
+            Ya usaste la de esta semana. Vuelve el lunes — no se acumula, así que aprovecha las
+            tres grupales (martes, jueves y domingo a las 7:30 pm) y déjame lo que sea por{' '}
             <strong className="font-semibold text-white">Mis preguntas</strong>, que eso no tiene tope.
           </p>
         )}
@@ -276,7 +277,7 @@ function Reuniones({ reuniones }: { reuniones: MeetingRequest[] }) {
           className="mt-5"
         >
           <CalendarPlus className="mr-2 h-4 w-4" />
-          {pending ? 'Enviando…' : sinCupo ? 'Sin cupo hasta el lunes' : 'Solicitar reunión'}
+          {pending ? 'Enviando…' : sinCupo ? 'Sin cupo hasta el lunes' : 'Solicitar mi 1:1 de la semana'}
         </Button>
 
         <AnimatePresence>

@@ -62,8 +62,8 @@ export default async function AgendaPage() {
         </h1>
         <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
           {esAdmin
-            ? 'Las tres grupales de cada semana y las 1:1 que te hayan pedido y ya confirmaste. El cupo de cada estudiante son dos 1:1 por semana, sin acumular.'
-            : 'Tres clases grupales por semana — martes, jueves y domingo a las 7:30 pm — y las 1:1 que pidas desde Ayuda. Toca cualquiera para ver el detalle y entrar.'}
+            ? 'Las tres grupales de cada semana y las 1:1 que te hayan pedido y ya confirmaste. Cada estudiante tiene una 1:1 por semana, sin acumular.'
+            : 'Tres clases grupales por semana — martes, jueves y domingo a las 7:30 pm — más tu sesión 1:1 semanal, que pides desde Ayuda. Toca cualquiera para ver el detalle y entrar.'}
         </p>
         <AnimatedDivider className="mt-4" />
       </div>
