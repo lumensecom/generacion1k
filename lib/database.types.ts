@@ -535,6 +535,7 @@ export type Database = {
       };
       student_progress: {
         Row: {
+          lessons_done: Json
           id: string;
           module_completed: boolean;
           module_completed_at: string | null;
@@ -549,6 +550,7 @@ export type Database = {
           video_watched_at: string | null;
         };
         Insert: {
+          lessons_done?: Json
           id?: string;
           module_completed?: boolean;
           module_completed_at?: string | null;
@@ -563,6 +565,7 @@ export type Database = {
           video_watched_at?: string | null;
         };
         Update: {
+          lessons_done?: Json
           id?: string;
           module_completed?: boolean;
           module_completed_at?: string | null;

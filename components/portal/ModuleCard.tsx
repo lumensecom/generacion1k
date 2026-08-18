@@ -33,6 +33,8 @@ export function ModuleCard({
   index,
   videoWatched,
   completed,
+  leccionesHechas = 0,
+  totalLecciones = 0,
   unlocked = !m.is_locked,
   delay = 0,
   theme = 'dark',
@@ -41,12 +43,15 @@ export function ModuleCard({
   index: number;
   videoWatched: boolean;
   completed: boolean;
+  leccionesHechas?: number;
+  totalLecciones?: number;
   /** Bloqueo secuencial + override manual del admin. Por defecto respeta solo is_locked. */
   unlocked?: boolean;
   delay?: number;
   theme?: 'dark' | 'light';
 }) {
   const light = theme === 'light';
+  const pct = totalLecciones === 0 ? 0 : Math.round((leccionesHechas / totalLecciones) * 100);
   const status = statusOf(unlocked, videoWatched, completed);
   const meta = statusMeta[status];
   const Icon = meta.icon;
@@ -86,6 +91,25 @@ export function ModuleCard({
       </h3>
       {m.subtitle && (
         <p className={cn('text-sm', light ? 'text-light-text2' : 'text-text-secondary')}>{m.subtitle}</p>
+      )}
+
+      {/* Cuántas lecciones lleva del módulo. Es lo que contesta "¿cuánto me
+          falta aquí?" sin tener que entrar a mirarlo. */}
+      {!locked && totalLecciones > 0 && (
+        <div className="mt-4">
+          <div className="mb-1.5 flex items-baseline justify-between">
+            <span className={cn('text-[11.5px]', light ? 'text-light-text2' : 'text-text-muted')}>
+              {leccionesHechas} de {totalLecciones} lecciones
+            </span>
+            <span className="font-mono text-[11.5px] font-bold text-brand-yellow">{pct}%</span>
+          </div>
+          <div className={cn('h-1 overflow-hidden rounded-full', light ? 'bg-black/[0.07]' : 'bg-white/[0.07]')}>
+            <div
+              className="h-full rounded-full bg-brand-yellow transition-[width] duration-500"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+        </div>
       )}
     </RevealCard>
   );

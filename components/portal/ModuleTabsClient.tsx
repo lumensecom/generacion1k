@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useTransition } from 'react';
+import { useEffect, useRef, useState, useTransition, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -26,6 +26,8 @@ import { markVideoWatched, togglePracticeItem, saveNotes, markModuleCompleted } 
 import type { ModuleResource, ModuleRow, StudentProgress, TestAttemptRow, TheoryBlock } from '@/lib/types';
 import type { ModuleContent } from '@/lib/modules-content';
 import { VideoPlayer, puedeMedirProgreso } from '@/components/portal/VideoPlayer';
+import { LeccionesModulo } from '@/components/portal/LeccionesModulo';
+import { leccionesDe } from '@/lib/lecciones';
 import { VideoProximamente } from '@/components/portal/VideoProximamente';
 
 export function ModuleTabsClient({
@@ -69,6 +71,9 @@ export function ModuleTabsClient({
   // Con Bunny y Cloudinary se sabe cuánto lleva visto; con YouTube o Loom no,
   // y ahí el botón manual sigue siendo la única forma de marcarlo.
   const mideAvance = puedeMedirProgreso(urlVideo);
+  // Las lecciones salen de los encabezados del módulo, o de su lista propia
+  // si la declara (ver lib/lecciones.ts).
+  const lecciones = useMemo(() => leccionesDe(content), [content]);
   const legacyTheoryBlocks = (mod.theory_content as unknown as TheoryBlock[]) ?? [];
 
   function handleNotesChange(value: string) {
@@ -161,7 +166,14 @@ export function ModuleTabsClient({
       </TabPanel>
 
       <TabPanel value="teoria" active={tab}>
-        {content ? (
+        {lecciones.length > 0 ? (
+          <LeccionesModulo
+            slug={mod.slug}
+            lecciones={lecciones}
+            vistasIniciales={(progress?.lessons_done as string[] | null) ?? []}
+            accentColor={accentColor}
+          />
+        ) : content ? (
           <TheoryRendererV2 blocks={content.theory} accentColor={accentColor} />
         ) : (
           <TheoryRenderer blocks={legacyTheoryBlocks} />

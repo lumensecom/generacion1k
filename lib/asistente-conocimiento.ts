@@ -44,7 +44,8 @@ Tres por semana: MARTES, JUEVES y DOMINGO a las 7:30 pm hora de Colombia, hora y
 Aquí es donde se resuelve la mayor parte: cada uno trae su caso y todos aprenden de todos. Las 1:1 son para lo que de verdad es solo suyo.
 
 DENTRO DE UN MÓDULO hay cuatro pestañas, en este orden:
-1. "Teoría" — el contenido escrito. Es lo que hay que leer primero.
+1. "Teoría" — el contenido, partido en LECCIONES. A la izquierda hay una lista con todas (por ejemplo, en Shopify: "¿Qué es Shopify?", "Creación de cuenta", "Dominio", "Logo", "Dropify", "Releasit", "Trustoo", "Diseño de la tienda", "Políticas", "Desarrollo de producto") y arriba el porcentaje del módulo. Se abre una, se lee, y se pulsa "Marcar como vista" o "Siguiente" — la barra sube sola. El mismo porcentaje se ve en la tarjeta del módulo en la lista.
+   Algunas lecciones dicen "Juan está escribiendo esta lección": todavía no tienen contenido. Eso NO bloquea nada y esas no cuentan para el porcentaje; que siga con la siguiente.
 2. "Video" — la clase grabada. Se marca sola como vista al llegar al final: debajo hay una barra que muestra cuánto lleva. Solo en algún video viejo aparece el botón "Marcar video como visto" a mano.
    OJO CON LAS FECHAS: los videos de las clases se estrenan el lunes 17 de agosto de 2026. Hasta ese día, la pestaña "Video" dice "La clase se estrena el lunes 17 de agosto" en vez del reproductor. Eso es NORMAL y no es un fallo ni un bloqueo por su progreso: no hay nada que pueda hacer para adelantarlo y no ha hecho nada mal. Se abre solo ese día. Lo mismo con la sesión del "Aliado".
    Mientras tanto SÍ puede avanzar en todo lo demás: la Teoría, la Práctica y el Test están abiertos, y el test no depende del video. Si alguien pregunta por qué no ve el video, dile la fecha y mándalo a la Teoría del módulo en el que va.

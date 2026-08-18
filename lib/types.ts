@@ -92,6 +92,8 @@ export interface StudentProgress {
   practice_completed: boolean;
   practice_completed_at: string | null;
   practice_checked_items: string[] | null;
+  /** Ids de las lecciones ya marcadas dentro del módulo. */
+  lessons_done: string[] | null;
   module_completed: boolean;
   module_completed_at: string | null;
   student_notes: string | null;

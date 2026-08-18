@@ -1,6 +1,8 @@
 import { requireSession } from '@/app/portal/actions';
 import { PortalShell } from '@/components/portal/PortalShell';
 import { ModuleCard } from '@/components/portal/ModuleCard';
+import { getModuleContent } from '@/lib/modules-content';
+import { leccionesDe } from '@/lib/lecciones';
 import { AnimatedDivider } from '@/components/animated/AnimatedDivider';
 import {
   getModules,
@@ -12,6 +14,13 @@ import {
 } from '@/lib/portal-data';
 
 export const metadata = { title: 'Módulos | Portal Generación 1K' };
+
+/** Lecciones con contenido de un módulo y cuántas lleva marcadas el estudiante. */
+function contarLecciones(slug: string, vistas: unknown) {
+  const lecciones = leccionesDe(getModuleContent(slug)).filter((l) => !l.porEscribir);
+  const hechas = Array.isArray(vistas) ? lecciones.filter((l) => vistas.includes(l.id)).length : 0;
+  return { hechas, total: lecciones.length };
+}
 
 export default async function ModulosPage() {
   const session = await requireSession();
@@ -41,6 +50,8 @@ export default async function ModulosPage() {
             index={m.order_index}
             videoWatched={Boolean(stats.byModule.get(m.id)?.video_watched)}
             completed={Boolean(stats.byModule.get(m.id)?.module_completed)}
+            leccionesHechas={contarLecciones(m.slug, stats.byModule.get(m.id)?.lessons_done).hechas}
+            totalLecciones={contarLecciones(m.slug, stats.byModule.get(m.id)?.lessons_done).total}
             unlocked={isModuleUnlocked(modules, i, passedModuleIds, session.role === 'admin')}
             delay={(i % 3) * 0.08}
             theme="light"

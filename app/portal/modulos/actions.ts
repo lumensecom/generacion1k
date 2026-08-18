@@ -86,6 +86,37 @@ export async function togglePracticeItem(slug: string, itemIndex: number, checkl
   return { checkedItems, practiceCompleted };
 }
 
+/**
+ * Marca o desmarca una lección dentro de un módulo.
+ *
+ * La lista se lee y se reescribe entera en vez de hacer un append en SQL: son
+ * diez ids como mucho, y así el estado no depende del orden en que lleguen
+ * dos clics seguidos.
+ */
+export async function marcarLeccion(slug: string, leccionId: string, vista: boolean) {
+  const session = await getSession();
+  if (!session) return { error: 'Sesión expirada.' };
+
+  const mod = await getModuleBySlug(slug);
+  if (!mod) return { error: 'Módulo no encontrado.' };
+
+  const progress = await ensureProgressRow(session.sid, mod.id);
+  const actuales = new Set<string>(((progress?.lessons_done as unknown as string[]) ?? []));
+  if (vista) actuales.add(leccionId);
+  else actuales.delete(leccionId);
+  const lecciones = Array.from(actuales);
+
+  await supabaseAdmin()
+    .from('student_progress')
+    .update({ lessons_done: lecciones })
+    .eq('student_id', session.sid)
+    .eq('module_id', mod.id);
+
+  revalidatePath(`/portal/modulos/${slug}`);
+  revalidatePath('/portal/modulos');
+  return { lecciones };
+}
+
 export async function saveNotes(slug: string, notes: string) {
   const session = await getSession();
   if (!session) return { error: 'Sesión expirada.' };

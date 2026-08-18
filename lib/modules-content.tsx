@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { LeccionDef } from '@/lib/lecciones';
 import type { ComparisonColumn } from '@/components/animated/ComparisonBlock';
 import type { TimelineStep } from '@/components/animated/Timeline';
 
@@ -32,6 +33,12 @@ export type TheoryBlock2 =
 
 export interface ModuleContent {
   slug: string;
+  /**
+   * Desglose en lecciones. Si se omite, salen solas de los encabezados de
+   * `theory` (ver lib/lecciones.ts). Se declara a mano cuando el módulo tiene
+   * más pasos que encabezados.
+   */
+  lecciones?: LeccionDef[];
   accentColor: string;
   durationMinutes: number;
   introLine1: string;
@@ -195,6 +202,71 @@ export const MODULES_CONTENT: Record<string, ModuleContent> = {
     durationMinutes: 90,
     introLine1: 'En las próximas 2 horas tendrás tu tienda funcionando.',
     introLine2: 'Sin código. Sin diseñador. Sin excusas.',
+    // Diez pasos y solo tres encabezados, así que las lecciones se declaran a
+    // mano. Las que todavía no tienen bloques salen marcadas como pendientes
+    // en la pantalla, no vacías y en silencio.
+    lecciones: [
+      {
+        id: 'que-es-shopify',
+        emoji: '🦖',
+        titulo: '¿Qué es Shopify?',
+        bloques: [
+          { type: 'list', variant: 'checked', items: [
+            'Trial de $1 USD el primer mes',
+            'Templates gratuitos que convierten',
+            'App store con Dropi y ReleaseIt integrados',
+            'Soporte 24/7 en español',
+            'Optimizado para móvil por defecto',
+          ] },
+          { type: 'example', content: 'lumenscol.com corre en Shopify con el tema Horizon 3.2.1. Está optimizado para el 90% de tráfico móvil que llega desde TikTok Ads.' },
+        ],
+      },
+      {
+        id: 'creacion-de-cuenta',
+        emoji: '💻',
+        titulo: 'Creación de cuenta',
+        bloques: [
+          { type: 'timeline', steps: [
+            { title: 'Crear cuenta Shopify', meta: '5 min', description: 'Usar link de $1 USD primer mes' },
+            { title: 'Elegir tema Horizon', meta: '10 min', description: 'Gratuito, optimizado para PCE Colombia' },
+            { title: 'Configurar moneda COP', meta: '5 min', description: 'Settings → General → Currency → COP' },
+          ] },
+          { type: 'toolExplainer', tool: 'shopify-setup' },
+        ],
+      },
+      {
+        id: 'dominio',
+        emoji: '🏓',
+        titulo: 'Dominio',
+        bloques: [
+          { type: 'paragraph', content: <>Se puede arrancar con el <B>.myshopify.com</B> temporal, pero el dominio propio se compra el mismo día: cuesta unos $10 USD al año y es lo que separa una tienda de un experimento.</> },
+          { type: 'toolGrid', tools: [
+            { name: 'Namecheap', description: 'Comprar dominio .com por $10 USD al año.', url: 'https://www.namecheap.com' },
+          ] },
+        ],
+      },
+      { id: 'logo', emoji: '🛼', titulo: 'Logo' },
+      { id: 'dropify', emoji: '🦁', titulo: 'Dropify' },
+      {
+        id: 'releasit',
+        emoji: '📝',
+        titulo: 'Releasit',
+        bloques: [
+          { type: 'comparison', columns: [
+            { label: 'No hacer', tone: 'bad', items: ['Checkout de 3 pasos con formulario largo', 'Pedir email obligatorio en el primer paso', 'Mostrar cálculo de impuestos separado'] },
+            { label: 'Sí hacer', tone: 'good', items: ['Checkout de 1 paso (con ReleaseIt)', 'Solo pedir: nombre, teléfono, dirección, ciudad', 'Precio final ya incluye envío'] },
+          ] },
+          { type: 'callout', variant: 'tip', content: 'Cada paso extra en el checkout pierde 15-20% de conversión. En PCE, menos es más.' },
+          { type: 'toolGrid', tools: [
+            { name: 'ReleaseIt COD', description: 'App para checkout PCE simplificado.', url: 'https://apps.shopify.com/releaseit' },
+          ] },
+        ],
+      },
+      { id: 'trustoo', emoji: '🎈', titulo: 'Trustoo (TrustWILL)' },
+      { id: 'diseno-de-la-tienda', emoji: '⚜️', titulo: 'Diseño de la tienda' },
+      { id: 'politicas', emoji: '🏫', titulo: 'Políticas' },
+      { id: 'desarrollo-de-producto', emoji: '📦', titulo: 'Desarrollo de producto' },
+    ],
     theory: [
       { type: 'heading', text: 'Por qué Shopify (y no otro)' },
       { type: 'list', variant: 'checked', items: [
