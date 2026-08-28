@@ -37,10 +37,13 @@ export default async function ModuloDetailPage({ params }: { params: { slug: str
     getPortalConfig('videos_desde'),
   ]);
 
-  // Los videos tienen fecha de estreno. Juan los ve siempre, para poder
-  // revisar que cada uno quedó bien cargado antes de que se abran.
+  // La fecha de estreno solo tapa el hueco donde TODAVÍA NO HAY VIDEO. Si el
+  // módulo ya tiene uno cargado —una clase de otro en YouTube, por ejemplo—,
+  // se ve desde el primer día: la espera es por las clases de Juan, no por el
+  // material que ya existe. Y él los ve siempre, para revisarlos antes.
+  const hayVideo = Boolean(mod.video_url ?? mod.loom_url);
   const videoDesde =
-    session.role !== 'admin' && aunNoLlega(videosDesde) ? videosDesde : null;
+    !hayVideo && session.role !== 'admin' && aunNoLlega(videosDesde) ? videosDesde : null;
 
   const orderedIndex = allModules.findIndex((m) => m.id === mod.id);
   const prevSlug = orderedIndex > 0 ? allModules[orderedIndex - 1].slug : null;

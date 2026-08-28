@@ -32,8 +32,17 @@ export const RECURSOS: Recurso[] = [
     disponible: true,
   },
   {
-    slug: 'producto-ganador',
+    slug: 'estructura-landing',
     numero: 3,
+    titulo: 'Estructura ganadora de landing LUMENS',
+    descripcion:
+      'Los 9 bloques AIDA en orden, las 6 imágenes obligatorias con sus prompts, las FAQ, el checklist — y la auditoría real de dos landings que hoy están vendiendo.',
+    etiqueta: 'Guía completa',
+    disponible: true,
+  },
+  {
+    slug: 'producto-ganador',
+    numero: 4,
     titulo: 'Cómo validar un producto ganador',
     descripcion:
       'Los criterios que uso antes de invertir un peso en pauta: margen, dolor, diferencial y prueba de demanda.',
@@ -42,7 +51,7 @@ export const RECURSOS: Recurso[] = [
   },
   {
     slug: 'estructura-campanas',
-    numero: 4,
+    numero: 5,
     titulo: 'Estructura de campañas en TikTok Ads',
     descripcion:
       'Cómo armo, leo y escalo una campaña de contra entrega sin quemar presupuesto en los primeros días.',

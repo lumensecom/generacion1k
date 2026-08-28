@@ -7,12 +7,17 @@ import { getMentors, getPortalConfig } from '@/lib/portal-data';
 import { aunNoLlega } from '@/lib/agenda';
 import { VideoProximamente } from '@/components/portal/VideoProximamente';
 import { VideoPlayer } from '@/components/portal/VideoPlayer';
+import { PresentacionCanva } from '@/components/portal/PresentacionCanva';
 
 export const metadata = { title: 'Aliado del programa | Portal Generación 1K' };
 
 export default async function MentoresPage() {
   const session = await requireSession();
-  const [mentors, videosDesde] = await Promise.all([getMentors(), getPortalConfig('videos_desde')]);
+  const [mentors, videosDesde, presentacion] = await Promise.all([
+    getMentors(),
+    getPortalConfig('videos_desde'),
+    getPortalConfig('adma_presentacion_url'),
+  ]);
   // Misma fecha de estreno que las clases de los módulos.
   const videoDesde = session.role !== 'admin' && aunNoLlega(videosDesde) ? videosDesde : null;
 
@@ -65,7 +70,11 @@ export default async function MentoresPage() {
                 </div>
 
                 <div className="p-4 md:p-6">
-                  {videoDesde ? (
+                  {/* La presentación manda sobre el video: es el material que
+                      hay hoy. El video queda para cuando exista. */}
+                  {presentacion ? (
+                    <PresentacionCanva url={presentacion} titulo={`Sesión de ${mentor.name}`} />
+                  ) : videoDesde ? (
                     <VideoProximamente dia={videoDesde} />
                   ) : (
                     <VideoPlayer

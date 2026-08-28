@@ -17,13 +17,13 @@ export function VideoProximamente({ dia }: { dia: string }) {
       </span>
       <div>
         <p className="font-display text-[17px] font-extrabold tracking-tight">
-          La clase se estrena el {diaLargo(dia)}
+          La clase en video llega el {diaLargo(dia)}
         </p>
         <p className="mx-auto mt-2 max-w-md text-[13.5px] leading-relaxed text-text-secondary">
-          Ese día se abre aquí mismo, sin que tengas que hacer nada. Mientras tanto puedes
-          adelantar la <strong className="font-semibold text-white">Teoría</strong> y la{' '}
-          <strong className="font-semibold text-white">Práctica</strong> de este módulo — el test
-          no depende del video.
+          <strong className="font-semibold text-white">No la necesitas para avanzar.</strong> Todo
+          el módulo está explicado en la{' '}
+          <strong className="font-semibold text-white">Teoría</strong>, lección por lección y con
+          gráficas; el video será un repaso. La Práctica y el Test tampoco dependen de él.
         </p>
       </div>
     </div>
