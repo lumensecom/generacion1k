@@ -105,7 +105,7 @@ export function LeccionesModulo({
                     >
                       {l.titulo}
                     </span>
-                    {l.video && !hecha && (
+                    {l.videos.length > 0 && !hecha && (
                       <Play className="h-3 w-3 shrink-0 text-text-muted/70" />
                     )}
                     {l.porEscribir ? (
@@ -149,12 +149,14 @@ export function LeccionesModulo({
               </div>
             ) : (
               <>
-                {leccion.video && (
-                  <div className="mb-6">
-                    <VideoPlayer url={leccion.video} titulo={leccion.titulo} />
-                    <p className="mt-2 text-[12px] text-text-muted">
-                      Video de apoyo de otro creador. La clase de Juan sobre esto está en
-                      grabación.
+                {leccion.videos.length > 0 && (
+                  <div className="mb-6 space-y-4">
+                    {leccion.videos.map((v) => (
+                      <VideoPlayer key={v} url={v} titulo={leccion.titulo} />
+                    ))}
+                    <p className="text-[12px] leading-relaxed text-text-muted">
+                      {leccion.videos.length > 1 ? 'Videos de apoyo' : 'Video de apoyo'} de otros
+                      creadores, escogidos por Juan. La clase suya sobre esto está en grabación.
                     </p>
                   </div>
                 )}

@@ -1,5 +1,5 @@
 import type { ModuleContent, TheoryBlock2 } from '@/lib/modules-content';
-import { videoDeLeccion } from '@/lib/videos-lecciones';
+import { videosDeLeccion } from '@/lib/videos-lecciones';
 
 // Las lecciones de dentro de un módulo, al estilo Skool: en vez de un muro de
 // teoría, una lista de cosas concretas que se van marcando.
@@ -16,8 +16,8 @@ export interface Leccion {
   emoji: string | null;
   titulo: string;
   bloques: TheoryBlock2[];
-  /** Video de apoyo de terceros, si lo hay. */
-  video: string | null;
+  /** Videos de apoyo de otros creadores. Vacío si no hay. */
+  videos: string[];
   /** true cuando no hay ni bloques ni video para esta lección. */
   porEscribir: boolean;
 }
@@ -58,7 +58,7 @@ function porEncabezados(theory: TheoryBlock2[]): Leccion[] {
         emoji: null,
         titulo: bloque.text,
         bloques: [...sueltos],
-        video: null,
+        videos: [],
         porEscribir: false,
       });
       sueltos = [];
@@ -72,7 +72,7 @@ function porEncabezados(theory: TheoryBlock2[]): Leccion[] {
   // Si nunca hubo encabezado, el módulo entero es una sola lección.
   if (lecciones.length === 0 && sueltos.length > 0) {
     return [
-      { id: 'contenido', emoji: null, titulo: 'Contenido', bloques: sueltos, video: null, porEscribir: false },
+      { id: 'contenido', emoji: null, titulo: 'Contenido', bloques: sueltos, videos: [], porEscribir: false },
     ];
   }
   return lecciones;
@@ -86,7 +86,7 @@ export function leccionesDe(content: ModuleContent | null): Leccion[] {
           emoji: l.emoji ?? null,
           titulo: l.titulo,
           bloques: l.bloques ?? [],
-          video: null,
+          videos: [],
           porEscribir: false,
         }))
       : porEncabezados(content.theory)
@@ -96,8 +96,8 @@ export function leccionesDe(content: ModuleContent | null): Leccion[] {
   // texto pero CON video deja de contar como pendiente — porque ya explica
   // algo, que es de lo que se trata.
   return base.map((l) => {
-    const video = content ? videoDeLeccion(content.slug, l.id) : null;
-    return { ...l, video, porEscribir: l.bloques.length === 0 && !video };
+    const videos = content ? videosDeLeccion(content.slug, l.id) : [];
+    return { ...l, videos, porEscribir: l.bloques.length === 0 && videos.length === 0 };
   });
 }
 
