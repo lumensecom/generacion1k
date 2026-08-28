@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useTransition, useMemo } from 'react';
-import { Check, ChevronRight, Circle, PenLine, ArrowRight } from 'lucide-react';
+import { Check, ChevronRight, Circle, PenLine, ArrowRight, Play } from 'lucide-react';
 import { marcarLeccion } from '@/app/portal/modulos/actions';
 import { TheoryRendererV2 } from '@/components/portal/TheoryRendererV2';
+import { VideoPlayer } from '@/components/portal/VideoPlayer';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { progresoDeLecciones, type Leccion } from '@/lib/lecciones';
@@ -104,6 +105,9 @@ export function LeccionesModulo({
                     >
                       {l.titulo}
                     </span>
+                    {l.video && !hecha && (
+                      <Play className="h-3 w-3 shrink-0 text-text-muted/70" />
+                    )}
                     {l.porEscribir ? (
                       <PenLine className="h-3.5 w-3.5 shrink-0 text-text-muted/60" />
                     ) : hecha ? (
@@ -144,7 +148,20 @@ export function LeccionesModulo({
                 </p>
               </div>
             ) : (
-              <TheoryRendererV2 blocks={leccion.bloques} accentColor={accentColor} />
+              <>
+                {leccion.video && (
+                  <div className="mb-6">
+                    <VideoPlayer url={leccion.video} titulo={leccion.titulo} />
+                    <p className="mt-2 text-[12px] text-text-muted">
+                      Video de apoyo de otro creador. La clase de Juan sobre esto está en
+                      grabación.
+                    </p>
+                  </div>
+                )}
+                {leccion.bloques.length > 0 && (
+                  <TheoryRendererV2 blocks={leccion.bloques} accentColor={accentColor} />
+                )}
+              </>
             )}
 
             <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-border pt-6">

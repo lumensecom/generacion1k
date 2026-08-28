@@ -1,4 +1,5 @@
 import type { ModuleContent, TheoryBlock2 } from '@/lib/modules-content';
+import { videoDeLeccion } from '@/lib/videos-lecciones';
 
 // Las lecciones de dentro de un módulo, al estilo Skool: en vez de un muro de
 // teoría, una lista de cosas concretas que se van marcando.
@@ -15,7 +16,9 @@ export interface Leccion {
   emoji: string | null;
   titulo: string;
   bloques: TheoryBlock2[];
-  /** true cuando todavía no hay contenido escrito para esta lección. */
+  /** Video de apoyo de terceros, si lo hay. */
+  video: string | null;
+  /** true cuando no hay ni bloques ni video para esta lección. */
   porEscribir: boolean;
 }
 
@@ -55,6 +58,7 @@ function porEncabezados(theory: TheoryBlock2[]): Leccion[] {
         emoji: null,
         titulo: bloque.text,
         bloques: [...sueltos],
+        video: null,
         porEscribir: false,
       });
       sueltos = [];
@@ -67,23 +71,34 @@ function porEncabezados(theory: TheoryBlock2[]): Leccion[] {
 
   // Si nunca hubo encabezado, el módulo entero es una sola lección.
   if (lecciones.length === 0 && sueltos.length > 0) {
-    return [{ id: 'contenido', emoji: null, titulo: 'Contenido', bloques: sueltos, porEscribir: false }];
+    return [
+      { id: 'contenido', emoji: null, titulo: 'Contenido', bloques: sueltos, video: null, porEscribir: false },
+    ];
   }
   return lecciones;
 }
 
 export function leccionesDe(content: ModuleContent | null): Leccion[] {
-  if (!content) return [];
-  if (content.lecciones?.length) {
-    return content.lecciones.map((l) => ({
-      id: l.id,
-      emoji: l.emoji ?? null,
-      titulo: l.titulo,
-      bloques: l.bloques ?? [],
-      porEscribir: !l.bloques?.length,
-    }));
-  }
-  return porEncabezados(content.theory);
+  const base = content
+    ? content.lecciones?.length
+      ? content.lecciones.map((l) => ({
+          id: l.id,
+          emoji: l.emoji ?? null,
+          titulo: l.titulo,
+          bloques: l.bloques ?? [],
+          video: null,
+          porEscribir: false,
+        }))
+      : porEncabezados(content.theory)
+    : [];
+
+  // El video se engancha aquí y no en cada definición: así una lección sin
+  // texto pero CON video deja de contar como pendiente — porque ya explica
+  // algo, que es de lo que se trata.
+  return base.map((l) => {
+    const video = content ? videoDeLeccion(content.slug, l.id) : null;
+    return { ...l, video, porEscribir: l.bloques.length === 0 && !video };
+  });
 }
 
 /** Porcentaje del módulo, contando solo las lecciones que ya tienen contenido. */
