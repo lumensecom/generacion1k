@@ -5,7 +5,7 @@
 // nativo: sin cookies de terceros, sin logo ajeno, y con control real sobre
 // el reproductor.
 
-export type TipoVideo = 'bunny' | 'cloudinary' | 'archivo' | 'loom' | 'youtube' | null;
+export type TipoVideo = 'bunny' | 'cloudinary' | 'archivo' | 'drive' | 'loom' | 'youtube' | null;
 
 export interface VideoNormalizado {
   tipo: TipoVideo;
@@ -118,6 +118,19 @@ export function normalizarVideo(url: string | null | undefined): VideoNormalizad
   const loom = limpia.match(/loom\.com\/(?:share|embed)\/([a-zA-Z0-9]+)/);
   if (loom) {
     return { tipo: 'loom', src: null, embed: `https://www.loom.com/embed/${loom[1]}`, poster: null };
+  }
+
+  // Google Drive. Sirve tanto el enlace de compartir (/view) como el de
+  // incrustar (/preview): de los dos se saca el id y se arma el /preview, que
+  // es el único que funciona dentro de un iframe.
+  const drive = limpia.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+  if (drive) {
+    return {
+      tipo: 'drive',
+      src: null,
+      embed: `https://drive.google.com/file/d/${drive[1]}/preview`,
+      poster: null,
+    };
   }
 
   const yt = limpia.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/);

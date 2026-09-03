@@ -6,7 +6,6 @@ import {
   toggleActiveGeneration,
   updateAccessCode,
   updateOnboardingVideo,
-  updateVideosDesde,
 } from '@/app/portal/admin/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -16,19 +15,16 @@ export function ConfigPanel({
   initialActive,
   initialCode,
   initialVideo,
-  initialVideosDesde,
   generation,
 }: {
   initialActive: boolean;
   initialCode: string;
   initialVideo: string;
-  initialVideosDesde: string;
   generation: string;
 }) {
   const [active, setActive] = useState(initialActive);
   const [code, setCode] = useState(initialCode);
   const [video, setVideo] = useState(initialVideo);
-  const [videosDesde, setVideosDesde] = useState(initialVideosDesde);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -59,17 +55,6 @@ export function ConfigPanel({
     });
   }
 
-  function handleSaveVideosDesde() {
-    setError(null);
-    startTransition(async () => {
-      const result = await updateVideosDesde(videosDesde);
-      if (result?.error) setError(result.error);
-      else
-        toast.success(
-          videosDesde ? 'Fecha de estreno guardada' : 'Videos abiertos: ya no hay fecha de estreno'
-        );
-    });
-  }
 
   return (
     <div className="max-w-lg space-y-6">
@@ -126,27 +111,6 @@ export function ConfigPanel({
         <p className="mt-2 text-xs text-text-muted">
           Es la primera pantalla del estudiante después del cuestionario, y no puede entrar al
           resto del portal sin terminarlo. Si lo dejas vacío, la pantalla deja pasar sin más.
-        </p>
-      </div>
-
-      <div className="rounded-2xl border border-border bg-bg-card p-6">
-        <Label htmlFor="videosDesde">Los videos se abren el</Label>
-        <div className="mt-2 flex gap-2">
-          <Input
-            id="videosDesde"
-            type="date"
-            value={videosDesde}
-            onChange={(e) => setVideosDesde(e.target.value)}
-          />
-          <Button type="button" variant="subtle" onClick={handleSaveVideosDesde} disabled={pending}>
-            Guardar
-          </Button>
-        </div>
-        <p className="mt-2 text-xs text-text-muted">
-          Hasta ese día, la pestaña Video de los módulos y la sesión del Aliado muestran
-          &ldquo;se estrena el…&rdquo; en vez del reproductor. La teoría, la práctica y los tests
-          siguen abiertos. Tú los ves siempre, para poder revisarlos antes. Déjalo vacío para
-          abrirlos ya.
         </p>
       </div>
     </div>

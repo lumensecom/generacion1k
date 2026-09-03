@@ -15,9 +15,7 @@ import {
   getAttemptsForModule,
   getPassedModuleIds,
   isModuleUnlocked,
-  getPortalConfig,
 } from '@/lib/portal-data';
-import { aunNoLlega } from '@/lib/agenda';
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const mod = await getModuleBySlug(params.slug);
@@ -29,21 +27,13 @@ export default async function ModuloDetailPage({ params }: { params: { slug: str
   const [mod, allModules] = await Promise.all([getModuleBySlug(params.slug), getModules()]);
   if (!mod) notFound();
 
-  const [resources, progress, allAttempts, moduleAttempts, videosDesde] = await Promise.all([
+  const [resources, progress, allAttempts, moduleAttempts] = await Promise.all([
     getModuleResources(mod.id),
     getProgressForModule(session.sid, mod.id),
     getTestAttempts(session.sid),
     getAttemptsForModule(session.sid, mod.id),
-    getPortalConfig('videos_desde'),
   ]);
 
-  // La fecha de estreno solo tapa el hueco donde TODAVÍA NO HAY VIDEO. Si el
-  // módulo ya tiene uno cargado —una clase de otro en YouTube, por ejemplo—,
-  // se ve desde el primer día: la espera es por las clases de Juan, no por el
-  // material que ya existe. Y él los ve siempre, para revisarlos antes.
-  const hayVideo = Boolean(mod.video_url ?? mod.loom_url);
-  const videoDesde =
-    !hayVideo && session.role !== 'admin' && aunNoLlega(videosDesde) ? videosDesde : null;
 
   const orderedIndex = allModules.findIndex((m) => m.id === mod.id);
   const prevSlug = orderedIndex > 0 ? allModules[orderedIndex - 1].slug : null;
@@ -103,7 +93,6 @@ export default async function ModuloDetailPage({ params }: { params: { slug: str
           latestAttempt={latestAttempt}
           prevSlug={prevSlug}
           nextSlug={nextSlug}
-          videoDesde={videoDesde}
         />
       )}
     </PortalShell>

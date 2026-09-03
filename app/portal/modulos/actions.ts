@@ -8,9 +8,7 @@ import {
   getProgressForModule,
   logActivity,
   insertTestAttempt,
-  getPortalConfig,
 } from '@/lib/portal-data';
-import { aunNoLlega } from '@/lib/agenda';
 
 async function ensureProgressRow(studentId: string, moduleId: string) {
   const admin = supabaseAdmin();
@@ -32,12 +30,6 @@ export async function markVideoWatched(slug: string) {
   const mod = await getModuleBySlug(slug);
   if (!mod) return { error: 'Módulo no encontrado.' };
 
-  // La pantalla ya no enseña el reproductor antes del estreno, pero la acción
-  // se puede llamar igual desde fuera: sin esto quedarían videos marcados
-  // como vistos que todavía no existían.
-  if (session.role !== 'admin' && aunNoLlega(await getPortalConfig('videos_desde'))) {
-    return { error: 'Este video todavía no está disponible.' };
-  }
 
   await ensureProgressRow(session.sid, mod.id);
   await supabaseAdmin()

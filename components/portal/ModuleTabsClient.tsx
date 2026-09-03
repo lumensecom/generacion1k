@@ -28,7 +28,6 @@ import type { ModuleContent } from '@/lib/modules-content';
 import { VideoPlayer, puedeMedirProgreso } from '@/components/portal/VideoPlayer';
 import { LeccionesModulo } from '@/components/portal/LeccionesModulo';
 import { leccionesDe } from '@/lib/lecciones';
-import { VideoProximamente } from '@/components/portal/VideoProximamente';
 
 export function ModuleTabsClient({
   module: mod,
@@ -38,7 +37,6 @@ export function ModuleTabsClient({
   latestAttempt,
   prevSlug,
   nextSlug,
-  videoDesde,
 }: {
   module: ModuleRow;
   content: ModuleContent | null;
@@ -47,8 +45,6 @@ export function ModuleTabsClient({
   latestAttempt: TestAttemptRow | null;
   prevSlug: string | null;
   nextSlug: string | null;
-  /** YYYY-MM-DD en que se abren los videos. null = ya están abiertos. */
-  videoDesde: string | null;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -140,7 +136,10 @@ export function ModuleTabsClient({
   const tabs = [
     { value: 'intro', label: 'Introducción', icon: <Rocket className="h-3.5 w-3.5" /> },
     { value: 'teoria', label: 'Teoría', icon: <BookOpen className="h-3.5 w-3.5" /> },
-    { value: 'video', label: 'Video', icon: <VideoIcon className="h-3.5 w-3.5" /> },
+    // La pestaña solo existe si hay un video cargado. Las clases de Juan ya no
+    // se anuncian aquí: la explicación vive en Teoría, y los videos de apoyo
+    // de otros van dentro de su lección.
+    ...(urlVideo ? [{ value: 'video', label: 'Video', icon: <VideoIcon className="h-3.5 w-3.5" /> }] : []),
     { value: 'practica', label: 'Práctica', icon: <ClipboardCheck className="h-3.5 w-3.5" /> },
     ...(content ? [{ value: 'test', label: 'Test', icon: <CheckCircle2 className="h-3.5 w-3.5" /> }] : []),
     { value: 'recursos', label: 'Recursos', icon: <FileText className="h-3.5 w-3.5" /> },
@@ -181,17 +180,13 @@ export function ModuleTabsClient({
       </TabPanel>
 
       <TabPanel value="video" active={tab}>
-        {videoDesde ? (
-          <VideoProximamente dia={videoDesde} />
-        ) : (
-          <VideoPlayer
-            url={urlVideo}
-            titulo={mod.title}
-            onProgreso={mideAvance ? alAvanzar : undefined}
-          />
-        )}
+        <VideoPlayer
+          url={urlVideo}
+          titulo={mod.title}
+          onProgreso={mideAvance ? alAvanzar : undefined}
+        />
 
-        {!videoDesde && mideAvance && !videoWatched && (
+        {mideAvance && !videoWatched && (
           <div className="mt-4">
             <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.07]">
               <div
@@ -207,7 +202,7 @@ export function ModuleTabsClient({
           </div>
         )}
 
-        {videoDesde ? null : mideAvance ? (
+        {mideAvance ? (
           videoWatched && (
             <p className="mt-5 flex items-center gap-2 text-[13.5px] font-semibold text-brand-success">
               <CheckCircle2 className="h-4 w-4" /> Video visto
