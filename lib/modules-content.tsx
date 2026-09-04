@@ -449,6 +449,333 @@ export const MODULES_CONTENT: Record<string, ModuleContent> = {
   },
 
   // ============================================================
+  // MÓDULO 6 — Cuentas publicitarias (Meta y TikTok)
+  // ============================================================
+  'cuentas-publicitarias': {
+    slug: 'cuentas-publicitarias',
+    accentColor: '#0EA5E9',
+    durationMinutes: 60,
+    introLine1: 'Antes de un pixel, un creativo o un peso de pauta: la cuenta.',
+    introLine2: 'Aquí es donde más gente se estanca semanas por un error de 30 segundos.',
+    lecciones: [
+      {
+        id: 'todo-empieza-en-tu-facebook',
+        emoji: '👤',
+        titulo: 'Todo empieza en tu Facebook personal',
+        bloques: [
+          {
+            type: 'paragraph',
+            content: (
+              <>
+                No existe una &ldquo;cuenta de empresa&rdquo; de Meta independiente. El Business
+                Manager <B>cuelga siempre de un perfil personal de Facebook</B>, y ese perfil es tu
+                llave: si lo pierdes, pierdes el acceso a todo lo que hay debajo — página, cuenta
+                publicitaria, pixel y catálogo.
+              </>
+            ),
+          },
+          {
+            type: 'callout',
+            variant: 'warning',
+            content:
+              'Usa TU perfil real, el de siempre, con años de historia y amigos. Un perfil recién creado que abre un Business Manager y empieza a gastar el mismo día es el patrón exacto que Meta marca como sospechoso. No es una superstición: es el caso más común de cuenta restringida en la primera semana.',
+          },
+          {
+            type: 'list',
+            variant: 'checked',
+            items: [
+              'Perfil real y con antigüedad, no uno hecho para esto',
+              'Verificación en dos pasos ACTIVADA antes de empezar',
+              'Nombre y datos que coincidan con tu documento',
+              'Correo y teléfono confirmados y a los que tengas acceso',
+            ],
+          },
+        ],
+      },
+      {
+        id: 'business-manager',
+        emoji: '🏢',
+        titulo: 'El portafolio de negocio (Business Manager)',
+        bloques: [
+          {
+            type: 'paragraph',
+            content: (
+              <>
+                Se crea en <B>business.facebook.com</B>. Es el contenedor: dentro viven la página,
+                la cuenta publicitaria, el pixel, el dominio y las personas con acceso. Trabajar sin
+                él —creando anuncios sueltos desde el perfil— funciona los primeros días y se vuelve
+                un problema en cuanto quieras dar acceso a alguien o recuperar algo.
+              </>
+            ),
+          },
+          {
+            type: 'timeline',
+            steps: [
+              { title: 'Crear el portafolio', meta: '5 min', description: 'Nombre del negocio, tu nombre y correo de trabajo' },
+              { title: 'Añadir la página', meta: '5 min', description: 'Reclamarla desde el portafolio, no solo "solicitar acceso"' },
+              { title: 'Crear la cuenta publicitaria', meta: '5 min', description: 'Ojo con moneda y zona horaria — ver la lección siguiente' },
+              { title: 'Verificar el dominio', meta: '15 min', description: 'Tu dominio de Shopify, con el meta tag o el registro DNS' },
+              { title: 'Añadir un segundo admin', meta: '2 min', description: 'La contingencia más importante de todo el módulo' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'moneda-y-zona-horaria',
+        emoji: '⚠️',
+        titulo: 'Moneda y zona horaria: no se pueden cambiar',
+        bloques: [
+          {
+            type: 'callout',
+            variant: 'warning',
+            content:
+              'Al crear la cuenta publicitaria eliges moneda y zona horaria, y ESO ES PERMANENTE. Para cambiarlas hay que crear una cuenta nueva desde cero y perder el historial de gasto y el aprendizaje. Es el error de 30 segundos que cuesta semanas.',
+          },
+          {
+            type: 'comparison',
+            columns: [
+              {
+                label: 'Lo que suele fallar',
+                tone: 'bad',
+                items: [
+                  'Dejar la zona horaria que viene por defecto',
+                  'Elegir una moneda distinta a la de tu tarjeta',
+                  'Crear la cuenta con prisa "para probar"',
+                ],
+              },
+              {
+                label: 'Lo correcto en Colombia',
+                tone: 'good',
+                items: [
+                  'Zona horaria: Bogotá (GMT-5)',
+                  'Moneda: la misma en la que te cobra tu banco',
+                  'Revisar dos veces antes de dar a crear',
+                ],
+              },
+            ],
+          },
+          {
+            type: 'paragraph',
+            content: (
+              <>
+                La zona horaria decide dónde corta el día en tus informes y cuándo se reinicia el
+                presupuesto diario. Con una zona equivocada, los datos de &ldquo;ayer&rdquo; que
+                miras no son los de tu ayer, y cualquier decisión que tomes con ellos va corrida.
+              </>
+            ),
+          },
+        ],
+      },
+      {
+        id: 'limite-de-gasto-inicial',
+        emoji: '📈',
+        titulo: 'Por qué no te deja gastar lo que quieres',
+        bloques: [
+          {
+            type: 'paragraph',
+            content: (
+              <>
+                Una cuenta nueva arranca con un <B>límite de gasto diario bajo</B>. No está rota ni
+                te han penalizado: Meta sube ese techo a medida que se acumula historial de pagos
+                cobrados sin incidencias. Intentar forzarlo el primer día es la vía rápida a una
+                revisión.
+              </>
+            ),
+          },
+          {
+            type: 'callout',
+            variant: 'tip',
+            content:
+              'Paga a tiempo y deja que los primeros cobros pasen limpios. El límite sube solo. Lo que NO funciona es crear otra cuenta para saltárselo: el límite va asociado al portafolio, no a la cuenta.',
+          },
+        ],
+      },
+      {
+        id: 'tiktok-ads-manager',
+        emoji: '🎵',
+        titulo: 'TikTok: crear la cuenta de anuncios',
+        bloques: [
+          {
+            type: 'paragraph',
+            content: (
+              <>
+                Se abre en <B>ads.tiktok.com</B> con un correo de trabajo. TikTok pide país, moneda
+                y zona horaria al registrarte, y aquí aplica <B>la misma regla que en Meta</B>: se
+                fijan al crear y no se cambian después.
+              </>
+            ),
+          },
+          {
+            type: 'list',
+            variant: 'numbered',
+            items: [
+              'Registro con correo (no con el TikTok personal)',
+              'Datos del negocio: país, moneda y zona horaria',
+              'Verificación de identidad o del negocio, si te la piden',
+              'Vincular tu cuenta orgánica de TikTok para poder usar Spark Ads',
+            ],
+          },
+          {
+            type: 'callout',
+            variant: 'info',
+            content:
+              'Spark Ads es promocionar un video que ya está publicado en tu perfil, conservando likes y comentarios. Necesita que la cuenta orgánica esté vinculada ANTES, así que hazlo aunque todavía no lo vayas a usar.',
+          },
+        ],
+      },
+      {
+        id: 'business-center-tiktok',
+        emoji: '🏬',
+        titulo: 'El Business Center de TikTok',
+        bloques: [
+          {
+            type: 'paragraph',
+            content: (
+              <>
+                Es el equivalente al Business Manager de Meta: vive en{' '}
+                <B>business.tiktok.com</B> y sirve para tener las cuentas publicitarias, el pixel y
+                los accesos de personas en un solo sitio, separados de tu usuario. Mismo motivo que
+                en Meta — el día que necesites dar o quitar acceso, lo agradeces.
+              </>
+            ),
+          },
+        ],
+      },
+      {
+        id: 'pagos-tiktok',
+        emoji: '💰',
+        titulo: 'Pagos: prepago o automático',
+        bloques: [
+          {
+            type: 'paragraph',
+            content: (
+              <>
+                TikTok maneja dos modos. En <B>prepago</B> recargas saldo y la pauta consume de ahí;
+                en <B>automático</B> te cobra después de gastar. En Latinoamérica las cuentas nuevas
+                suelen empezar en prepago, y el automático llega con historial.
+              </>
+            ),
+          },
+          {
+            type: 'callout',
+            variant: 'warning',
+            content:
+              'Con prepago, si el saldo llega a cero la campaña se detiene de golpe — y una campaña que se apaga a mitad de aprendizaje pierde lo aprendido. Revisa el saldo antes del fin de semana.',
+          },
+        ],
+      },
+      {
+        id: 'contingencias',
+        emoji: '🛡️',
+        titulo: 'Contingencias: qué hacer si te restringen la cuenta',
+        bloques: [
+          {
+            type: 'paragraph',
+            content: (
+              <>
+                Las restricciones pasan, y muchas veces por error del sistema automático. Lo que
+                separa un susto de dos semanas paradas es <B>lo que dejaste montado antes</B>.
+              </>
+            ),
+          },
+          {
+            type: 'list',
+            variant: 'checked',
+            items: [
+              'Dos administradores en el portafolio, desde el primer día',
+              'Verificación en dos pasos en todos los que tengan acceso',
+              'El dominio verificado y la página reclamada por el portafolio',
+              'El medio de pago a tu nombre y usado solo en tu negocio',
+              'Capturas de tu documento y de los datos del negocio, a mano',
+            ],
+          },
+          {
+            type: 'callout',
+            variant: 'tip',
+            content:
+              'El segundo administrador es la contingencia que de verdad importa. Si restringen TU perfil personal, el portafolio, la página y el pixel siguen siendo accesibles por la otra persona: no pierdes los activos, solo tu acceso mientras apelas.',
+          },
+          {
+            type: 'paragraph',
+            content: (
+              <>
+                Si te restringen, el camino es <B>apelar por el canal oficial</B> — Calidad de la
+                cuenta en Meta, el soporte del Business Center en TikTok — y esperar. Abrir perfiles
+                nuevos para esquivar una restricción es exactamente lo que ambas plataformas
+                detectan y castigan con bloqueos más duros y permanentes. Si te pasa, escríbeme
+                antes de tocar nada.
+              </>
+            ),
+          },
+        ],
+      },
+    ],
+    theory: [],
+    practiceChecklist: [
+      'Activar la verificación en dos pasos en tu perfil personal de Facebook',
+      'Crear el portafolio de negocio en business.facebook.com',
+      'Crear o reclamar la página de Facebook desde el portafolio',
+      'Crear la cuenta publicitaria con zona horaria Bogotá y la moneda correcta',
+      'Añadir un segundo administrador al portafolio',
+      'Verificar tu dominio de Shopify en el portafolio',
+      'Crear la cuenta en ads.tiktok.com con país, moneda y zona horaria correctos',
+      'Abrir el Business Center de TikTok y vincular tu cuenta orgánica',
+      'Dejar cargado el medio de pago en las dos plataformas',
+    ],
+    test: [
+      {
+        type: 'single',
+        question: '¿Desde dónde se crea un Business Manager de Meta?',
+        options: [
+          'Desde un correo de empresa, sin Facebook',
+          'Desde un perfil personal de Facebook',
+          'Desde la página de Instagram',
+          'Desde la tienda de Shopify',
+        ],
+        correctIndex: 1,
+      },
+      {
+        type: 'single',
+        question: 'Al crear la cuenta publicitaria, ¿qué NO vas a poder cambiar después?',
+        options: [
+          'El nombre de la cuenta',
+          'El medio de pago',
+          'La moneda y la zona horaria',
+          'El límite de gasto',
+        ],
+        correctIndex: 2,
+      },
+      {
+        type: 'single',
+        question: 'Si Meta restringe tu perfil personal, ¿qué te salva de perder el acceso a la página y al pixel?',
+        options: [
+          'Haber creado un perfil de respaldo',
+          'Tener un segundo administrador en el portafolio',
+          'Pagar con otra tarjeta',
+          'Cambiar la zona horaria',
+        ],
+        correctIndex: 1,
+      },
+      {
+        type: 'single',
+        question: 'Tu cuenta nueva no te deja subir el presupuesto. ¿Qué está pasando?',
+        options: [
+          'Está restringida y hay que apelar',
+          'Es el límite de gasto inicial, que sube con historial de pagos',
+          'Falta verificar el dominio',
+          'Hay que crear otra cuenta publicitaria',
+        ],
+        correctIndex: 1,
+      },
+      {
+        type: 'text',
+        question:
+          'Escribe el nombre de tu portafolio de negocio, la moneda y la zona horaria que elegiste, y quién quedó como segundo administrador.',
+      },
+    ],
+  },
+
+  // ============================================================
   // MÓDULO 6 — Meta Pixel + TikTok Pixel
   // ============================================================
   'pixel-tracking': {
