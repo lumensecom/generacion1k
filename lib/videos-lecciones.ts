@@ -52,7 +52,24 @@ export const VIDEOS_LECCIONES: Record<string, string[]> = {
     'https://youtu.be/xECGRwwzkq8',
   ],
 
-  // ---- 6 · Pixel ----
+  // ---- 6 · Cuentas publicitarias ----
+  'cuentas-publicitarias/business-manager': [
+    // Victor Barba — "Cómo crear el Facebook Business Manager y la cuenta publicitaria"
+    'https://youtu.be/6QgWlc2rTwE',
+    // Susan Gorbina — "Cómo crear el Facebook Business Manager 2026 · Portafolio comercial"
+    'https://youtu.be/CcdGYXw-k6w',
+  ],
+  // El de Victor Barba llega hasta crear la cuenta publicitaria, que es
+  // justo donde se eligen moneda y zona horaria: va también aquí.
+  'cuentas-publicitarias/moneda-y-zona-horaria': ['https://youtu.be/6QgWlc2rTwE'],
+  'cuentas-publicitarias/tiktok-ads-manager': [
+    // Pol Corominas — "Cómo hacer Publicidad en TikTok Ads 2026, paso a paso"
+    'https://youtu.be/iKGuVTgzxoU',
+    // converzzo — "Tutorial Completo de TikTok Ads para Principiantes (2026)"
+    'https://youtu.be/CrPVktOuT-o',
+  ],
+
+  // ---- 7 · Pixel ----
   'pixel-tracking/que-es-un-pixel': [
     // Felipe Vergara — "PIXEL de FACEBOOK (Meta): TODO lo que necesitas saber"
     'https://youtu.be/nRci9StzARQ',
