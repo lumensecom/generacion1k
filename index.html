@@ -386,6 +386,12 @@
         ============================================================ */
         .hero {
             position: relative;
+            /* Antes era negro plano. Dos halos muy abiertos dan profundidad
+               sin manchar: el morado sostiene la marca y el oro, arriba y
+               apenas perceptible, prepara la cifra dorada del titular. */
+            background:
+                radial-gradient(88% 62% at 50% 22%, rgba(124, 58, 237, 0.22), transparent 62%),
+                radial-gradient(64% 46% at 50% 0%, rgba(245, 197, 24, 0.07), transparent 60%);
             min-height: 100svh;
             display: flex;
             flex-direction: column;
@@ -645,7 +651,25 @@
         /* ============================================================
            SECCIÓN — PROBLEMA
         ============================================================ */
-        .section-dark { background: var(--bg-secondary); }
+        .section-dark {
+            background:
+                radial-gradient(120% 78% at 50% 0%, rgba(124, 58, 237, 0.09), transparent 58%),
+                var(--bg-secondary);
+        }
+
+        /* Sección morada de verdad, para romper la racha oscura del principio.
+           Es un fondo, no un orbe: el color envuelve el bloque entero en vez
+           de flotar detrás compitiendo con el texto. */
+        .section-purple {
+            background:
+                radial-gradient(95% 85% at 18% 0%, rgba(124, 58, 237, 0.26), transparent 64%),
+                radial-gradient(85% 75% at 88% 100%, rgba(168, 85, 247, 0.16), transparent 62%),
+                #15101F;
+        }
+        .section-purple .case-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(168, 85, 247, 0.28);
+        }
 
         .pain-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
         .pain-card {
@@ -1755,7 +1779,7 @@
     </section>
 
     <!-- ============ CASOS REALES ============ -->
-    <section id="casos" class="section-dark">
+    <section id="casos" class="section-purple">
         <div class="container">
             <div class="section-head reveal">
                 <span class="eyebrow">Casos reales</span>
@@ -1829,7 +1853,7 @@
 
     
     <!-- ============ EL PROGRAMA + PLANES ============ -->
-    <section id="programa">
+    <section id="programa" class="section-dark">
 
         <div class="container">
             <div class="section-head reveal">
@@ -2109,7 +2133,7 @@
     </section>
 
     <!-- ============ SOBRE JUAN FELIPE ============ -->
-    <section id="sobre-mi" class="section-dark">
+    <section id="sobre-mi" class="section-purple">
         <div class="container">
             <div class="section-head reveal">
                 <span class="eyebrow">Sobre mí</span>
