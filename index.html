@@ -398,7 +398,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background-image: radial-gradient(rgba(168, 85, 247, 0.10) 1px, transparent 1px);
+            background-image: radial-gradient(rgba(245, 197, 24, 0.09) 1px, transparent 1px);
             background-size: 32px 32px;
             mask-image: linear-gradient(to bottom, black 30%, transparent 85%);
             -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 85%);
@@ -442,11 +442,25 @@
             font-weight: 800;
             line-height: 0.98;
             letter-spacing: -0.045em;
-            background: linear-gradient(120deg, #fff 30%, var(--purple-light) 100%);
+            /* Dorado en movimiento: el mismo oro del logo 1K, con un brillo
+               que recorre la cifra muy despacio. Nueve segundos y sin bucle
+               brusco — si se nota que se mueve, distrae de lo único que
+               importa en esta pantalla, que es el número. */
+            background: linear-gradient(100deg,
+                #E09B0B 0%, #F5C518 20%, #FFF3C4 38%, #F5C518 56%, #D9910A 100%);
+            background-size: 240% 100%;
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
             color: transparent;
+            animation: heroOro 9s ease-in-out infinite;
+        }
+        @keyframes heroOro {
+            0%, 100% { background-position: 0% 50%; }
+            50%      { background-position: 100% 50%; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .hero h1 .ht-figure { animation: none; background-position: 32% 50%; }
         }
         .hero-sub {
             margin: 26px auto 0;
@@ -1534,7 +1548,6 @@
             </a>
             <div class="nav-links">
                 <a href="#casos">Casos</a>
-                <a href="#modelo">El modelo</a>
                 <a href="#programa">El programa</a>
                 <a href="#fases">Fases</a>
                 <a href="#sobre-mi">Sobre mí</a>
@@ -1558,7 +1571,6 @@
     <!-- Menú móvil -->
     <div class="mobile-menu" id="mobileMenu">
         <a href="#casos">Casos</a>
-        <a href="#modelo">El modelo</a>
         <a href="#programa">El programa</a>
         <a href="#fases">Fases</a>
         <a href="#sobre-mi">Sobre mí</a>
@@ -1815,73 +1827,7 @@
         </div>
     </section>
 
-    <!-- ============ ¿QUÉ ES DROPSHIPPING? (SECCIÓN CLARA) ============ -->
-    <section id="modelo" class="section-light">
-        <span class="watermark" aria-hidden="true">MODELO</span>
-
-        <div class="container">
-            <div class="section-head reveal">
-                <span class="eyebrow">El modelo</span>
-                <h2 class="h2">¿Qué es <span class="accent">dropshipping</span>?</h2>
-                <p class="section-sub">
-                    Es el modelo con el que empiezas a vender online <strong>sin comprar inventario, sin bodega y sin local físico</strong>.
-                    Tú vendes, tu proveedor envía, y tu ganancia es el margen. Así funciona:
-                </p>
-            </div>
-
-            <div class="drop-flow">
-                <div class="drop-step reveal">
-                    <span class="drop-step-num">PASO 01</span>
-                    <div class="drop-icon">🛒</div>
-                    <h3>El cliente compra en tu tienda</h3>
-                    <p>Llega desde tus anuncios y compra en tu tienda online.</p>
-                    <span class="drop-money">Paga <strong>$50</strong></span>
-                </div>
-                <div class="drop-step reveal reveal-d1">
-                    <span class="drop-step-num">PASO 02</span>
-                    <div class="drop-icon">📦</div>
-                    <h3>Haces el pedido al proveedor</h3>
-                    <p>Con esa venta, pides el producto a tu proveedor. No tocas inventario.</p>
-                    <span class="drop-money">Cuesta <strong>$20</strong></span>
-                </div>
-                <div class="drop-step reveal reveal-d2">
-                    <span class="drop-step-num">PASO 03</span>
-                    <div class="drop-icon">🚚</div>
-                    <h3>El proveedor envía directo</h3>
-                    <p>El paquete va del proveedor a la puerta de tu cliente. En Latam incluso con pago contra entrega.</p>
-                    <span class="drop-money">Envío <strong>directo</strong></span>
-                </div>
-                <div class="drop-step reveal reveal-d3">
-                    <span class="drop-step-num">PASO 04</span>
-                    <div class="drop-icon">💰</div>
-                    <h3>Tu ganancia es el margen</h3>
-                    <p>La diferencia entre lo que paga el cliente y lo que cuesta el producto es tuya.</p>
-                    <span class="drop-money">Ganas <strong>$30</strong></span>
-                </div>
-            </div>
-
-            <div class="drop-math reveal">
-                <span class="venta">$50 venta</span>
-                <span class="op">−</span>
-                <span class="costo">$20 producto y envío</span>
-                <span class="op">=</span>
-                <span class="ganancia">$30 de ganancia por pedido</span>
-            </div>
-
-            <div class="drop-chips reveal">
-                <span class="drop-chip"><span class="dot"></span> Sin inventario</span>
-                <span class="drop-chip"><span class="dot"></span> Sin local físico</span>
-                <span class="drop-chip"><span class="dot"></span> Poco capital inicial</span>
-                <span class="drop-chip"><span class="dot"></span> Operas desde tu casa</span>
-            </div>
-
-            <p class="drop-note reveal">
-                Suena simple, y el modelo lo es. Lo difícil es <strong>elegir bien el producto, construir una tienda que convierta
-                y hacer publicidad rentable</strong> — exactamente lo que construimos contigo en el programa.
-            </p>
-        </div>
-    </section>
-
+    
     <!-- ============ EL PROGRAMA + PLANES ============ -->
     <section id="programa">
 
@@ -2295,25 +2241,7 @@
                     </div>
                 </div>
 
-                <div class="faq-item">
-                    <button class="faq-q" aria-expanded="false">
-                        ¿Cuánto dinero necesito para operar el negocio?
-                        <span class="faq-icon">+</span>
-                    </button>
-                    <div class="faq-a">
-                        <p>Recomendamos mínimo $100 USD para empezar: Shopify, dominio y presupuesto inicial de pauta.</p>
-                    </div>
-                </div>
 
-                <div class="faq-item">
-                    <button class="faq-q" aria-expanded="false">
-                        ¿En qué países funciona esto?
-                        <span class="faq-icon">+</span>
-                    </button>
-                    <div class="faq-a">
-                        <p>El programa aplica para Colombia y cualquier país de Latinoamérica o el mundo donde puedas usar plataformas de ecommerce y publicidad digital.</p>
-                    </div>
-                </div>
 
                 <div class="faq-item">
                     <button class="faq-q" aria-expanded="false">
@@ -2335,26 +2263,8 @@
                     </div>
                 </div>
 
-                <div class="faq-item">
-                    <button class="faq-q" aria-expanded="false">
-                        ¿Cómo sé si el programa es para mí?
-                        <span class="faq-icon">+</span>
-                    </button>
-                    <div class="faq-a">
-                        <p>Por eso existe la llamada de diagnóstico. En 30-40 minutos evaluamos si tienes el perfil, los recursos y el compromiso para que el programa funcione para ti.</p>
-                    </div>
-                </div>
+                                </div>
 
-                <div class="faq-item">
-                    <button class="faq-q" aria-expanded="false">
-                        ¿Qué distingue esto de un curso?
-                        <span class="faq-icon">+</span>
-                    </button>
-                    <div class="faq-a">
-                        <p>Un curso te da información. Nosotros construimos contigo. Cada decisión la tomamos juntos, te decimos exactamente qué hacer en cada paso y revisamos tu negocio constantemente.</p>
-                    </div>
-                </div>
-            </div>
 
             <div class="honest-box reveal">
                 <span class="hb-icon">🤝</span>
