@@ -112,7 +112,7 @@
             font-style: italic;
             font-weight: 600;
             letter-spacing: 0;
-            background: linear-gradient(120deg, #fff 10%, var(--purple-light) 55%, var(--pink) 100%);
+            background: linear-gradient(120deg, #fff 30%, var(--purple-light) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -141,7 +141,7 @@
             width: 64px;
             height: 3px;
             border-radius: 3px;
-            background: linear-gradient(90deg, var(--purple), var(--pink));
+            background: var(--purple);
             margin: 24px auto 0;
         }
 
@@ -151,32 +151,13 @@
         .section-light .section-sub { color: var(--light-text-2); }
         .section-light .eyebrow { color: var(--purple); }
         .section-light .accent {
-            background: linear-gradient(120deg, var(--light-text) 5%, var(--purple) 50%, var(--pink) 100%);
+            background: linear-gradient(120deg, var(--light-text) 35%, var(--purple) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .section-light .orb { opacity: 0.5; }
 
-        /* ---------- Orbes animados ---------- */
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(90px);
-            pointer-events: none;
-            z-index: 0;
-            animation: orbFloat 16s ease-in-out infinite alternate;
-        }
-        .orb-purple { background: rgba(124, 58, 237, 0.28); }
-        .orb-pink   { background: rgba(236, 72, 153, 0.18); animation-duration: 20s; animation-delay: -6s; }
-        .orb-cyan   { background: rgba(34, 211, 238, 0.14); animation-duration: 24s; animation-delay: -12s; }
-        .orb-amber  { background: rgba(245, 158, 11, 0.12); animation-duration: 18s; animation-delay: -3s; }
-        @keyframes orbFloat {
-            0%   { transform: translate(0, 0) scale(1); }
-            50%  { transform: translate(50px, -35px) scale(1.15); }
-            100% { transform: translate(-30px, 30px) scale(0.95); }
-        }
-
+        
         @keyframes floatY {
             0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
             50%      { transform: translateY(-14px) rotate(var(--rot, 0deg)); }
@@ -217,12 +198,12 @@
             min-height: 48px;
             transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
             white-space: nowrap;
-            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.18);
+            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.14);
         }
         .btn-cta:hover {
             transform: scale(1.02);
             background: var(--yellow-hover);
-            box-shadow: 0 0 34px rgba(245, 158, 11, 0.4);
+            box-shadow: 0 10px 28px rgba(245, 158, 11, 0.22);
         }
         .btn-cta .arrow { transition: transform 0.25s ease; }
         .btn-cta:hover .arrow { transform: translateX(3px); }
@@ -299,7 +280,7 @@
         }
         .nav-links a:hover { color: #fff; }
         .nav-links .nav-link-program { color: var(--purple-light); font-weight: 700; }
-        .nav-links .nav-link-program:hover { color: var(--pink); }
+        .nav-links .nav-link-program:hover { color: var(--purple-light); }
 
         .nav-right { display: flex; align-items: center; gap: 10px; }
         .nav-cta {
@@ -314,7 +295,7 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             white-space: nowrap;
         }
-        .nav-cta:hover { transform: scale(1.03); box-shadow: 0 0 24px rgba(245, 158, 11, 0.3); }
+        .nav-cta:hover { transform: scale(1.03); box-shadow: 0 8px 20px rgba(245, 158, 11, 0.18); }
 
         .nav-portal-btn {
             display: inline-flex;
@@ -461,7 +442,7 @@
             font-weight: 800;
             line-height: 0.98;
             letter-spacing: -0.045em;
-            background: linear-gradient(120deg, #fff 12%, var(--purple-light) 58%, var(--pink) 100%);
+            background: linear-gradient(120deg, #fff 30%, var(--purple-light) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -504,7 +485,7 @@
             font-size: 12px;
             font-weight: 700;
             color: #fff;
-            background: linear-gradient(135deg, var(--purple), var(--pink));
+            background: var(--purple);
         }
         .hero-step.is-next { color: var(--text-muted); }
         .hero-step.is-next .hs-num {
@@ -525,7 +506,7 @@
             overflow: hidden;
             background: linear-gradient(160deg, rgba(124, 58, 237, 0.20), rgba(10, 10, 10, 0.92));
             border: 1px solid rgba(124, 58, 237, 0.35);
-            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), 0 0 60px rgba(124, 58, 237, 0.12);
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.32), 0 0 60px rgba(124, 58, 237, 0.12);
             animation: heroFade 0.9s ease 0.7s both;
         }
         .hero-video iframe,
@@ -603,7 +584,7 @@
             border: 1px solid rgba(255, 255, 255, 0.09);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.30);
             animation: floatY 7s ease-in-out infinite;
         }
         .fc-icon {
@@ -729,7 +710,7 @@
         .cases-grid { display: grid; grid-template-columns: 1fr; gap: 22px; }
         .case-card {
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(124, 58, 237, 0.22);
+            border: 1px solid var(--border);
             border-radius: 20px;
             padding: 30px 26px;
             display: flex;
@@ -752,7 +733,7 @@
             font-weight: 800;
             font-size: 15px;
             color: #fff;
-            background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+            background: var(--purple);
         }
         .case-name { font-weight: 800; font-size: 16px; color: var(--text-primary); }
         .case-profile {
@@ -762,19 +743,19 @@
             margin-top: 3px;
             letter-spacing: 0.02em;
         }
+        /* El resultado es lo primero y lo más grande de la tarjeta. Antes era
+           una pastilla pequeña al final, debajo de la cita: el dato que hace
+           que alguien lea el caso estaba enterrado bajo el caso. */
         .case-result {
-            margin-top: 22px;
-            font-family: var(--font-mono);
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            color: var(--success);
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.25);
-            border-radius: 999px;
-            padding: 8px 15px;
-            align-self: flex-start;
+            font-family: var(--font-display);
+            font-size: clamp(19px, 2.4vw, 23px);
+            font-weight: 800;
+            line-height: 1.22;
+            letter-spacing: -0.02em;
+            color: #fff;
+            margin: 0 0 18px;
         }
+        .section-light .case-result { color: var(--light-text); }
         .case-before {
             margin-top: 20px;
             padding-left: 15px;
@@ -790,6 +771,12 @@
             margin-bottom: 6px;
         }
         .case-before p { font-size: 14.5px; line-height: 1.65; color: var(--text-muted); }
+        .case-card .case-quote { flex: 1; }
+        .case-card .case-person {
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid var(--border);
+        }
         .case-quote {
             margin-top: 22px;
             font-size: 15.5px;
@@ -814,10 +801,10 @@
             transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
         .drop-step:hover { transform: translateY(-4px); }
-        .drop-step:nth-child(1):hover { border-color: rgba(124, 58, 237, 0.5); box-shadow: 0 16px 36px rgba(124, 58, 237, 0.14); }
-        .drop-step:nth-child(2):hover { border-color: rgba(34, 211, 238, 0.55);  box-shadow: 0 16px 36px rgba(34, 211, 238, 0.14); }
-        .drop-step:nth-child(3):hover { border-color: rgba(236, 72, 153, 0.5);  box-shadow: 0 16px 36px rgba(236, 72, 153, 0.13); }
-        .drop-step:nth-child(4):hover { border-color: rgba(245, 158, 11, 0.55);  box-shadow: 0 16px 36px rgba(245, 158, 11, 0.15); }
+        .drop-step:nth-child(1):hover { border-color: rgba(124, 58, 237, 0.5); box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28); }
+        .drop-step:nth-child(2):hover { border-color: rgba(34, 211, 238, 0.55);  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28); }
+        .drop-step:nth-child(3):hover { border-color: rgba(236, 72, 153, 0.5);  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28); }
+        .drop-step:nth-child(4):hover { border-color: rgba(245, 158, 11, 0.55);  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28); }
 
         .drop-icon {
             width: 62px; height: 62px;
@@ -837,7 +824,7 @@
         .drop-step-num { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.15em; }
         .drop-step:nth-child(1) .drop-step-num { color: var(--purple); }
         .drop-step:nth-child(2) .drop-step-num { color: #0891B2; }
-        .drop-step:nth-child(3) .drop-step-num { color: var(--pink); }
+        .drop-step:nth-child(3) .drop-step-num { color: var(--purple-light); }
         .drop-step:nth-child(4) .drop-step-num { color: #D97706; }
 
         .drop-step h3 {
@@ -871,7 +858,7 @@
             left: 8%;
             right: 8%;
             height: 2px;
-            background: linear-gradient(90deg, var(--purple), var(--cyan), var(--pink), var(--yellow), var(--purple));
+            background: var(--purple);
             background-size: 250% 100%;
             animation: flowLine 6s linear infinite;
             opacity: 0.5;
@@ -900,7 +887,7 @@
         }
         .drop-math .op { color: var(--light-muted); }
         .drop-math .venta    { color: #0891B2; }
-        .drop-math .costo    { color: var(--pink); }
+        .drop-math .costo    { color: var(--text-secondary); }
         .drop-math .ganancia { color: #059669; font-weight: 500; }
 
         .drop-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 32px; }
@@ -918,8 +905,8 @@
         }
         .drop-chip .dot { width: 6px; height: 6px; border-radius: 50%; }
         .drop-chip:nth-child(1) .dot { background: var(--purple); }
-        .drop-chip:nth-child(2) .dot { background: var(--cyan); }
-        .drop-chip:nth-child(3) .dot { background: var(--pink); }
+        .drop-chip:nth-child(2) .dot { background: var(--purple-light); }
+        .drop-chip:nth-child(3) .dot { background: var(--purple); }
         .drop-chip:nth-child(4) .dot { background: var(--yellow); }
 
         .drop-note {
@@ -938,7 +925,7 @@
         .timeline-line {
             height: 2px;
             border-radius: 2px;
-            background: linear-gradient(90deg, var(--purple), var(--pink), var(--yellow));
+            background: var(--purple);
             transform: scaleX(0);
             transform-origin: left;
             transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
@@ -978,7 +965,7 @@
         .month-card:nth-child(3) .month-num { color: rgba(245, 158, 11, 0.10); }
         .month-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; }
         .month-card:nth-child(1) .month-label { color: var(--purple-light); }
-        .month-card:nth-child(2) .month-label { color: var(--pink); }
+        .month-card:nth-child(2) .month-label { color: var(--purple-light); }
         .month-card:nth-child(3) .month-label { color: var(--yellow); }
         .month-card h3 {
             font-family: var(--font-display);
@@ -1030,7 +1017,7 @@
             position: absolute;
             top: -13px;
             right: 28px;
-            background: linear-gradient(135deg, var(--purple), var(--pink));
+            background: var(--purple);
             color: #fff;
             font-family: var(--font-mono);
             font-size: 10px;
@@ -1234,8 +1221,8 @@
         .phase-card:nth-child(6) .phase-num { color: rgba(168, 85, 247, 0.12); }
         .phase-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; }
         .phase-card:nth-child(1) .phase-label { color: var(--purple-light); }
-        .phase-card:nth-child(2) .phase-label { color: var(--cyan); }
-        .phase-card:nth-child(3) .phase-label { color: var(--pink); }
+        .phase-card:nth-child(2) .phase-label { color: var(--purple-light); }
+        .phase-card:nth-child(3) .phase-label { color: var(--purple-light); }
         .phase-card:nth-child(4) .phase-label { color: var(--yellow); }
         .phase-card:nth-child(5) .phase-label { color: var(--success); }
         .phase-card:nth-child(6) .phase-label { color: var(--purple-light); }
@@ -1373,7 +1360,7 @@
             font-family: var(--font-display);
             font-weight: 800;
             font-size: 36px;
-            background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+            background: var(--purple);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -1522,8 +1509,6 @@
 
         /* móvil: blurs más ligeros */
         @media (max-width: 767px) {
-            .orb { filter: blur(60px); opacity: 0.8; }
-            .section-light .orb { opacity: 0.4; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1592,8 +1577,6 @@
     <!-- ============ HERO ============ -->
     <header class="hero">
         <div class="grain"></div>
-        <div class="orb orb-purple" style="top: 6%; left: 12%; width: 420px; height: 420px;"></div>
-        <div class="orb orb-pink" style="top: 22%; right: 6%; width: 340px; height: 340px;"></div>
 
         <!-- Objetos flotantes: retirados a propósito. Simulaban ventas en vivo
              ("Nueva venta hace 2 min") y con casos reales más abajo eso resta
@@ -1726,7 +1709,6 @@
 
     <!-- ============ LA TRANSFORMACIÓN ============ -->
     <section>
-        <div class="orb orb-purple" style="top: 30%; right: -6%; width: 380px; height: 380px;"></div>
         <div class="container">
             <div class="section-head reveal">
                 <h2 class="h2">Lo que cambia cuando tienes<br><span class="accent">acompañamiento real</span></h2>
@@ -1762,20 +1744,26 @@
 
     <!-- ============ CASOS REALES ============ -->
     <section id="casos" class="section-dark">
-        <div class="orb orb-pink" style="top: 20%; left: -8%; width: 400px; height: 400px;"></div>
         <div class="container">
             <div class="section-head reveal">
                 <span class="eyebrow">Casos reales</span>
-                <h2 class="h2">Primera generación:<br><span class="accent">todos vendieron</span></h2>
+                <h2 class="h2">De 13 a 48 años:<br><span class="accent">todos vendieron</span></h2>
                 <p class="section-sub">
-                    Ninguno tenía experiencia. Todos lograron sus primeras ventas y montaron
-                    sus propias campañas en las primeras 3 semanas.
+                    Ninguno tenía experiencia previa ni había vendido nada en internet.
+                    Todos hicieron sus primeras ventas y montaron sus propias campañas
+                    en las primeras 3 semanas.
                 </p>
                 <div class="head-beam"></div>
             </div>
 
             <div class="cases-grid">
                 <div class="case-card reveal">
+                    <p class="case-result">Primeras ventas en 3 semanas</p>
+                    <div class="case-before">
+                        <span class="case-before-tag">Antes</span>
+                        <p>Empezó desde cero, sin haber vendido nada nunca en internet.</p>
+                    </div>
+                    <p class="case-quote">"En 3 semanas ya tenía ventas y mis propias campañas activas."</p>
                     <div class="case-person">
                         <span class="case-avatar">N</span>
                         <div>
@@ -1783,15 +1771,15 @@
                             <div class="case-profile">18 años · Colombia</div>
                         </div>
                     </div>
-                    <span class="case-result">Primeras ventas en 3 semanas</span>
-                    <div class="case-before">
-                        <span class="case-before-tag">Antes</span>
-                        <p>Empezó desde cero, sin haber vendido nada nunca en internet.</p>
-                    </div>
-                    <p class="case-quote">"En 3 semanas ya tenía ventas y mis propias campañas activas."</p>
                 </div>
 
                 <div class="case-card reveal reveal-d1">
+                    <p class="case-result">Vendiendo a los 13 años</p>
+                    <div class="case-before">
+                        <span class="case-before-tag">Antes</span>
+                        <p>Estudiante de colegio, sin experiencia ni capital propio.</p>
+                    </div>
+                    <p class="case-quote">"A los 13 ya logré mis primeras ventas y aprendí a montar campañas."</p>
                     <div class="case-person">
                         <span class="case-avatar">NC</span>
                         <div>
@@ -1799,15 +1787,15 @@
                             <div class="case-profile">13 años · Colombia</div>
                         </div>
                     </div>
-                    <span class="case-result">El más joven de la generación</span>
-                    <div class="case-before">
-                        <span class="case-before-tag">Antes</span>
-                        <p>Estudiante de colegio, sin experiencia ni capital propio.</p>
-                    </div>
-                    <p class="case-quote">"A los 13 ya logré mis primeras ventas y aprendí a montar campañas."</p>
                 </div>
 
                 <div class="case-card reveal reveal-d2">
+                    <p class="case-result">De cero a vender a los 48</p>
+                    <div class="case-before">
+                        <span class="case-before-tag">Antes</span>
+                        <p>No sabía nada de ecommerce y creía que esto era solo para jóvenes.</p>
+                    </div>
+                    <p class="case-quote">"La edad no fue excusa: hoy vendo y manejo mis propias campañas."</p>
                     <div class="case-person">
                         <span class="case-avatar">L</span>
                         <div>
@@ -1815,12 +1803,6 @@
                             <div class="case-profile">48 años · Colombia</div>
                         </div>
                     </div>
-                    <span class="case-result">De cero a vender en 3 semanas</span>
-                    <div class="case-before">
-                        <span class="case-before-tag">Antes</span>
-                        <p>No sabía nada de ecommerce y creía que esto era solo para jóvenes.</p>
-                    </div>
-                    <p class="case-quote">"La edad no fue excusa: hoy vendo y manejo mis propias campañas."</p>
                 </div>
             </div>
 
@@ -1835,8 +1817,6 @@
 
     <!-- ============ ¿QUÉ ES DROPSHIPPING? (SECCIÓN CLARA) ============ -->
     <section id="modelo" class="section-light">
-        <div class="orb orb-purple" style="top: 8%; left: -6%; width: 360px; height: 360px;"></div>
-        <div class="orb orb-pink" style="bottom: 8%; right: -4%; width: 320px; height: 320px;"></div>
         <span class="watermark" aria-hidden="true">MODELO</span>
 
         <div class="container">
@@ -1904,7 +1884,6 @@
 
     <!-- ============ EL PROGRAMA + PLANES ============ -->
     <section id="programa">
-        <div class="orb orb-purple" style="top: 4%; left: 40%; width: 400px; height: 400px;"></div>
 
         <div class="container">
             <div class="section-head reveal">
@@ -1992,8 +1971,6 @@
 
     <!-- ============ OFERTA DE PLANES (tema claro) ============ -->
     <section id="planes" class="section-light">
-        <div class="orb orb-purple" style="top: 6%; left: -8%; width: 380px; height: 380px;"></div>
-        <div class="orb orb-pink" style="bottom: 4%; right: -6%; width: 340px; height: 340px;"></div>
         <span class="watermark" aria-hidden="true">ELITE</span>
 
         <div class="container">
@@ -2011,7 +1988,7 @@
                     <span class="plan-duration-chip">📅 3 meses de acompañamiento</span>
                     <p class="plan-why">El tiempo mínimo real para pasar de cero a tus primeras ventas — ni un mes menos.</p>
 
-                    <div class="plan-price">Desde $250 USD</div>
+                    <div class="plan-price">Desde $350 USD</div>
                     <span class="plan-price-monthly">≈ $84 USD / mes</span>
                     <span class="plan-price-alt">el precio final depende de tu caso, se confirma en la llamada</span>
 
@@ -2120,7 +2097,6 @@
 
     <!-- ============ DIFERENCIAL (SECCIÓN CLARA) ============ -->
     <section class="section-light">
-        <div class="orb orb-pink" style="top: 20%; left: -8%; width: 340px; height: 340px;"></div>
         <div class="container">
             <div class="section-head reveal">
                 <h2 class="h2">No es <span class="accent">otro curso</span> más.</h2>
@@ -2188,7 +2164,6 @@
 
     <!-- ============ SOBRE JUAN FELIPE ============ -->
     <section id="sobre-mi" class="section-dark">
-        <div class="orb orb-purple" style="bottom: 6%; right: -6%; width: 380px; height: 380px;"></div>
         <div class="container">
             <div class="section-head reveal">
                 <span class="eyebrow">Sobre mí</span>
@@ -2239,7 +2214,6 @@
 
     <!-- ============ EL PROCESO (SECCIÓN CLARA) ============ -->
     <section class="section-light">
-        <div class="orb orb-cyan" style="top: 16%; right: -6%; width: 320px; height: 320px;"></div>
         <div class="container">
             <div class="section-head reveal">
                 <span class="eyebrow">El proceso</span>

@@ -27,7 +27,7 @@ export const PLANES: Record<PlanId, Plan> = {
     nombre: 'Elite Start',
     meses: 3,
     sesiones: 12,
-    precioCents: 250_00,
+    precioCents: 350_00,
     descripcion: 'Lanzar desde cero hasta las primeras ventas.',
   },
   growth: {
