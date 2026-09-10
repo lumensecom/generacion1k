@@ -1048,8 +1048,8 @@
             border: 1px solid transparent;
             background:
                 linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
-                linear-gradient(135deg, rgba(124, 58, 237, 0.9), rgba(236, 72, 153, 0.7), rgba(245, 158, 11, 0.55)) border-box;
-            box-shadow: 0 0 50px rgba(124, 58, 237, 0.14);
+                linear-gradient(160deg, rgba(168, 85, 247, 0.95), rgba(124, 58, 237, 0.55)) border-box;
+            box-shadow: 0 16px 44px rgba(124, 58, 237, 0.16);
         }
         .plan-badge {
             position: absolute;
@@ -1092,17 +1092,43 @@
             margin-top: 16px;
         }
         .plan-why { font-size: 13.5px; line-height: 1.6; color: var(--text-muted); margin-top: 11px; }
-        .plan-price { font-family: var(--font-mono); font-size: 30px; font-weight: 500; margin: 22px 0 6px; }
-        .plan-price span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+        /* El precio es la cifra que decide la página, y estaba en mono a 30px
+           y peso 500: tipografía de dato técnico, no de oferta. Pasa a la
+           display, al doble de tamaño y con el "Desde" y el "USD" reducidos
+           a su papel — acompañan al número, no compiten con él. */
+        .plan-price {
+            display: flex;
+            align-items: baseline;
+            gap: 9px;
+            flex-wrap: wrap;
+            margin: 26px 0 10px;
+            font-family: var(--font-display);
+        }
+        .pp-from {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .pp-amount {
+            font-size: clamp(40px, 5.2vw, 52px);
+            font-weight: 800;
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            color: #fff;
+        }
+        .pp-cur { font-size: 15px; font-weight: 700; color: var(--text-muted); }
+        .section-light .pp-amount { color: var(--light-text); }
+        .section-light .pp-from,
+        .section-light .pp-cur { color: var(--light-muted); }
         .plan-price-monthly {
             display: inline-block;
             font-family: var(--font-mono);
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--success);
-            background: rgba(16, 185, 129, 0.12);
-            padding: 4px 10px;
-            border-radius: 7px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.01em;
         }
         .plan-price-alt { display: block; font-family: var(--font-mono); font-size: 12.5px; color: var(--text-muted); margin-top: 10px; }
         .plan-divider { height: 1px; background: var(--border); margin: 24px 0 18px; }
@@ -1201,7 +1227,7 @@
         .section-light .plan.featured {
             background:
                 linear-gradient(var(--light-card), var(--light-card)) padding-box,
-                linear-gradient(135deg, rgba(124, 58, 237, 0.9), rgba(236, 72, 153, 0.7), rgba(245, 158, 11, 0.55)) border-box;
+                linear-gradient(160deg, rgba(168, 85, 247, 0.95), rgba(124, 58, 237, 0.55)) border-box;
             box-shadow: 0 0 46px rgba(124, 58, 237, 0.12);
         }
         .section-light .plan-name { color: var(--light-text); }
@@ -1958,8 +1984,12 @@
                     <span class="plan-duration-chip">📅 3 meses de acompañamiento</span>
                     <p class="plan-why">El tiempo mínimo real para pasar de cero a tus primeras ventas — ni un mes menos.</p>
 
-                    <div class="plan-price">Desde $350 USD</div>
-                    <span class="plan-price-monthly">≈ $84 USD / mes</span>
+                    <div class="plan-price">
+                        <span class="pp-from">Desde</span>
+                        <span class="pp-amount">$350</span>
+                        <span class="pp-cur">USD</span>
+                    </div>
+                    <span class="plan-price-monthly">≈ $117 USD al mes · 3 meses</span>
                     <span class="plan-price-alt">el precio final depende de tu caso, se confirma en la llamada</span>
 
                     <div class="plan-divider"></div>
@@ -1983,8 +2013,12 @@
                     <span class="plan-duration-chip">📅 6 meses de acompañamiento</span>
                     <p class="plan-why">3 meses extra para estabilizar lo que ya funciona y escalarlo con criterio.</p>
 
-                    <div class="plan-price">Desde $480 USD</div>
-                    <span class="plan-price-monthly">≈ $80 USD / mes</span>
+                    <div class="plan-price">
+                        <span class="pp-from">Desde</span>
+                        <span class="pp-amount">$675</span>
+                        <span class="pp-cur">USD</span>
+                    </div>
+                    <span class="plan-price-monthly">≈ $113 USD al mes · 6 meses</span>
                     <span class="plan-price-alt">el precio final depende de tu caso, se confirma en la llamada</span>
 
                     <div class="plan-divider"></div>
@@ -1995,7 +2029,7 @@
                         <li><span class="mark-v">✓</span> Plan de crecimiento mes 4-6</li>
                         <li><span class="mark-v">✓</span> Seguimiento del negocio a largo plazo</li>
                         <li><span class="mark-v">✓</span> Prioridad en agenda y soporte</li>
-                        <li><span class="mark-v">✓</span> Mejor precio por mes que Elite Start</li>
+                        <li><span class="mark-v">✓</span> Cubre el ciclo completo: lanzar, estabilizar y escalar</li>
                     </ul>
                     <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-cta">Agenda una llamada</a>
                 </div>

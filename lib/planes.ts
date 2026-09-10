@@ -35,7 +35,7 @@ export const PLANES: Record<PlanId, Plan> = {
     nombre: 'Elite Growth',
     meses: 6,
     sesiones: 24,
-    precioCents: 480_00,
+    precioCents: 675_00,
     descripcion: 'Todo lo de Start más 3 meses para estabilizar y escalar.',
   },
 };
