@@ -173,3 +173,52 @@ export const CHECKLIST_FINAL = [
   'Cada ángulo mío tiene una frase real que lo respalda',
   'Sé qué formato de video usa cada ángulo',
 ];
+
+// ---------------------------------------------------------------------------
+// Con qué IA hacerlo
+//
+// La tarea es leer MUCHO texto crudo y encontrar patrones, así que lo que
+// manda es cuánto texto aguanta de una vez. Un modelo brillante al que hay
+// que darle los comentarios en cinco tandas pierde justo lo que buscamos:
+// ver que la misma queja aparece cuarenta veces.
+// ---------------------------------------------------------------------------
+
+export interface OpcionIA {
+  nombre: string;
+  url: string;
+  paraQue: string;
+  fuerte: string;
+  ojo: string;
+  destacado?: boolean;
+}
+
+export const IAS: OpcionIA[] = [
+  {
+    nombre: 'Gemini',
+    url: 'https://gemini.google.com',
+    paraQue: 'Cuando el documento es enorme',
+    fuerte:
+      'Es el que más texto acepta de una sola vez, y en la capa gratuita. Si juntaste cientos de comentarios y varias reseñas largas, empieza por aquí: podrás pegarlo entero sin trocearlo.',
+    ojo: 'Tiende a resumir de más. Si lo hace, pídele explícitamente que cite frases completas.',
+    destacado: true,
+  },
+  {
+    nombre: 'Claude',
+    url: 'https://claude.ai',
+    paraQue: 'Cuando quieres que NO se invente nada',
+    fuerte:
+      'Es el que mejor respeta la regla de "sin cita textual no lo incluyas", que es la que sostiene todo este método. También escribe los ángulos en un español más natural.',
+    ojo: 'En la capa gratuita el límite de mensajes se agota rápido con documentos largos.',
+  },
+  {
+    nombre: 'ChatGPT',
+    url: 'https://chatgpt.com',
+    paraQue: 'Cuando quieres la salida ordenada',
+    fuerte:
+      'Devuelve tablas y listas muy limpias, cómodo si vas a pasar los ángulos a una hoja de cálculo para repartirlos entre creativos.',
+    ojo: 'Es el más propenso a rellenar con frases que suenan bien pero no salen de tus datos. Revísale las citas una a una.',
+  },
+];
+
+export const CONSEJO_IA =
+  'Hagas lo que hagas, pásalo por DOS de ellas con el mismo prompt. Los ángulos que aparecen en las dos son los que de verdad están en tus datos; los que solo salen en una, casi siempre los puso el modelo.';

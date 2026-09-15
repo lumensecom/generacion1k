@@ -13,36 +13,63 @@ const BORDE = '#2A2A34';
 const TEXTO = '#B4B4BE';
 const APAGADO = '#75757F';
 
-/* ─────────── 1. El embudo: tres preguntas que filtran ─────────── */
+/* ─────────── 1. El embudo: tres preguntas que filtran ───────────
+   En HTML y no en SVG a propósito: <text> no ajusta líneas, así que una
+   frase larga se sale de la caja o hay que cortarla a mitad de palabra.
+   El estrechamiento se hace con anchos en porcentaje, que además se
+   adapta al móvil solo. */
 export function EmbudoValidacion() {
   const pasos = [
-    { t: '¿Existe alguien vendiéndolo?', s: 'Si nadie lo vende, casi nunca es una oportunidad: suele ser que no funciona.', c: MORADO, w: 100 },
-    { t: '¿Lleva tiempo vendiéndolo?', s: 'Un anuncio activo hace 3 meses es dinero que alguien decidió seguir gastando.', c: MORADO_O, w: 76 },
-    { t: '¿Cómo lo está vendiendo?', s: 'Aquí está el oro: formatos, ángulos y lo que NADIE está diciendo todavía.', c: ORO, w: 52 },
+    {
+      t: '¿Existe alguien vendiéndolo?',
+      s: 'Si nadie lo vende, casi nunca es una oportunidad: suele ser que ya lo intentaron y no funcionó.',
+      color: '#A855F7',
+      ancho: 'w-full',
+    },
+    {
+      t: '¿Lleva tiempo vendiéndolo?',
+      s: 'Un anuncio activo hace tres meses es dinero que alguien decidió seguir gastando. Eso no se finge.',
+      color: '#7C3AED',
+      ancho: 'w-full sm:w-[84%]',
+    },
+    {
+      t: '¿Cómo lo está vendiendo?',
+      s: 'Aquí está el oro: los formatos, los ángulos y —sobre todo— lo que nadie está diciendo todavía.',
+      color: '#F5C518',
+      ancho: 'w-full sm:w-[68%]',
+    },
   ];
   return (
     <figure className="my-10">
-      <svg viewBox="0 0 400 260" className="w-full" role="img" aria-label="Embudo de tres filtros de validación">
-        {pasos.map((p, i) => {
-          const y = 14 + i * 82;
-          const x = (400 - (p.w / 100) * 340) / 2;
-          const w = (p.w / 100) * 340;
-          return (
-            <g key={i}>
-              <rect x={x} y={y} width={w} height="54" rx="12" fill={p.c} opacity="0.13" />
-              <rect x={x} y={y} width={w} height="54" rx="12" fill="none" stroke={p.c} strokeOpacity="0.5" />
-              <circle cx={x + 24} cy={y + 27} r="13" fill={p.c} opacity="0.9" />
-              <text x={x + 24} y={y + 32} textAnchor="middle" fontSize="13" fontWeight="700" fill="#0A0A0A">{i + 1}</text>
-              <text x={x + 46} y={y + 24} fontSize="13.5" fontWeight="700" fill="#fff">{p.t}</text>
-              <text x={x + 46} y={y + 42} fontSize="10.5" fill={APAGADO}>{p.s.slice(0, 62)}</text>
-              {i < 2 && (
-                <path d={`M200 ${y + 58} l0 14 m-5 -5 l5 5 l5 -5`} stroke={BORDE} strokeWidth="1.6" fill="none" strokeLinecap="round" />
-              )}
-            </g>
-          );
-        })}
-      </svg>
-      <figcaption className="mt-3 text-center text-[12.5px] text-text-muted">
+      <div className="flex flex-col items-center gap-3">
+        {pasos.map((p, i) => (
+          <div key={i} className="contents">
+            <div
+              className={`${p.ancho} rounded-2xl border p-5`}
+              style={{ borderColor: `${p.color}55`, background: `${p.color}12` }}
+            >
+              <div className="flex items-start gap-3.5">
+                <span
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-mono text-[13px] font-extrabold text-black"
+                  style={{ background: p.color }}
+                >
+                  {i + 1}
+                </span>
+                <div className="min-w-0">
+                  <p className="font-display text-[15.5px] font-extrabold leading-snug text-white">{p.t}</p>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-text-muted">{p.s}</p>
+                </div>
+              </div>
+            </div>
+            {i < pasos.length - 1 && (
+              <svg width="18" height="16" viewBox="0 0 18 16" aria-hidden="true" className="shrink-0">
+                <path d="M9 1 L9 13 M4 9 l5 5 l5 -5" stroke="#2A2A34" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+              </svg>
+            )}
+          </div>
+        ))}
+      </div>
+      <figcaption className="mt-4 text-center text-[12.5px] text-text-muted">
         Cada filtro descarta productos. El que llega abajo ya no es una corazonada.
       </figcaption>
     </figure>
