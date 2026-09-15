@@ -79,7 +79,20 @@ export const VIDEOS_LECCIONES: Record<string, string[]> = {
     'https://youtu.be/V0E5n92iaAw',
   ],
 
-  // ---- 7 · Creativos ----
+  // ---- 8 · Creativos ----
+  // La serie de formatos del canal de Santiago (@santiago423-q): un video por
+  // formato, cada uno en la lección que le toca. Del canal solo entra esta
+  // serie — el resto es marca personal y no explica cómo producir nada.
+  'primer-creativo/formato-1-antes-y-despues': ['https://youtu.be/lkaZWk0eLBA'],
+  'primer-creativo/formato-2-doctor-o-tablero': ['https://youtu.be/2ur0m0DPSYM'],
+  'primer-creativo/formato-3-b-roll-con-voz-en-off': ['https://youtu.be/WdW3CvguHWw'],
+  'primer-creativo/formato-4-ugc-con-b-roll': ['https://youtu.be/ALOXikRH-d0'],
+  'primer-creativo/formato-5-animados-con-voz-en-off': ['https://youtu.be/wokK24sSG6k'],
+  'primer-creativo/formato-6-ugc-puro': ['https://youtu.be/YNcj9JqibQo'],
+  'primer-creativo/formato-7-animados-sin-voz': ['https://youtu.be/OuAVVT2QJrA'],
+  // Este va en la lección de herramientas, que es donde se habla de producir.
+  'primer-creativo/capcut-vs-google-flow-vs-ugc-real': ['https://youtu.be/bGwbR2QYfGI'],
+
   'primer-creativo/los-6-angulos-validados-en-colombia': [
     // Iván Caicedo — "La Fórmula de Creativos Ganadores"
     'https://youtu.be/xIf0XBnZZ3g',

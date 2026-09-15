@@ -904,6 +904,40 @@ export const MODULES_CONTENT: Record<string, ModuleContent> = {
         { name: 'Google Flow', description: 'Generador de video con IA (Veo 3). Requiere prompts precisos.', url: 'https://flow.google' },
         { name: 'ElevenLabs', description: 'Voces con IA en español. Para voiceover de anuncios.', url: 'https://elevenlabs.io' },
       ] },
+
+      // ---- El catálogo de formatos ----
+      // Uno por lección, cada uno con su video de producción. La idea es que
+      // dejen de preguntarse "¿qué video hago?" y pasen a elegir de una lista
+      // cerrada según el ángulo que quieran atacar.
+      { type: 'heading', text: 'Formato 1 · Antes y después' },
+      { type: 'paragraph', content: <>El más directo que existe: el problema a la izquierda, el resultado a la derecha. Funciona cuando el cambio <B>se ve</B> — piel, cabello, orden, limpieza. Si tu producto no deja una diferencia visible, este formato no es el tuyo y forzarlo se nota.</> },
+      { type: 'callout', variant: 'tip', content: 'La misma luz y el mismo encuadre en las dos tomas. Si cambian, el cerebro asume montaje y pierdes la credibilidad que venías a construir.' },
+
+      { type: 'heading', text: 'Formato 2 · Doctor o tablero' },
+      { type: 'paragraph', content: <>Una figura con autoridad explica el porqué sobre un tablero o un esquema. Sirve para productos donde la objeción es <B>&ldquo;¿esto de verdad funciona?&rdquo;</B>: salud, dolor, suplementos. Convierte una promesa en una explicación.</> },
+      { type: 'callout', variant: 'warning', content: 'Cuidado con disfrazar a alguien de médico. Explicar un mecanismo es informar; aparentar una credencial que no se tiene es engañar, y además es la vía rápida a que Meta rechace el anuncio.' },
+
+      { type: 'heading', text: 'Formato 3 · B-roll con voz en off' },
+      { type: 'paragraph', content: <>Imágenes del producto en uso, sin nadie hablando a cámara, con una voz que cuenta la historia por encima. Es el más rápido de producir y el que mejor escala: una sola voz sirve para <B>diez variantes</B> cambiando solo las tomas.</> },
+
+      { type: 'heading', text: 'Formato 4 · UGC con B-roll' },
+      { type: 'paragraph', content: <>Una persona real habla a cámara y se intercalan planos del producto funcionando. Es la mezcla que más convierte en contra entrega: la cara da confianza y el B-roll demuestra. Si solo vas a dominar un formato, que sea este.</> },
+
+      { type: 'heading', text: 'Formato 5 · Animados con voz en off' },
+      { type: 'paragraph', content: <>Ilustración o motion sobre una narración. Útil cuando el producto es difícil de grabar bien, o cuando hay que explicar algo que ocurre <B>dentro del cuerpo</B> o en un sitio que la cámara no alcanza.</> },
+
+      { type: 'heading', text: 'Formato 6 · UGC puro' },
+      { type: 'paragraph', content: <>Una persona, su teléfono y su testimonio. Sin edición vistosa. Cuanto menos producido parezca, mejor rinde: en cuanto se ve el anuncio, el espectador levanta la guardia.</> },
+
+      { type: 'heading', text: 'Formato 7 · Animados sin voz' },
+      { type: 'paragraph', content: <>Todo en texto sobre pantalla. El formato para quien ve sin sonido, que es <B>la mayoría</B> en el primer scroll. Los subtítulos aquí no son un extra: son el anuncio entero.</> },
+
+      { type: 'heading', text: 'Qué formato para qué ángulo' },
+      { type: 'comparison', columns: [
+        { label: 'Si el ángulo es emocional', tone: 'good', items: ['UGC puro: alguien contando lo que le pasaba', 'UGC con B-roll si además hay que demostrar', 'Antes y después cuando el cambio se ve'] },
+        { label: 'Si el ángulo es racional', tone: 'good', items: ['Doctor o tablero para explicar el porqué', 'Animados con voz si hay que mostrar lo invisible', 'Animados sin voz para datos y comparativas'] },
+      ] },
+      { type: 'callout', variant: 'tip', content: 'La regla que ahorra semanas: un ángulo, tres formatos. Se lanza el mismo mensaje en tres envoltorios distintos y se deja que los números digan cuál envoltorio es el bueno. Cambiar ángulo y formato a la vez no enseña nada, porque no sabes cuál de los dos movió la aguja.' },
     ],
     practiceChecklist: [
       'Elegir 1 de los 6 ángulos validados',
