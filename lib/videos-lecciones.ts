@@ -90,8 +90,6 @@ export const VIDEOS_LECCIONES: Record<string, string[]> = {
   'primer-creativo/formato-5-animados-con-voz-en-off': ['https://youtu.be/wokK24sSG6k'],
   'primer-creativo/formato-6-ugc-puro': ['https://youtu.be/YNcj9JqibQo'],
   'primer-creativo/formato-7-animados-sin-voz': ['https://youtu.be/OuAVVT2QJrA'],
-  // Este va en la lección de herramientas, que es donde se habla de producir.
-  'primer-creativo/capcut-vs-google-flow-vs-ugc-real': ['https://youtu.be/bGwbR2QYfGI'],
 
   'primer-creativo/los-6-angulos-validados-en-colombia': [
     // Iván Caicedo — "La Fórmula de Creativos Ganadores"
@@ -104,6 +102,8 @@ export const VIDEOS_LECCIONES: Record<string, string[]> = {
     'https://youtu.be/48iAH1LEu2I',
     // Felipe Vergara — "TRUCO para tener ANUNCIOS GANADORES en Meta Ads"
     'https://youtu.be/59I305cbE3Y',
+    // Santiago — "¿Cómo hacer creativos + copys con AI?"
+    'https://youtu.be/bGwbR2QYfGI',
   ],
 
   // ---- 8 · Lanzamiento ----
