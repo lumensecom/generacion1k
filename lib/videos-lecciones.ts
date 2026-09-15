@@ -75,6 +75,8 @@ export const VIDEOS_LECCIONES: Record<string, string[]> = {
     'https://youtu.be/nRci9StzARQ',
   ],
   'pixel-tracking/setup-paso-a-paso': [
+    // Carlos Guti — "Cómo instalar el Pixel de Meta en Shopify 2026, paso a paso"
+    'https://youtu.be/F_q5NeG4IiI',
     // David Betancourt — "Vincular Pixel de Facebook a Shopify y Releasit 2026"
     'https://youtu.be/V0E5n92iaAw',
   ],
