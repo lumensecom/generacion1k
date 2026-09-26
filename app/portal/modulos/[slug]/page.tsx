@@ -4,6 +4,8 @@ import { Lock } from 'lucide-react';
 import { requireSession } from '@/app/portal/actions';
 import { PortalShell } from '@/components/portal/PortalShell';
 import { ModuleTabsClient } from '@/components/portal/ModuleTabsClient';
+import { MentalidadGanadora } from '@/components/portal/MentalidadGanadora';
+import { videosDeLeccion } from '@/lib/videos-lecciones';
 import { ModuleHero } from '@/components/animated/ModuleHero';
 import { getModuleContent } from '@/lib/modules-content';
 import {
@@ -84,6 +86,10 @@ export default async function ModuloDetailPage({ params }: { params: { slug: str
             </Link>
           )}
         </div>
+      ) : mod.slug === 'mentalidad-ganadora' ? (
+        // Este módulo tiene su propia cara: no se consume como los otros, así
+        // que no pasa por las cuatro pestañas de siempre.
+        <MentalidadGanadora videos={videosDeLeccion('mentalidad-ganadora', 'videos')} />
       ) : (
         <ModuleTabsClient
           module={mod}

@@ -14,7 +14,7 @@ NAVEGACIÓN DEL PORTAL (esto es lo que el estudiante ve en pantalla)
 
 Barra superior, seis secciones:
 - "Inicio" (/portal/inicio) — el panel de entrada. Muestra en qué módulo va, su racha de días trabajados y el botón para seguir donde lo dejó.
-- "Módulos" (/portal/modulos) — la lista de los 11 módulos. Cada tarjeta muestra si está completado, en progreso o bloqueado.
+- "Módulos" (/portal/modulos) — la lista de los 12 módulos. Cada tarjeta muestra si está completado, en progreso o bloqueado.
 - "Mi progreso" (/portal/mi-progreso) — porcentaje de avance, módulos completados y el check-in diario.
 - "Agenda" (/portal/agenda) — el calendario con todo lo suyo: las tres clases grupales de cada semana y las 1:1 que haya pedido y Juan le haya confirmado.
 - "Ayuda" (/portal/ayuda) — dos pestañas: "Mis preguntas", donde le escribe a Juan y ve su respuesta; y "Reunión 1:1", donde solicita una llamada.
@@ -54,7 +54,18 @@ DENTRO DE UN MÓDULO hay cuatro pestañas, en este orden:
 
 También hay un bloc de notas personales dentro de cada módulo: lo que escriba ahí se guarda solo para él.
 
-EL MÓDULO 6 — CUENTAS PUBLICITARIAS
+EL MÓDULO 2 — MENTALIDAD GANADORA
+Es distinto a todos los demás y conviene saberlo: no tiene las cuatro pestañas de siempre ni test. Tiene cuatro entradas propias que se visitan en cualquier orden — "Principios", "Videos", "Libros" y "Actividades" — y ninguna bloquea a otra.
+No se termina ni se aprueba: está pensado para volver el día que algo salga mal. Si un estudiante está desanimado, con una campaña que no vende o pensando en abandonar, MÁNDALO AHÍ, y en concreto al principio que le toque:
+- Lleva semanas sin resultados → principio 1, el valle.
+- Cambió algo y salió mal → principio 2, se juzgan las decisiones, no los resultados.
+- No termina nada por querer dejarlo perfecto → principio 3, velocidad sobre perfección.
+- "Perdí la plata en pauta" → principio 4, ese dinero compró información.
+- No consigue ser constante → principio 5, el entorno pesa más que la disciplina.
+- Se compara con gente que factura miles → principio 6, compara contra tu semana pasada.
+En "Actividades" hay cinco ejercicios concretos, con pasos. Los dos que más se usan son la carta al que va a querer rendirse (se escribe el primer día) y la revisión de domingo, de diez minutos. En "Libros" hay seis recomendaciones con el motivo de cada una.
+
+EL MÓDULO 7 — CUENTAS PUBLICITARIAS
 Va antes del pixel a propósito: no se puede crear un pixel sin tener antes el Business Manager. Cubre Meta y TikTok, y estos son los puntos que más se preguntan:
 - El Business Manager de Meta SIEMPRE cuelga de un perfil personal de Facebook. No existe una "cuenta de empresa" suelta. Hay que usar el perfil real y de siempre, no uno creado para esto: un perfil nuevo que abre un Business Manager y gasta el mismo día es el patrón que Meta marca y es la causa más común de restricción en la primera semana.
 - La MONEDA y la ZONA HORARIA de la cuenta publicitaria NO se pueden cambiar después. Para cambiarlas hay que crear otra cuenta y perder el historial. En Colombia: zona horaria Bogotá (GMT-5) y la moneda en la que le cobra su banco. Lo mismo aplica en TikTok.

@@ -12,6 +12,11 @@
 // más útil que respetar la etiqueta. Cualquiera se mueve cambiando su clave.
 
 export const VIDEOS_LECCIONES: Record<string, string[]> = {
+  // ---- 2 · Mentalidad ganadora ----
+  // Pestaña "Videos" de ese módulo. Vacío mientras Juan elige cuáles: la
+  // pantalla lo dice y manda a los principios, que es lo que de verdad se usa.
+  'mentalidad-ganadora/videos': [],
+
   // ---- 1 · Mentalidad ----
   'mentalidad-pce/que-es-el-modelo-pce-y-por-que-funciona-en-colom': [
     // Antonia Villa — "Paso a Paso para ganar $10.000 con Ecommerce"
