@@ -172,6 +172,71 @@ export async function crearEstudiante(formData: FormData): Promise<{
   return { ok: { email, password, nombre: fullName } };
 }
 
+/** Datos de contacto del estudiante. El correo es su usuario para entrar. */
+export async function actualizarEstudiante(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get('id') ?? '');
+  const fullName = String(formData.get('fullName') ?? '').trim();
+  const email = String(formData.get('email') ?? '').trim().toLowerCase();
+  const phone = String(formData.get('phone') ?? '').trim();
+
+  if (!id) return { error: 'Falta el estudiante.' };
+  if (fullName.length < 2) return { error: 'Escribe el nombre completo.' };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'Ese correo no parece válido.' };
+
+  // El correo es con lo que entra, así que dos cuentas no pueden compartirlo.
+  const otro = await getStudentByEmail(email);
+  if (otro && otro.id !== id) return { error: 'Ya hay otra cuenta con ese correo.' };
+
+  const { error } = await supabaseAdmin()
+    .from('students')
+    .update({ full_name: fullName, email, phone: phone || null })
+    .eq('id', id);
+
+  if (error) return { error: 'No se pudo guardar. Intenta de nuevo.' };
+
+  revalidatePath('/portal/admin');
+  revalidatePath(`/portal/admin/estudiantes/${id}`);
+  return { ok: 'Datos actualizados.' };
+}
+
+/**
+ * Borra un estudiante y TODO su rastro.
+ *
+ * Las nueve tablas que lo referencian van en cascada: progreso, lecciones,
+ * intentos de test, check-ins, preguntas, reuniones, sesiones, votos y
+ * actividad. No hay papelera ni forma de recuperarlo.
+ *
+ * Por eso pide el correo escrito a mano y se comprueba AQUÍ: un diálogo de
+ * confirmación se acepta sin leerlo, y esto no se puede deshacer. Si lo que
+ * se quiere es que alguien deje de entrar, eso es desactivar, no borrar.
+ */
+export async function borrarEstudiante(id: string, correoConfirmacion: string) {
+  await requireAdmin();
+  if (!id) return { error: 'Falta el estudiante.' };
+
+  const { data } = await supabaseAdmin()
+    .from('students')
+    .select('email, role, full_name')
+    .eq('id', id)
+    .maybeSingle();
+  const est = data as { email: string; role: string; full_name: string } | null;
+
+  if (!est) return { error: 'Ese estudiante ya no existe.' };
+  if (est.role === 'admin') {
+    return { error: 'No se puede borrar una cuenta de administrador desde aquí.' };
+  }
+  if (correoConfirmacion.trim().toLowerCase() !== est.email.toLowerCase()) {
+    return { error: 'El correo no coincide. Escríbelo exactamente como aparece arriba.' };
+  }
+
+  const { error } = await supabaseAdmin().from('students').delete().eq('id', id);
+  if (error) return { error: 'No se pudo borrar. Intenta de nuevo.' };
+
+  revalidatePath('/portal/admin');
+  return { ok: `${est.full_name} y todo su historial fueron borrados.` };
+}
+
 /** Cambiar la contraseña de alguien que la perdió. */
 export async function resetearPassword(studentId: string, nueva?: string) {
   await requireAdmin();

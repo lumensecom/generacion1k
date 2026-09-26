@@ -5,6 +5,7 @@ import { requireSession } from '@/app/portal/actions';
 import { PortalShell } from '@/components/portal/PortalShell';
 import { StudentActiveToggle } from '@/components/portal/admin/StudentActiveToggle';
 import { ResetPassword } from '@/components/portal/admin/ResetPassword';
+import { EditarEstudiante } from '@/components/portal/admin/EditarEstudiante';
 import { Button } from '@/components/ui/button';
 import { getModuleContent } from '@/lib/modules-content';
 import type { TestAnswerValue } from '@/lib/modules-content';
@@ -99,6 +100,7 @@ export default async function AdminStudentDetailPage({ params }: { params: { id:
               </Button>
             </a>
           )}
+          <EditarEstudiante student={student} />
           <ResetPassword studentId={student.id} nombre={student.full_name} />
           <StudentActiveToggle studentId={student.id} isActive={student.is_active} />
         </div>
