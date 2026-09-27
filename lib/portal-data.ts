@@ -2,6 +2,7 @@ import 'server-only';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import type { Json } from '@/lib/database.types';
 import { masSemanas, claveLocal, fechasDelPatron, type Franja } from '@/lib/agenda';
+import { getModuleContent } from '@/lib/modules-content';
 import type {
   ActivityLogRow,
   Mentor,
@@ -85,16 +86,25 @@ export function computeProgressStats(
   passedModuleIds?: Set<string>
 ) {
   const byModule = new Map(progress.map((p) => [p.module_id, p]));
-  const totalModules = modules.length;
-  const completedModules = modules.filter((m) => byModule.get(m.id)?.module_completed).length;
+  // Los módulos de consulta no cuentan para el porcentaje: no se pueden
+  // completar, así que dejarlos dentro haría imposible llegar al 100%.
+  const delRecorrido = modules.filter((m) => exigeTest(m.slug));
+  const totalModules = delRecorrido.length;
+  const completedModules = delRecorrido.filter((m) => byModule.get(m.id)?.module_completed).length;
   const videosWatched = modules.filter((m) => byModule.get(m.id)?.video_watched).length;
   const percent = totalModules === 0 ? 0 : Math.round((completedModules / totalModules) * 100);
 
+  // "Continuar donde quedé" tampoco puede apuntar a uno de consulta: no se
+  // completa nunca, así que el botón se quedaría clavado ahí para siempre.
   const currentModule = passedModuleIds
     ? modules.find(
-        (m, i) => !byModule.get(m.id)?.module_completed && isModuleUnlocked(modules, i, passedModuleIds)
-      ) ?? modules[modules.length - 1]
-    : modules.find((m) => !byModule.get(m.id)?.module_completed && !m.is_locked) ?? modules[modules.length - 1];
+        (m, i) =>
+          exigeTest(m.slug) &&
+          !byModule.get(m.id)?.module_completed &&
+          isModuleUnlocked(modules, i, passedModuleIds)
+      ) ?? delRecorrido[delRecorrido.length - 1]
+    : modules.find((m) => exigeTest(m.slug) && !byModule.get(m.id)?.module_completed && !m.is_locked) ??
+      delRecorrido[delRecorrido.length - 1];
 
   return { totalModules, completedModules, videosWatched, percent, currentModule, byModule };
 }
@@ -204,6 +214,16 @@ export function getPassedModuleIds(attempts: TestAttemptRow[]): Set<string> {
  * módulos marcados is_locked manualmente — necesita poder revisar
  * cualquier módulo sin depender del progreso de ningún estudiante.
  */
+/**
+ * ¿Este módulo tiene test que aprobar?
+ *
+ * Los que no lo tienen —mentalidad ganadora, por ejemplo— son de consulta: se
+ * vuelve a ellos cuando hacen falta y no hay nada que superar.
+ */
+export function exigeTest(slug: string): boolean {
+  return (getModuleContent(slug)?.test?.length ?? 0) > 0;
+}
+
 export function isModuleUnlocked(
   modules: ModuleRow[],
   index: number,
@@ -214,9 +234,18 @@ export function isModuleUnlocked(
   const mod = modules[index];
   if (!mod) return false;
   if (mod.is_locked) return false;
-  if (index === 0) return true;
-  const prev = modules[index - 1];
-  return prev ? passedModuleIds.has(prev.id) : true;
+
+  // Se mira hacia atrás hasta el último módulo que SÍ tenga test, saltando los
+  // que no lo tienen. Antes se miraba solo el inmediatamente anterior, y eso
+  // dejaba el programa cerrado en cuanto se metía en medio un módulo sin test:
+  // su id nunca entra en passedModuleIds, porque no hay test que aprobar, así
+  // que el siguiente no se abría nunca. Pasó con mentalidad ganadora.
+  for (let i = index - 1; i >= 0; i--) {
+    const anterior = modules[i];
+    if (!anterior || !exigeTest(anterior.slug)) continue;
+    return passedModuleIds.has(anterior.id);
+  }
+  return true;
 }
 
 export async function insertTestAttempt(input: {
