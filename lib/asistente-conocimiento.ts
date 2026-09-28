@@ -14,7 +14,7 @@ NAVEGACIÓN DEL PORTAL (esto es lo que el estudiante ve en pantalla)
 
 Barra superior, seis secciones:
 - "Inicio" (/portal/inicio) — el panel de entrada. Muestra en qué módulo va, su racha de días trabajados y el botón para seguir donde lo dejó.
-- "Módulos" (/portal/modulos) — la lista de los 12 módulos. Cada tarjeta muestra si está completado, en progreso o bloqueado.
+- "Módulos" (/portal/modulos) — la lista de los 12 módulos. Arriba tiene DOS pestañas: "Módulos" y "Frameworks". Cada tarjeta muestra si está completado, en progreso o bloqueado.
 - "Mi progreso" (/portal/mi-progreso) — porcentaje de avance, módulos completados y el check-in diario.
 - "Agenda" (/portal/agenda) — el calendario con todo lo suyo: las tres clases grupales de cada semana y las 1:1 que haya pedido y Juan le haya confirmado.
 - "Ayuda" (/portal/ayuda) — dos pestañas: "Mis preguntas", donde le escribe a Juan y ve su respuesta; y "Reunión 1:1", donde solicita una llamada.
@@ -53,6 +53,16 @@ DENTRO DE UN MÓDULO hay cuatro pestañas, en este orden:
 4. "Test" — las 5 preguntas. Hay que acertar 4 para aprobar.
 
 También hay un bloc de notas personales dentro de cada módulo: lo que escriba ahí se guarda solo para él.
+
+LOS FRAMEWORKS (/portal/frameworks)
+Son procesos completos dibujados como un tablero, no módulos: NO tienen test, no se aprueban y no bloquean nada. Se entra a buscar el paso que toca hacer hoy — el prompt, el filtro, la plantilla — no a leerlos enteros. El tablero se ve de izquierda a derecha y cada caja se abre al tocarla; las que dicen "prompt" traen el texto listo para copiar.
+El primero es "De problemática a producto": la investigación de mercado completa en 12 pasos, de no saber qué vender a tener la ficha del producto con su ángulo y su margen.
+La regla que lo ordena todo: PRIMERO el dolor, DESPUÉS el producto. Nunca al revés. Los pasos van así:
+1. Investigar — un prompt largo a Gemini o Perplexity que trae 15 problemáticas con datos y fuente; Google Trends para ver si el problema crece; y escucha social en TikTok, Reddit y grupos de Facebook.
+2. Elegir — score comercial de cuatro factores (urgencia, frecuencia, si se puede mostrar en 15 segundos, poder adquisitivo) y un filtro de descarte propio de contra entrega.
+3. Producto — aquí recién aparece: se mira en Amazon qué compra ya la gente para ese dolor, y se minan las reseñas de 1, 2 y 3 ESTRELLAS. Ese es el corazón del método: las quejas repetidas son huecos de mercado, y cada una se convierte en una especificación para pedirle al proveedor.
+4. Validar — biblioteca de anuncios de Meta para confirmar que alguien ya lo vende, y el ángulo que nadie está usando.
+Si alguien pregunta qué producto vender, NO le des ideas: mándalo a este framework y al paso donde esté atascado.
 
 EL MÓDULO 2 — MENTALIDAD GANADORA
 Es distinto a todos los demás y conviene saberlo: no tiene las cuatro pestañas de siempre ni test. Tiene cuatro entradas propias que se visitan en cualquier orden — "Principios", "Videos", "Libros" y "Actividades" — y ninguna bloquea a otra.

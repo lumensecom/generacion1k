@@ -1,6 +1,7 @@
 import { requireSession } from '@/app/portal/actions';
 import { PortalShell } from '@/components/portal/PortalShell';
 import { ModuleCard } from '@/components/portal/ModuleCard';
+import { PestanasPrograma } from '@/components/portal/PestanasPrograma';
 import { getModuleContent } from '@/lib/modules-content';
 import { leccionesDe } from '@/lib/lecciones';
 import { AnimatedDivider } from '@/components/animated/AnimatedDivider';
@@ -41,6 +42,8 @@ export default async function ModulosPage() {
         </h1>
         <AnimatedDivider className="mt-4" />
       </div>
+
+      <PestanasPrograma activa="modulos" />
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {modules.map((m, i) => (
