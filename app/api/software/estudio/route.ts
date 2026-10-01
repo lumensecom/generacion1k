@@ -7,6 +7,7 @@ import {
 } from '@/lib/asistente-modelo';
 import { SISTEMA_ESTUDIO, TAREAS } from '@/lib/software-landings';
 import { SISTEMA_CODIGO } from '@/lib/software-codigo';
+import { APERTURA_TEXTO, puedeUsarSoftware } from '@/lib/software-acceso';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -50,6 +51,12 @@ function error(mensaje: string, status: number) {
 export async function POST(request: Request) {
   const session = await getSession();
   if (!session) return error('Tu sesión expiró. Vuelve a entrar al portal.', 401);
+
+  // El middleware sólo mira /portal/**, así que la puerta del 5 de octubre hay
+  // que ponerla también aquí: si no, basta con llamar al endpoint directo.
+  if (!puedeUsarSoftware(session.role)) {
+    return error(`El estudio se abre el ${APERTURA_TEXTO}.`, 403);
+  }
 
   let cuerpo: { tarea?: unknown; entrada?: unknown };
   try {

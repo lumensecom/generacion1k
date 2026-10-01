@@ -123,7 +123,18 @@ export interface ResumenHub {
   roas: number;
 }
 
-export function MapaSoftware({ resumen }: { resumen: ResumenHub }) {
+export function MapaSoftware({
+  resumen,
+  soloVista = false,
+}: {
+  resumen: ResumenHub;
+  /**
+   * Adelanto: las tarjetas se pintan igual pero sin enlace. No basta con
+   * apagar el puntero — un enlace sin puntero sigue cogiendo foco con el
+   * tabulador y se puede abrir con Enter.
+   */
+  soloVista?: boolean;
+}) {
   return (
     <>
       {/* El mapa. Sólo desde lg, donde hay ancho para que se lea. */}
@@ -148,7 +159,7 @@ export function MapaSoftware({ resumen }: { resumen: ResumenHub }) {
                 className="motion-safe:animate-nodoFlota"
                 style={{ animationDelay: `${i * 0.8}s` }}
               >
-                <TarjetaNodo nodo={n} elevada />
+                <TarjetaNodo nodo={n} elevada soloVista={soloVista} />
               </div>
             </div>
           ))}
@@ -173,7 +184,7 @@ export function MapaSoftware({ resumen }: { resumen: ResumenHub }) {
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {NODOS.map((n) => (
-            <TarjetaNodo key={n.id} nodo={n} />
+            <TarjetaNodo key={n.id} nodo={n} soloVista={soloVista} />
           ))}
         </div>
       </div>
@@ -306,8 +317,19 @@ function Cifra({ etiqueta, valor, tono }: { etiqueta: string; valor: string; ton
   );
 }
 
-function TarjetaNodo({ nodo, elevada = false }: { nodo: Nodo; elevada?: boolean }) {
-  const Icono = nodo.proximamente ? Lock : nodo.icono;
+function TarjetaNodo({
+  nodo,
+  elevada = false,
+  soloVista = false,
+}: {
+  nodo: Nodo;
+  elevada?: boolean;
+  soloVista?: boolean;
+}) {
+  const inerte = soloVista || nodo.proximamente;
+  // En el adelanto cada tarjeta conserva su ícono y su color: la gracia es
+  // que vean qué hay, no un muro de candados.
+  const Icono = nodo.proximamente && !soloVista ? Lock : nodo.icono;
 
   const contenido = (
     <>
@@ -329,11 +351,11 @@ function TarjetaNodo({ nodo, elevada = false }: { nodo: Nodo; elevada?: boolean 
           >
             <Icono className="h-[17px] w-[17px]" />
           </span>
-          {nodo.proximamente ? (
+          {nodo.proximamente && !soloVista ? (
             <span className="rounded-full border border-white/10 px-2 py-0.5 font-mono text-[8.5px] uppercase tracking-wider text-text-muted">
               Pronto
             </span>
-          ) : (
+          ) : soloVista ? null : (
             <ArrowUpRight className="h-4 w-4 flex-shrink-0 text-text-muted transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
           )}
         </div>
@@ -349,12 +371,13 @@ function TarjetaNodo({ nodo, elevada = false }: { nodo: Nodo; elevada?: boolean 
   const clases = cn(
     'group relative block overflow-hidden rounded-2xl border border-white/10 bg-bg-card/80 p-4 backdrop-blur-xl transition-all duration-300',
     elevada && 'shadow-[0_18px_44px_-18px_rgba(0,0,0,0.9)]',
-    nodo.proximamente
-      ? 'cursor-default opacity-55'
-      : 'hover:-translate-y-1.5 hover:border-white/25 hover:shadow-[0_26px_60px_-18px_rgba(124,58,237,0.5)]'
+    inerte
+      ? 'cursor-default'
+      : 'hover:-translate-y-1.5 hover:border-white/25 hover:shadow-[0_26px_60px_-18px_rgba(124,58,237,0.5)]',
+    nodo.proximamente && !soloVista && 'opacity-55'
   );
 
-  if (nodo.proximamente) {
+  if (inerte) {
     return <div className={clases}>{contenido}</div>;
   }
 

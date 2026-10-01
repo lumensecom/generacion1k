@@ -4,9 +4,14 @@ import { revalidatePath } from 'next/cache';
 import { requireSession } from '@/app/portal/actions';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { claveLocal } from '@/lib/agenda';
+import { APERTURA_TEXTO, puedeUsarSoftware } from '@/lib/software-acceso';
 
 /**
  * Las acciones del Software 1K.
+ *
+ * Next.js registra cada función 'use server' exportada como un endpoint que se
+ * puede llamar directo, así que la puerta del 5 de octubre va aquí dentro y no
+ * sólo en el middleware: tenerla únicamente en la navegación no cerraría nada.
  *
  * Regla única y sin excepciones: el student_id sale de la cookie firmada, nunca
  * del formulario. Y cada update o delete lleva su .eq('student_id', sid), de
@@ -16,6 +21,17 @@ import { claveLocal } from '@/lib/agenda';
  */
 
 type Resultado = { ok: true } | { ok: false; error: string };
+
+/** La sesión, ya verificada contra la fecha de apertura. */
+async function sesionConPermiso(): Promise<
+  { ok: true; sid: string } | { ok: false; error: string }
+> {
+  const { sid, role } = await requireSession();
+  if (!puedeUsarSoftware(role)) {
+    return { ok: false, error: `El Software 1K se abre el ${APERTURA_TEXTO}.` };
+  }
+  return { ok: true, sid };
+}
 
 /**
  * Un monto en pesos. Los estudiantes escriben "45.000", "45,000", "$45000" y
@@ -80,7 +96,9 @@ async function productoPropio(sid: string, valor: FormDataEntryValue | null): Pr
 // --- Ingresos ---------------------------------------------------------------
 
 export async function crearIngreso(formData: FormData): Promise<Resultado> {
-  const { sid } = await requireSession();
+  const permiso = await sesionConPermiso();
+  if (!permiso.ok) return permiso;
+  const { sid } = permiso;
   const monto = numero(formData.get('monto'));
   if (monto <= 0) return { ok: false, error: 'El monto tiene que ser mayor que cero.' };
 
@@ -100,7 +118,9 @@ export async function crearIngreso(formData: FormData): Promise<Resultado> {
 }
 
 export async function borrarIngreso(id: string): Promise<Resultado> {
-  const { sid } = await requireSession();
+  const permiso = await sesionConPermiso();
+  if (!permiso.ok) return permiso;
+  const { sid } = permiso;
   const { error } = await supabaseAdmin()
     .from('sw_ingresos')
     .delete()
@@ -115,7 +135,9 @@ export async function borrarIngreso(id: string): Promise<Resultado> {
 // --- Gastos -----------------------------------------------------------------
 
 export async function crearGasto(formData: FormData): Promise<Resultado> {
-  const { sid } = await requireSession();
+  const permiso = await sesionConPermiso();
+  if (!permiso.ok) return permiso;
+  const { sid } = permiso;
   const monto = numero(formData.get('monto'));
   if (monto <= 0) return { ok: false, error: 'El monto tiene que ser mayor que cero.' };
 
@@ -134,7 +156,9 @@ export async function crearGasto(formData: FormData): Promise<Resultado> {
 }
 
 export async function borrarGasto(id: string): Promise<Resultado> {
-  const { sid } = await requireSession();
+  const permiso = await sesionConPermiso();
+  if (!permiso.ok) return permiso;
+  const { sid } = permiso;
   const { error } = await supabaseAdmin()
     .from('sw_gastos')
     .delete()
@@ -149,7 +173,9 @@ export async function borrarGasto(id: string): Promise<Resultado> {
 // --- Productos --------------------------------------------------------------
 
 export async function guardarProducto(formData: FormData): Promise<Resultado> {
-  const { sid } = await requireSession();
+  const permiso = await sesionConPermiso();
+  if (!permiso.ok) return permiso;
+  const { sid } = permiso;
   const nombre = texto(formData.get('nombre'));
   if (!nombre) return { ok: false, error: 'Ponle un nombre al producto.' };
 
@@ -182,7 +208,9 @@ export async function guardarProducto(formData: FormData): Promise<Resultado> {
 }
 
 export async function borrarProducto(id: string): Promise<Resultado> {
-  const { sid } = await requireSession();
+  const permiso = await sesionConPermiso();
+  if (!permiso.ok) return permiso;
+  const { sid } = permiso;
   const { error } = await supabaseAdmin()
     .from('sw_productos')
     .delete()
@@ -197,7 +225,9 @@ export async function borrarProducto(id: string): Promise<Resultado> {
 // --- Creativos --------------------------------------------------------------
 
 export async function guardarCreativo(formData: FormData): Promise<Resultado> {
-  const { sid } = await requireSession();
+  const permiso = await sesionConPermiso();
+  if (!permiso.ok) return permiso;
+  const { sid } = permiso;
   const nombre = texto(formData.get('nombre'));
   if (!nombre) return { ok: false, error: 'Ponle un nombre al creativo.' };
 
@@ -231,7 +261,9 @@ export async function guardarCreativo(formData: FormData): Promise<Resultado> {
 }
 
 export async function borrarCreativo(id: string): Promise<Resultado> {
-  const { sid } = await requireSession();
+  const permiso = await sesionConPermiso();
+  if (!permiso.ok) return permiso;
+  const { sid } = permiso;
   const { error } = await supabaseAdmin()
     .from('sw_creativos')
     .delete()

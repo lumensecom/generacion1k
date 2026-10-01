@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifySessionToken, SESSION_COOKIE } from '@/lib/session-core';
+import { puedeUsarSoftware } from '@/lib/software-acceso';
 
 // Protege todo /portal/**. La pantalla de acceso (/portal) siempre es
 // pública. El resto exige sesión válida y /portal/admin exige role=admin.
+//
+// El Software 1K abre el 5 de octubre. Hasta entonces el estudiante llega a
+// /portal/software y ve el mapa difuminado, pero cualquier herramienta de
+// adentro lo devuelve ahí.
 //
 // El estudiante pasa además por dos puertas, en este orden: el cuestionario
 // inicial (/portal/bienvenida) y el video de bienvenida (/portal/onboarding).
@@ -25,6 +30,15 @@ export async function middleware(req: NextRequest) {
 
   if (pathname.startsWith('/portal/admin') && session.role !== 'admin') {
     return NextResponse.redirect(new URL('/portal/inicio', req.url));
+  }
+
+  // La portada del software queda abierta a propósito: ahí es donde se ve el
+  // adelanto. Lo que se cierra es todo lo que cuelga de ella.
+  if (
+    pathname.startsWith('/portal/software/') &&
+    !puedeUsarSoftware(session.role)
+  ) {
+    return NextResponse.redirect(new URL('/portal/software', req.url));
   }
 
   if (session.role !== 'admin') {
