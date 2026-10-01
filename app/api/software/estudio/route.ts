@@ -6,6 +6,7 @@ import {
   type Mensaje,
 } from '@/lib/asistente-modelo';
 import { SISTEMA_ESTUDIO, TAREAS } from '@/lib/software-landings';
+import { SISTEMA_CODIGO } from '@/lib/software-codigo';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -74,8 +75,13 @@ export async function POST(request: Request) {
     { role: 'user', content: `${tarea.instruccion}\n\n---\n\n${entrada}` },
   ];
 
+  // Generar código y escribir copy son dos oficios distintos: el de código
+  // lleva la paleta, las fuentes y la anatomía del botón sacadas de las
+  // landings de referencia, y el de copy lleva la estructura de seis bloques.
+  const sistema = tarea.id === 'codigo' ? SISTEMA_CODIGO : SISTEMA_ESTUDIO;
+
   try {
-    const stream = await responder(SISTEMA_ESTUDIO, mensajes, request.signal);
+    const stream = await responder(sistema, mensajes, request.signal);
     return new Response(stream, {
       headers: {
         'Content-Type': 'text/plain; charset=utf-8',

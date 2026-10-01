@@ -21,6 +21,7 @@ export function EstudioLanding() {
   const abortar = useRef<AbortController | null>(null);
 
   const actual = TAREAS.find((t) => t.id === tarea) ?? TAREAS[0];
+  const esCodigo = actual.id === 'codigo';
 
   async function generar() {
     if (!entrada.trim() || generando) return;
@@ -136,7 +137,12 @@ export function EstudioLanding() {
           )}
         </div>
 
-        <div className="relative min-h-[320px] rounded-xl border border-border bg-bg-secondary">
+        <div
+          className={cn(
+            'relative min-h-[320px] rounded-xl border border-border',
+            esCodigo ? 'bg-[#0B0B10]' : 'bg-bg-secondary'
+          )}
+        >
           {salida && (
             <button
               type="button"
@@ -157,7 +163,14 @@ export function EstudioLanding() {
           )}
 
           {salida ? (
-            <pre className="max-h-[560px] overflow-y-auto whitespace-pre-wrap px-4 py-4 pr-20 font-body text-[13.5px] leading-relaxed text-text-secondary">
+            <pre
+              className={cn(
+                'max-h-[560px] overflow-auto px-4 py-4 pr-20',
+                esCodigo
+                  ? 'font-mono text-[11.5px] leading-[1.65] text-[#C9D1D9]'
+                  : 'whitespace-pre-wrap font-body text-[13.5px] leading-relaxed text-text-secondary'
+              )}
+            >
               {salida}
               {generando && <span className="ml-0.5 inline-block h-4 w-[2px] animate-pulse bg-brand-pink align-middle" />}
             </pre>

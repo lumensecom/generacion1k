@@ -143,6 +143,18 @@ export interface TareaEstudio {
  */
 export const TAREAS: TareaEstudio[] = [
   {
+    id: 'codigo',
+    nombre: 'Código de la landing',
+    descripcion: 'La sección completa en Liquid, lista para pegar en Shopify.',
+    marcador:
+      'Producto, precio y precio tachado, a quién le vendes, los 3 beneficios, y qué sección quieres (producto, testimonios, comparativa, FAQ, oferta…). Si tienes colores de marca, dilos.',
+    // Esta tarea no usa SISTEMA_ESTUDIO sino SISTEMA_CODIGO, que lleva adentro
+    // la paleta, las fuentes y la anatomía del botón sacadas de las landings
+    // de referencia. Por eso la instrucción aquí es corta.
+    instruccion:
+      'Genera la sección de Shopify completa y auto-contenida que te pide el usuario, siguiendo al pie de la letra el sistema de diseño. Entrega el código y una nota corta de instalación.',
+  },
+  {
     id: 'landing',
     nombre: 'Copy de la landing',
     descripcion: 'La landing completa, bloque por bloque, con la estructura de arriba.',

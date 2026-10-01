@@ -1,0 +1,811 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Google Fonts: Fredoka & Plus Jakarta Sans + Satoshi -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,900&display=swap" rel="stylesheet">
+
+<div class="lmn-product-container">
+
+  <!-- ==========================================
+       COLUMNA IZQUIERDA: GALERÍA (CARRUSEL + DOTS)
+       ========================================== -->
+  <div class="lmn-gallery-col">
+
+    <div class="lmn-main-image-card">
+      <!-- Contenedor del Carrusel -->
+      <div class="lmn-slider-viewport">
+        <div class="lmn-slider-track" id="lmnSliderTrack">
+          {% if product.media.size > 0 %}
+            {% for media in product.media %}
+              <div class="lmn-slide {% if forloop.first %}is-active{% endif %}">
+                <img
+                  src="{{ media | image_url: width: 1000 }}"
+                  alt="{{ media.alt | default: product.title | escape }}"
+                  loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                >
+              </div>
+            {% endfor %}
+          {% else %}
+            <!-- Respaldo si no hay imagen -->
+            <div class="lmn-slide is-active">
+              {{ 'product-1' | placeholder_svg_tag: 'lmn-placeholder-img' }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Flechas sobre la imagen -->
+      {% if product.media.size > 1 %}
+        <button class="lmn-arrow-btn lmn-arrow-prev" id="lmnPrevBtn" aria-label="Anterior">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button class="lmn-arrow-btn lmn-arrow-next" id="lmnNextBtn" aria-label="Siguiente">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      {% endif %}
+    </div>
+
+    <!-- PUNTITOS (DOTS) -->
+    {% if product.media.size > 1 %}
+      <div class="lmn-dots-container" id="lmnDotsContainer">
+        {% for media in product.media %}
+          <span class="lmn-dot {% if forloop.first %}is-active{% endif %}" data-index="{{ forloop.index0 }}"></span>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+  </div>
+
+  <!-- ==========================================
+       COLUMNA DERECHA: TEXTO Y COMPRA
+       ========================================== -->
+  <div class="lmn-copy-col">
+
+    <!-- Top Bar -->
+    <div class="lmn-top-bar">
+      <div class="lmn-category-tag">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+        Recomendado
+      </div>
+      <div class="lmn-rating-row">
+        <span class="lmn-stars">★★★★★</span>
+        <span class="lmn-rating-text">4.9 (+2.840 clientes felices)</span>
+      </div>
+    </div>
+
+    <!-- Título -->
+    <h1 class="lmn-heading">
+      Cinturón Masajeador Anticólicos
+      <span class="lmn-underline-container">
+        Alivio Pro™
+        <svg class="lmn-curved-underline" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 8 C 30 2, 70 2, 100 8" stroke="#7C3AED" stroke-width="3" fill="transparent" stroke-linecap="round"/></svg>
+      </span>
+    </h1>
+
+    <!-- Precio -->
+    <div class="lmn-price-box">
+      <span class="lmn-price-current">{{ product.price | money | default: '$69.900' }}</span>
+      {% if product.compare_at_price > product.price %}
+        <span class="lmn-price-old">{{ product.compare_at_price | money }}</span>
+      {% else %}
+        <span class="lmn-price-old">$109.900</span>
+      {% endif %}
+      <span class="lmn-badge-offer">Ahorras $40.000</span>
+    </div>
+
+    <!-- Stock -->
+    <div class="lmn-stock-badge">
+      <span class="lmn-pulse-dot"></span>
+      SOLO QUEDAN <strong>12 UNIDADES</strong> DISPONIBLES
+    </div>
+
+    <!-- Checklist / Beneficios Premium -->
+    <div class="lmn-feature-list">
+      <div class="lmn-feature-item">
+        <div class="lmn-icon-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        </div>
+        <div class="lmn-feature-text">
+          <strong>Alivio inmediato</strong>
+          <span>Calor terapéutico y masaje vibratorio para cólicos intensos.</span>
+        </div>
+      </div>
+      <div class="lmn-feature-item">
+        <div class="lmn-icon-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </div>
+        <div class="lmn-feature-text">
+          <strong>Discreto y cómodo</strong>
+          <span>Úsalo debajo de tu ropa en el trabajo o en casa.</span>
+        </div>
+      </div>
+      <div class="lmn-feature-item">
+        <div class="lmn-icon-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        </div>
+        <div class="lmn-feature-text">
+          <strong>Pago Contra Entrega</strong>
+          <span>Pide hoy y paga en efectivo al recibir.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Área de Compra (Checkout) -->
+    <div class="lmn-checkout-wrapper" id="lmnCheckoutFormTarget">
+      {% form 'product', product, id: 'product-form-lmn', class: 'form' %}
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+        <!-- Botón Integrado (Fredoka Style) -->
+        <div class="realeasit-btn-wrapper">
+          <button type="submit" name="add" class="lmn-buy-button">
+            <div class="lmn-buy-inner">
+              <div class="lmn-buy-text">
+                ¡QUIERO MI CINTURÓN!
+                <span class="lmn-buy-subtext">Pago Contra Entrega 🇨🇴</span>
+              </div>
+              <span class="lmn-buy-arrow">→</span>
+            </div>
+          </button>
+        </div>
+      {% endform %}
+
+      <!-- ADHESIVO PROMO (Tag debajo del botón) -->
+      <div class="lmn-promo-alert">
+        🎉 <strong>Envío Gratis</strong> a toda Colombia si pides hoy
+      </div>
+    </div>
+
+    <!-- Insignias de Confianza Inferiores -->
+    <div class="lmn-trust-row">
+      <div class="lmn-trust-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span>Envío<br>Rápido</span>
+      </div>
+      <div class="lmn-trust-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+        <span>Pago al<br>Recibir</span>
+      </div>
+      <div class="lmn-trust-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        <span>100%<br>Seguro</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BOTÓN FLOTANTE INFERIOR (STICKY) -->
+<div class="lmn-sticky-bottom-bar" id="lmnStickyBar">
+  <div class="lmn-sticky-container">
+    <div class="lmn-sticky-rating-header">
+      <span class="lmn-sticky-stars-purple">★★★★★</span>
+      <span>4.9 (+2.840 ventas)</span>
+    </div>
+
+    <button type="button" class="lmn-sticky-action-btn" onclick="document.getElementById('lmnCheckoutFormTarget').scrollIntoView({behavior: 'smooth', block: 'center'});">
+      <div class="lmn-sticky-btn-inner-border">
+        <span class="lmn-sticky-btn-text">¡QUIERO MI CINTURÓN!</span>
+      </div>
+    </button>
+  </div>
+</div>
+
+<style>
+/* VARIABLES LUMENS */
+:root {
+  --lmn-purple: #7C3AED;
+  --lmn-purple-dark: #5B21B6;
+  --lmn-purple-light: #F4F0FF;
+  --lmn-blue: #38BDF8;
+  --lmn-bg-soft: #F8F9FA;
+  --lmn-text-dark: #0F172A;
+  --lmn-text-gray: #475569;
+}
+
+/* Reset Global */
+.lmn-product-container,
+.lmn-product-container * {
+  box-sizing: border-box;
+}
+
+.lmn-product-container {
+  width: 100%;
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: 24px 20px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+  background-color: var(--lmn-bg-soft);
+  border-radius: 24px;
+  color: var(--lmn-text-dark);
+}
+
+/* ==========================================
+   GALERÍA (CARRUSEL + PUNTOS)
+   ========================================== */
+.lmn-gallery-col {
+  width: 100%;
+  position: sticky;
+  top: 24px;
+}
+
+.lmn-main-image-card {
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.08);
+  background-color: #FFFFFF;
+  position: relative;
+  border: 1px solid rgba(124, 58, 237, 0.1);
+  aspect-ratio: 1 / 1;
+}
+
+.lmn-slider-viewport {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.lmn-slider-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lmn-slide {
+  min-width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lmn-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lmn-placeholder-img {
+  width: 100%;
+  height: 100%;
+  background-color: #E2E8F0;
+}
+
+/* Flechas Carrusel */
+.lmn-arrow-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(6px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lmn-arrow-btn:hover {
+  background: #FFFFFF;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+.lmn-arrow-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--lmn-text-dark);
+}
+.lmn-arrow-prev { left: 10px; }
+.lmn-arrow-next { right: 10px; }
+
+/* Puntitos (Dots) */
+.lmn-dots-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+.lmn-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--lmn-purple);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lmn-dot.is-active {
+  background: var(--lmn-purple);
+  width: 22px;
+  border-radius: 10px;
+}
+
+/* ==========================================
+   TEXTOS Y CONTENIDO DERECHO
+   ========================================== */
+.lmn-copy-col {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.lmn-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.lmn-category-tag {
+  background: var(--lmn-purple-light);
+  color: var(--lmn-purple);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lmn-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lmn-stars {
+  color: #F59E0B;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+.lmn-rating-text {
+  font-size: 13px;
+  color: var(--lmn-text-gray);
+  font-weight: 600;
+}
+
+.lmn-heading {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--lmn-text-dark);
+  margin: 0 0 16px 0;
+  letter-spacing: -0.5px;
+}
+.lmn-underline-container {
+  position: relative;
+  display: inline-block;
+  color: var(--lmn-purple);
+}
+.lmn-curved-underline {
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  pointer-events: none;
+}
+
+.lmn-price-box {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+  background: #FFFFFF;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+}
+.lmn-price-current {
+  font-family: 'Satoshi', sans-serif;
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--lmn-text-dark);
+  line-height: 1;
+}
+.lmn-price-old {
+  font-size: 15px;
+  color: #94A3B8;
+  text-decoration: line-through;
+  font-weight: 600;
+}
+.lmn-badge-offer {
+  background: #FFF3A6;
+  color: #111111;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 6px 10px;
+  border-radius: 8px;
+  letter-spacing: 0.3px;
+}
+
+.lmn-stock-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #DC2626;
+  background: #FEF2F2;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  border: 1px solid #FEE2E2;
+}
+.lmn-pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: #DC2626;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse-red 1.5s infinite;
+}
+
+/* ==========================================
+   DISEÑO PREMIUM PARA LOS BENEFICIOS
+   ========================================== */
+.lmn-feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.lmn-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #FFFFFF;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.lmn-feature-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.08);
+}
+.lmn-icon-badge {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 50%; /* Ahora es un círculo perfecto */
+  background: linear-gradient(135deg, var(--lmn-purple-light), #FFFFFF);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
+}
+.lmn-icon-badge svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--lmn-purple);
+}
+.lmn-feature-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.lmn-feature-text strong {
+  color: var(--lmn-text-dark);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.lmn-feature-text span {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--lmn-text-gray);
+}
+
+/* ==========================================
+   BOTÓN DE COMPRA Y ADHESIVO PROMO
+   ========================================== */
+.lmn-checkout-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.realeasit-btn-wrapper {
+  width: 100%;
+}
+.lmn-buy-button {
+  width: 100%;
+  background-color: var(--lmn-purple);
+  border: none;
+  border-radius: 16px;
+  padding: 5px;
+  cursor: pointer;
+  box-shadow: 0 6px 0 var(--lmn-purple-dark);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  display: block;
+}
+.lmn-buy-button:hover {
+  background-color: #8B5CF6;
+}
+.lmn-buy-button:active {
+  transform: translateY(4px) !important;
+  box-shadow: 0 2px 0 var(--lmn-purple-dark) !important;
+}
+.lmn-buy-inner {
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.lmn-buy-text {
+  color: #FFFFFF;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+.lmn-buy-subtext {
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #E2E8F0;
+}
+.lmn-buy-arrow {
+  color: #FFFFFF;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+/* Adhesivo / Promo Alert */
+.lmn-promo-alert {
+  text-align: center;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--lmn-purple-dark);
+  background: var(--lmn-purple-light);
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px dashed var(--lmn-purple);
+}
+.lmn-promo-alert strong {
+  font-weight: 700;
+  color: var(--lmn-purple);
+}
+
+.lmn-trust-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 18px;
+}
+.lmn-trust-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 12px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+}
+.lmn-trust-card svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--lmn-purple);
+}
+.lmn-trust-card span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--lmn-text-dark);
+  line-height: 1.2;
+}
+
+/* ==========================================
+   BOTÓN FLOTANTE (STICKY BAR)
+   ========================================== */
+.lmn-sticky-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: #FFFFFF;
+  border-top: 1px solid #E2E8F0;
+  box-shadow: 0 -6px 25px rgba(0, 0, 0, 0.08);
+  z-index: 999999;
+  padding: 10px 16px 16px 16px;
+  transform: translateY(100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s;
+}
+.lmn-sticky-bottom-bar.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+.lmn-sticky-container {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.lmn-sticky-rating-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--lmn-text-dark);
+}
+.lmn-sticky-stars-purple {
+  color: #F59E0B;
+  font-size: 14px;
+}
+.lmn-sticky-action-btn {
+  width: 100%;
+  background-color: var(--lmn-purple);
+  border: none;
+  border-radius: 18px;
+  padding: 4px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--lmn-purple-dark);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.lmn-sticky-action-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--lmn-purple-dark);
+}
+.lmn-sticky-btn-inner-border {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lmn-sticky-btn-text {
+  color: #FFFFFF;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+/* RESPONSIVO */
+@media (max-width: 900px) {
+  .lmn-product-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 12px 10px;
+    border-radius: 16px;
+  }
+  .lmn-gallery-col {
+    position: relative;
+    top: 0;
+  }
+  .lmn-main-image-card {
+    border-radius: 16px;
+  }
+  .lmn-heading {
+    font-size: 26px;
+  }
+  .lmn-price-box {
+    padding: 10px 12px;
+  }
+  .lmn-price-current {
+    font-size: 26px;
+  }
+}
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // 1. LÓGICA DEL CARRUSEL (SLIDER)
+    const track = document.getElementById('lmnSliderTrack');
+    const slides = document.querySelectorAll('.lmn-slide');
+    const prevBtn = document.getElementById('lmnPrevBtn');
+    const nextBtn = document.getElementById('lmnNextBtn');
+    const dots = document.querySelectorAll('.lmn-dot');
+
+    let currentIndex = 0;
+    const totalSlides = slides.length;
+
+    if (totalSlides > 1) {
+      function goToSlide(index) {
+        if (index < 0) index = totalSlides - 1;
+        if (index >= totalSlides) index = 0;
+
+        currentIndex = index;
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+        // Actualizar Puntos (Dots)
+        dots.forEach((dot, idx) => {
+          dot.classList.toggle('is-active', idx === currentIndex);
+        });
+      }
+
+      if (prevBtn) prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+      if (nextBtn) nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+
+      dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+          const idx = parseInt(dot.getAttribute('data-index'));
+          goToSlide(idx);
+        });
+      });
+
+      // Swipe en móviles
+      let startX = 0;
+      let endX = 0;
+      const galleryViewport = document.querySelector('.lmn-slider-viewport');
+
+      if (galleryViewport) {
+        galleryViewport.addEventListener('touchstart', (e) => {
+          startX = e.touches[0].clientX;
+        }, { passive: true });
+
+        galleryViewport.addEventListener('touchend', (e) => {
+          endX = e.changedTouches[0].clientX;
+          handleSwipe();
+        }, { passive: true });
+      }
+
+      function handleSwipe() {
+        const threshold = 40;
+        if (startX - endX > threshold) {
+          goToSlide(currentIndex + 1); // Deslizó a la izquierda
+        } else if (endX - startX > threshold) {
+          goToSlide(currentIndex - 1); // Deslizó a la derecha
+        }
+      }
+    }
+
+    // 2. LÓGICA DEL BOTÓN FLOTANTE (STICKY BAR)
+    const stickyBar = document.getElementById("lmnStickyBar");
+    const checkoutArea = document.getElementById("lmnCheckoutFormTarget");
+
+    if (stickyBar && checkoutArea) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          // Aparece cuando el formulario original desaparece por arriba del scroll
+          if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+            stickyBar.classList.add("is-visible");
+          } else {
+            stickyBar.classList.remove("is-visible");
+          }
+        });
+      }, {
+        threshold: 0,
+        rootMargin: "0px"
+      });
+
+      observer.observe(checkoutArea);
+    }
+  });
+</script>

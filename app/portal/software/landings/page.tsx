@@ -3,6 +3,7 @@ import { requireSession } from '@/app/portal/actions';
 import { PortalShell } from '@/components/portal/PortalShell';
 import { MarcoSoftware } from '@/components/portal/software/MarcoSoftware';
 import { EstudioLanding } from '@/components/portal/software/EstudioLanding';
+import { ReferenciaCodigo } from '@/components/portal/software/ReferenciaCodigo';
 import { ANTES_DE_EMPEZAR, BLOQUES } from '@/lib/software-landings';
 
 export const metadata = { title: 'Landings que venden | Software 1K' };
@@ -14,7 +15,7 @@ export default async function LandingsPage() {
     <PortalShell session={session}>
       <MarcoSoftware
         titulo="Landings que venden"
-        bajada="La estructura exacta con la que armo las mías, bloque por bloque, y el estudio para escribir el primer borrador."
+        bajada="La estructura con la que armo las mías, el código real de la que más convierte, y el estudio que te genera la tuya."
         icono={Rocket}
         color="#EC4899"
       >
@@ -103,6 +104,10 @@ export default async function LandingsPage() {
             ))}
           </div>
         </section>
+
+        <div className="mb-10">
+          <ReferenciaCodigo />
+        </div>
 
         <EstudioLanding />
       </MarcoSoftware>
