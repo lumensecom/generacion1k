@@ -674,6 +674,271 @@ export type Database = {
         };
         Relationships: [];
       };
+      sw_ajustes: {
+        Row: {
+          contexto_marca: string | null;
+          costo_envio_default: number;
+          efectividad_default: number;
+          meta_mensual: number;
+          moneda: string;
+          student_id: string;
+          updated_at: string;
+        };
+        Insert: {
+          contexto_marca?: string | null;
+          costo_envio_default?: number;
+          efectividad_default?: number;
+          meta_mensual?: number;
+          moneda?: string;
+          student_id: string;
+          updated_at?: string;
+        };
+        Update: {
+          contexto_marca?: string | null;
+          costo_envio_default?: number;
+          efectividad_default?: number;
+          meta_mensual?: number;
+          moneda?: string;
+          student_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "_s";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      sw_creativos: {
+        Row: {
+          angulo: string | null;
+          created_at: string;
+          cta: string | null;
+          estado: Database["public"]["Enums"]['sw_estado_creativo'];
+          formato: string | null;
+          guion: string | null;
+          hook: string | null;
+          id: string;
+          nombre: string;
+          notas: string | null;
+          plataforma: Database["public"]["Enums"]['sw_plataforma'];
+          producto_id: string | null;
+          student_id: string;
+          updated_at: string;
+          video_url: string | null;
+        };
+        Insert: {
+          angulo?: string | null;
+          created_at?: string;
+          cta?: string | null;
+          estado?: Database["public"]["Enums"]['sw_estado_creativo'];
+          formato?: string | null;
+          guion?: string | null;
+          hook?: string | null;
+          id?: string;
+          nombre: string;
+          notas?: string | null;
+          plataforma?: Database["public"]["Enums"]['sw_plataforma'];
+          producto_id?: string | null;
+          student_id: string;
+          updated_at?: string;
+          video_url?: string | null;
+        };
+        Update: {
+          angulo?: string | null;
+          created_at?: string;
+          cta?: string | null;
+          estado?: Database["public"]["Enums"]['sw_estado_creativo'];
+          formato?: string | null;
+          guion?: string | null;
+          hook?: string | null;
+          id?: string;
+          nombre?: string;
+          notas?: string | null;
+          plataforma?: Database["public"]["Enums"]['sw_plataforma'];
+          producto_id?: string | null;
+          student_id?: string;
+          updated_at?: string;
+          video_url?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "_p";
+            columns: ["producto_id"];
+            isOneToOne: false;
+            referencedRelation: "sw_productos";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "_s";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      sw_gastos: {
+        Row: {
+          categoria: Database["public"]["Enums"]['sw_categoria_gasto'];
+          created_at: string;
+          descripcion: string | null;
+          fecha: string;
+          id: string;
+          monto: number;
+          producto_id: string | null;
+          student_id: string;
+        };
+        Insert: {
+          categoria: Database["public"]["Enums"]['sw_categoria_gasto'];
+          created_at?: string;
+          descripcion?: string | null;
+          fecha: string;
+          id?: string;
+          monto: number;
+          producto_id?: string | null;
+          student_id: string;
+        };
+        Update: {
+          categoria?: Database["public"]["Enums"]['sw_categoria_gasto'];
+          created_at?: string;
+          descripcion?: string | null;
+          fecha?: string;
+          id?: string;
+          monto?: number;
+          producto_id?: string | null;
+          student_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "_p";
+            columns: ["producto_id"];
+            isOneToOne: false;
+            referencedRelation: "sw_productos";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "_s";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      sw_ingresos: {
+        Row: {
+          created_at: string;
+          fecha: string;
+          fuente: Database["public"]["Enums"]['sw_fuente_ingreso'];
+          id: string;
+          monto: number;
+          notas: string | null;
+          pedidos: number;
+          producto_id: string | null;
+          student_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          fecha: string;
+          fuente?: Database["public"]["Enums"]['sw_fuente_ingreso'];
+          id?: string;
+          monto: number;
+          notas?: string | null;
+          pedidos?: number;
+          producto_id?: string | null;
+          student_id: string;
+        };
+        Update: {
+          created_at?: string;
+          fecha?: string;
+          fuente?: Database["public"]["Enums"]['sw_fuente_ingreso'];
+          id?: string;
+          monto?: number;
+          notas?: string | null;
+          pedidos?: number;
+          producto_id?: string | null;
+          student_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "_p";
+            columns: ["producto_id"];
+            isOneToOne: false;
+            referencedRelation: "sw_productos";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "_s";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      sw_productos: {
+        Row: {
+          costo_devolucion: number;
+          costo_envio: number;
+          costo_producto: number;
+          created_at: string;
+          efectividad_pct: number;
+          estado: Database["public"]["Enums"]['sw_estado_producto'];
+          id: string;
+          landing_url: string | null;
+          nombre: string;
+          notas: string | null;
+          precio_tachado: number | null;
+          precio_venta: number;
+          student_id: string;
+          updated_at: string;
+        };
+        Insert: {
+          costo_devolucion?: number;
+          costo_envio?: number;
+          costo_producto?: number;
+          created_at?: string;
+          efectividad_pct?: number;
+          estado?: Database["public"]["Enums"]['sw_estado_producto'];
+          id?: string;
+          landing_url?: string | null;
+          nombre: string;
+          notas?: string | null;
+          precio_tachado?: number | null;
+          precio_venta?: number;
+          student_id: string;
+          updated_at?: string;
+        };
+        Update: {
+          costo_devolucion?: number;
+          costo_envio?: number;
+          costo_producto?: number;
+          created_at?: string;
+          efectividad_pct?: number;
+          estado?: Database["public"]["Enums"]['sw_estado_producto'];
+          id?: string;
+          landing_url?: string | null;
+          nombre?: string;
+          notas?: string | null;
+          precio_tachado?: number | null;
+          precio_venta?: number;
+          student_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "_s";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       test_attempts: {
         Row: {
           answers: Json;
@@ -741,7 +1006,18 @@ export type Database = {
       renumerar_sesiones: { Args: { p_student: string }; Returns: undefined };
     };
     Enums: {
-      [_ in never]: never;
+      sw_categoria_gasto:
+        | 'ads_meta'
+        | 'ads_tiktok'
+        | 'envio'
+        | 'costo_producto'
+        | 'devolucion'
+        | 'herramientas'
+        | 'otro';
+      sw_estado_creativo: 'ganador' | 'probando' | 'pausado' | 'archivado';
+      sw_estado_producto: 'activo' | 'pausado' | 'probando' | 'archivado';
+      sw_fuente_ingreso: 'tienda' | 'marketplace' | 'otro';
+      sw_plataforma: 'meta' | 'tiktok' | 'ambas';
     };
     CompositeTypes: {
       [_ in never]: never;

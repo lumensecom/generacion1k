@@ -60,10 +60,25 @@ const config: Config = {
           '0%': { transform: 'scale(1)', opacity: '0.8' },
           '100%': { transform: 'scale(3)', opacity: '0' },
         },
+        // El flujo que recorre los conectores del mapa de Software 1K.
+        dashFlow: {
+          to: { strokeDashoffset: '-40' },
+        },
+        nodoFlota: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-7px)' },
+        },
+        halo: {
+          '0%, 100%': { opacity: '0.35', transform: 'scale(1)' },
+          '50%': { opacity: '0.7', transform: 'scale(1.06)' },
+        },
       },
       animation: {
         orb: 'orbFloat 16s ease-in-out infinite alternate',
         pulseDot: 'pulseDot 1.8s ease-out infinite',
+        dashFlow: 'dashFlow 1.4s linear infinite',
+        nodoFlota: 'nodoFlota 6s ease-in-out infinite',
+        halo: 'halo 5s ease-in-out infinite',
       },
     },
   },

@@ -188,6 +188,11 @@ export function claveLocal(d: Date): string {
   return `${anio}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
 }
 
+/** El instante de hace `n` días. Para rangos del tipo "últimos 30 días". */
+export function diasAntes(n: number): Date {
+  return new Date(Date.now() - n * 86_400_000);
+}
+
 /** El primer día del mes que está a `meses` del ancla. Para los flechazos. */
 export function mesRelativo(ancla: Date, meses: number): Date {
   const [anio, mes] = partes(ancla);

@@ -3,13 +3,14 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTransition } from 'react';
-import { LayoutDashboard, BookOpen, TrendingUp, Users, UserCircle, ShieldCheck, LogOut, CalendarDays, LifeBuoy } from 'lucide-react';
+import { LayoutDashboard, BookOpen, TrendingUp, Users, UserCircle, ShieldCheck, LogOut, CalendarDays, LifeBuoy, Boxes } from 'lucide-react';
 import { logoutAction } from '@/app/portal/actions';
 import { cn } from '@/lib/utils';
 
 const links = [
   { href: '/portal/inicio', label: 'Inicio', icon: LayoutDashboard },
   { href: '/portal/modulos', label: 'Módulos', icon: BookOpen },
+  { href: '/portal/software', label: 'Software 1K', icon: Boxes },
   { href: '/portal/mi-progreso', label: 'Mi progreso', icon: TrendingUp },
   { href: '/portal/agenda', label: 'Agenda', icon: CalendarDays },
   { href: '/portal/ayuda', label: 'Ayuda', icon: LifeBuoy },

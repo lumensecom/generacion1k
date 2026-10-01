@@ -16,3 +16,6 @@ next-env.d.ts
 
 # TypeScript incremental build cache
 *.tsbuildinfo
+
+# Caché del CLI de Supabase
+supabase/.temp/
