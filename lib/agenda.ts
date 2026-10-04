@@ -166,7 +166,7 @@ export function instante(anio: number, mes: number, dia: number, h = 0, min = 0)
 }
 
 /** Año, mes (1-12) y día de un instante, en Bogotá. */
-function partes(d: Date): [number, number, number] {
+export function partes(d: Date): [number, number, number] {
   const c = civil(d);
   return [c.getUTCFullYear(), c.getUTCMonth() + 1, c.getUTCDate()];
 }
