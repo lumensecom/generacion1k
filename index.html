@@ -1251,56 +1251,6 @@
         /* ============================================================
            SECCIÓN — FASES
         ============================================================ */
-        .phases-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-        .phase-card {
-            position: relative;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(124, 58, 237, 0.2);
-            border-radius: 18px;
-            padding: 34px 28px;
-            overflow: hidden;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-        }
-        .phase-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(124, 58, 237, 0.45);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 30px var(--purple-glow);
-        }
-        .phase-num {
-            position: absolute;
-            bottom: -32px;
-            right: -6px;
-            font-family: var(--font-display);
-            font-weight: 800;
-            font-size: 110px;
-            line-height: 1;
-            pointer-events: none;
-            user-select: none;
-        }
-        .phase-card:nth-child(1) .phase-num { color: rgba(124, 58, 237, 0.12); }
-        .phase-card:nth-child(2) .phase-num { color: rgba(168, 85, 247, 0.10); }
-        .phase-card:nth-child(3) .phase-num { color: rgba(168, 85, 247, 0.10); }
-        .phase-card:nth-child(4) .phase-num { color: rgba(245, 158, 11, 0.10); }
-        .phase-card:nth-child(5) .phase-num { color: rgba(16, 185, 129, 0.10); }
-        .phase-card:nth-child(6) .phase-num { color: rgba(168, 85, 247, 0.12); }
-        .phase-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; }
-        .phase-card:nth-child(1) .phase-label { color: var(--purple-light); }
-        .phase-card:nth-child(2) .phase-label { color: var(--purple-light); }
-        .phase-card:nth-child(3) .phase-label { color: var(--purple-light); }
-        .phase-card:nth-child(4) .phase-label { color: var(--yellow); }
-        .phase-card:nth-child(5) .phase-label { color: var(--success); }
-        .phase-card:nth-child(6) .phase-label { color: var(--purple-light); }
-        .phase-card h3 {
-            font-family: var(--font-display);
-            font-size: 20px;
-            font-weight: 800;
-            margin: 10px 0 12px;
-            letter-spacing: -0.01em;
-        }
-        .phase-card p { font-size: 14px; line-height: 1.65; color: var(--text-secondary); }
 
         /* ============================================================
            SECCIÓN — COMPARATIVA (CLARA)
@@ -1404,6 +1354,30 @@
         .about-metric { background: var(--bg-card); padding: 24px 20px; }
         .about-metric .num { font-family: var(--font-mono); font-size: clamp(18px, 2.4vw, 22px); color: #fff; }
         .about-metric .label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+        /* El pantallazo del panel de ventas. Va contenido a propósito: si
+           ocupara todo el ancho competiría con la foto y el texto, y la
+           prueba se lee mejor como una nota al pie que como una valla. */
+        .proof-shot {
+            max-width: 560px;
+            margin: 48px auto 0;
+            text-align: center;
+        }
+        .proof-shot img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+        }
+        .proof-shot figcaption {
+            margin-top: 14px;
+            font-size: 12.5px;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+        .proof-shot figcaption strong { color: var(--text-secondary); font-weight: 700; }
 
         /* ============================================================
            SECCIÓN — PROCESO (CLARA)
@@ -1556,13 +1530,11 @@
             .fit-grid { grid-template-columns: 1fr 1fr; }
             .timeline { grid-template-columns: repeat(3, 1fr); }
             .plans { grid-template-columns: 1fr 1fr; max-width: 900px; margin-left: auto; margin-right: auto; }
-            .phases-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         @media (min-width: 1024px) {
             .pain-grid { grid-template-columns: repeat(3, 1fr); }
             .cases-grid { grid-template-columns: repeat(3, 1fr); }
-            .phases-grid { grid-template-columns: repeat(3, 1fr); }
             .steps { grid-template-columns: repeat(4, 1fr); }
             .about-grid { grid-template-columns: 360px 1fr; gap: 72px; }
             .about-photo { margin: 0; }
@@ -2185,6 +2157,21 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Prueba, no adorno. Va después del texto y no antes: sustenta
+                 lo que la persona acaba de leer en vez de interrumpirlo.
+                 La cifra se dice en pesos y con el período a la vista, que es
+                 como aparece en el panel; redondearla a dólares acá invitaría
+                 a que alguien saque la cuenta y encuentre otra cosa. -->
+            <figure class="proof-shot reveal">
+                <img src="https://res.cloudinary.com/dss3b02ao/image/upload/f_auto,q_auto,w_1100/v1791179247/Screenshot_2026-10-05_at_12.47.21_AM_d9crbv.png"
+                     alt="Panel de ventas de mi tienda: $156.891.536 en ventas totales y 2.014 pedidos entre el 1 de mayo y el 5 de octubre de 2026"
+                     loading="lazy" decoding="async">
+                <figcaption>
+                    El panel real de mi tienda &middot; 1 de mayo al 5 de octubre de 2026<br>
+                    <strong>$156.891.536 COP</strong> en ventas y <strong>2.014 pedidos</strong>
+                </figcaption>
+            </figure>
         </div>
     </section>
 
