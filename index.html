@@ -229,6 +229,9 @@
 
         .cta-note { font-size: 12.5px; color: var(--text-muted); margin-top: 14px; }
 
+        /* El pie de la línea de 3 meses: la puerta al temario completo. */
+        .program-more { text-align: center; margin-top: 44px; }
+
         /* ---------- Scroll reveal ---------- */
         .reveal {
             opacity: 0;
@@ -1599,7 +1602,6 @@
             <div class="nav-links">
                 <a href="#casos">Casos</a>
                 <a href="#programa">El programa</a>
-                <a href="#fases">Fases</a>
                 <a href="#sobre-mi">Sobre mí</a>
                 <a href="#faq">FAQ</a>
                 <a href="/recursos">Recursos</a>
@@ -1622,7 +1624,6 @@
     <div class="mobile-menu" id="mobileMenu">
         <a href="#casos">Casos</a>
         <a href="#programa">El programa</a>
-        <a href="#fases">Fases</a>
         <a href="#sobre-mi">Sobre mí</a>
         <a href="#faq">FAQ</a>
         <a href="/recursos">Recursos</a>
@@ -1655,16 +1656,21 @@
 
             <!-- La cifra ES el gráfico del hero. Las dos líneas que la enmarcan
                  van pequeñas a propósito: de un vistazo se lee "$1.000 USD" y
-                 el resto es contexto. Las objeciones bajaron al subtítulo para
-                 no engordar el titular. -->
+                 el resto es contexto. La segunda línea desactiva las dos
+                 objeciones de entrada —inventario y experiencia— ahí mismo,
+                 antes de que el visitante alcance a formularlas. -->
             <h1>
                 <span class="ht-line">Factura tus primeros</span>
                 <span class="ht-figure">$1.000 USD</span>
-                <span class="ht-line">con tu propia tienda online</span>
+                <span class="ht-line">con tu propia tienda &mdash; sin inventario ni experiencia</span>
             </h1>
 
+            <!-- La promesa la carga la cifra; esta frase carga el porqué a mí
+                 y no a un curso. Es la diferencia que el visitante no puede
+                 deducir solo. -->
             <p class="hero-sub">
-                Te acompaño 1:1 durante 3 meses. Sin experiencia previa y sin inventario.
+                Tres meses conmigo al lado, uno a uno. No es un curso grabado:
+                <strong>elegimos tu producto, montamos la tienda y lanzamos la pauta juntos.</strong>
             </p>
 
             <!-- ────────────────────────────────────────────────────────────
@@ -1678,18 +1684,10 @@
                    1. Borra esta línea de apertura del comentario y la de cierre.
                    2. Reemplaza ID_DEL_VIDEO por el id de YouTube (lo que va
                       después de "v=" en la URL).
-                 Eso es todo: el contenedor ya es responsive 16:9 y el CSS
-                 (.hero-steps, .hero-video) ya está listo más arriba.
-
-            <div class="hero-steps">
-                <span class="hero-step">
-                    <span class="hs-num">1</span> Mira el video
-                </span>
-                <span class="hs-arrow">→</span>
-                <span class="hero-step is-next">
-                    <span class="hs-num">2</span> Agenda tu llamada
-                </span>
-            </div>
+                   3. Cambia el paso 1 de arriba por "Mira el video" y el 2 por
+                      "Agenda tu llamada".
+                 El contenedor ya es responsive 16:9 y el CSS (.hero-video) ya
+                 está más arriba.
 
             <div class="hero-video">
                 <iframe
@@ -1702,13 +1700,26 @@
             <p class="hero-video-note">Son 4 minutos y te ahorran 6 meses de ensayo y error.</p>
             ──────────────────────────────────────────────────────────── -->
 
+            <!-- Los dos pasos del proceso real. No es decoración: la objeción
+                 silenciosa de una llamada gratis es "¿y qué va a pasar ahí,
+                 me van a vender?". Decirlo antes del botón la desarma. -->
+            <div class="hero-steps">
+                <span class="hero-step">
+                    <span class="hs-num">1</span> Agendas la llamada
+                </span>
+                <span class="hs-arrow">&rarr;</span>
+                <span class="hero-step is-next">
+                    <span class="hs-num">2</span> Armamos tu plan
+                </span>
+            </div>
+
             <div class="hero-cta-wrap">
                 <div class="hero-cta-row">
                     <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-cta">
                         Quiero mi llamada gratuita <span class="arrow">→</span>
                     </a>
                 </div>
-                <p class="cta-note">Gratis · 30 minutos · Sin compromiso</p>
+                <p class="cta-note">Gratis · 30 minutos · Es un diagnóstico, no una venta</p>
             </div>
 
             <!-- Métricas: la primera es de MI tienda (LUMENS), no de
@@ -1924,6 +1935,17 @@
                     </ul>
                 </div>
             </div>
+
+            <!-- Aquí se corta a propósito. El temario completo —las 6 fases,
+                 todo lo que incluye, los entregables— vive en /programa.
+                 Repetirlo aquí alargaba la página sin quitar una sola
+                 objeción, que es lo único que esta parte tiene que hacer. -->
+            <div class="program-more reveal">
+                <a href="/programa" class="btn-ghost">
+                    Ver el temario completo de los 3 meses <span class="arrow">&rarr;</span>
+                </a>
+                <p class="cta-note">Las 6 fases, los entregables y todo lo que incluye</p>
+            </div>
         </div>
     </section>
 
@@ -2044,56 +2066,6 @@
                         te lo decimos de frente — y de todas formas sales con claridad sobre tu situación y tu siguiente paso.
                         <strong>La llamada cuesta $0.</strong>
                     </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============ LAS 6 FASES ============ -->
-    <section id="fases" class="section-dark">
-        <div class="container">
-            <div class="section-head reveal">
-                <span class="eyebrow">Qué incluye</span>
-                <h2 class="h2">Las 6 fases del <span class="accent">acompañamiento</span></h2>
-                <div class="head-beam"></div>
-            </div>
-
-            <div class="phases-grid">
-                <div class="phase-card reveal">
-                    <span class="phase-num">1</span>
-                    <span class="phase-label">Fase 1</span>
-                    <h3>Mentalidad y Plan</h3>
-                    <p>Mentalidad de negocio · Objetivos · Plan financiero · Modelo de ingresos</p>
-                </div>
-                <div class="phase-card reveal reveal-d1">
-                    <span class="phase-num">2</span>
-                    <span class="phase-label">Fase 2</span>
-                    <h3>Investigación y Producto</h3>
-                    <p>Validación · Buyer Persona · Competencia · Oferta · Ángulos</p>
-                </div>
-                <div class="phase-card reveal reveal-d2">
-                    <span class="phase-num">3</span>
-                    <span class="phase-label">Fase 3</span>
-                    <h3>Construcción</h3>
-                    <p>Shopify completo · Branding · Landing · Pixel · Analytics · Automatizaciones</p>
-                </div>
-                <div class="phase-card reveal">
-                    <span class="phase-num">4</span>
-                    <span class="phase-label">Fase 4</span>
-                    <h3>Creativos</h3>
-                    <p>Hooks · UGC · Guiones · Copies · Edición</p>
-                </div>
-                <div class="phase-card reveal reveal-d1">
-                    <span class="phase-num">5</span>
-                    <span class="phase-label">Fase 5</span>
-                    <h3>Publicidad</h3>
-                    <p>Meta Ads · TikTok Ads · Configuración · Optimización · Escalado</p>
-                </div>
-                <div class="phase-card reveal reveal-d2">
-                    <span class="phase-num">6</span>
-                    <span class="phase-label">Fase 6</span>
-                    <h3>Seguimiento</h3>
-                    <p>Llamadas 1:1 · Revisión semanal · WhatsApp · Auditorías · Feedback</p>
                 </div>
             </div>
         </div>
@@ -2254,8 +2226,13 @@
     <section id="faq" class="section-dark">
         <div class="container">
             <div class="section-head reveal">
-                <h2 class="h2">Preguntas <span class="accent">frecuentes</span></h2>
+                <span class="eyebrow">Antes de agendar</span>
+                <h2 class="h2">Lo que todos me preguntan <span class="accent">antes de entrar</span></h2>
                 <div class="head-beam"></div>
+                <p class="section-sub">
+                    Son las seis dudas reales con las que llega la gente. Si tienes otra,
+                    escríbeme y te respondo yo mismo.
+                </p>
             </div>
 
             <div class="faq-list reveal">
