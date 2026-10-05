@@ -6,6 +6,7 @@ import {
   crearPregunta,
   crearSolicitudReunion,
   getReunionesDeEstudiante,
+  getStudentById,
   votar,
   getEncuestaAbierta,
   guardarTemaSesion,
@@ -49,11 +50,17 @@ export async function solicitarReunion(formData: FormData) {
   if (question.length < 10) return { error: 'Escribe qué quieres resolver en la reunión.' };
   if (question.length > MAX) return { error: 'Resúmelo un poco para que quepa.' };
 
-  const restante = cupoRestante(await getReunionesDeEstudiante(session.sid));
+  // El cupo depende del plan: el Intensivo tiene dos 1:1 por semana.
+  const estudiante = await getStudentById(session.sid);
+  const restante = cupoRestante(
+    await getReunionesDeEstudiante(session.sid),
+    new Date(),
+    estudiante?.plan
+  );
   if (restante <= 0) {
     return {
       error:
-        'Ya usaste tu 1:1 de esta semana. El cupo se reinicia el lunes. Mientras tanto nos vemos en las grupales del martes, jueves y domingo, o escríbeme por "Mis preguntas", que no tiene tope.',
+        'Ya usaste tus 1:1 de esta semana. El cupo se reinicia el lunes. Mientras tanto nos vemos en las grupales del martes, jueves y domingo, o escríbeme por "Mis preguntas", que no tiene tope.',
     };
   }
 

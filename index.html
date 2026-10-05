@@ -91,13 +91,26 @@
 
         /* ---------- Tipografía ---------- */
         .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
             font-family: var(--font-mono);
             font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 0.18em;
+            font-weight: 600;
+            letter-spacing: 0.22em;
             text-transform: uppercase;
             color: var(--purple-light);
         }
+        /* Dos rieles que se desvanecen hacia afuera. Cuesta nada y es lo que
+           le quita a la página la sensación de bloque tras bloque iguales. */
+        .eyebrow::before, .eyebrow::after {
+            content: "";
+            width: clamp(28px, 7vw, 64px);
+            height: 1px;
+        }
+        .eyebrow::before { background: linear-gradient(to right, transparent, rgba(168,85,247,0.75)); }
+        .eyebrow::after  { background: linear-gradient(to left,  transparent, rgba(168,85,247,0.75)); }
 
         .h2 {
             font-family: var(--font-display);
@@ -229,8 +242,25 @@
 
         .cta-note { font-size: 12.5px; color: var(--text-muted); margin-top: 14px; }
 
-        /* El pie de la línea de 3 meses: la puerta al temario completo. */
-        .program-more { text-align: center; margin-top: 44px; }
+        /* ---------- Banda al programa completo ---------- */
+        .band-program { text-align: center; }
+        .band-program .eyebrow { margin-bottom: 18px; }
+        .band-program .container { max-width: 720px; }
+        .band-title {
+            font-family: var(--font-display);
+            font-size: clamp(22px, 3.6vw, 32px);
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        .band-sub {
+            margin: 14px auto 26px;
+            max-width: 480px;
+            font-size: 14.5px;
+            line-height: 1.65;
+            color: var(--text-secondary);
+        }
+
 
         /* ---------- Scroll reveal ---------- */
         .reveal {
@@ -422,55 +452,26 @@
         }
         .hero .container { position: relative; z-index: 2; }
 
-        /* Titular gráfico. antoecom pone su H1 en 22px porque el protagonista
-           del hero es el video; aquí el protagonista es la cifra, así que el
-           texto que la rodea se achica y ella crece. Es el mismo criterio:
-           una sola cosa manda en la primera pantalla. */
-        .hero h1 {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: clamp(2px, 0.7vw, 9px);
-            max-width: 900px;
+        /* Titular. Una sola frase, centrada y contenida: lo que manda en la
+           primera pantalla es la promesa, no un número. La cifra gigante que
+           vivía aquí se sacó porque se comía el resto del hero. */
+        .hero h1.hero-title {
+            max-width: 860px;
             margin: 0 auto;
             font-family: var(--font-display);
+            font-size: clamp(27px, 5.2vw, 52px);
+            font-weight: 800;
+            line-height: 1.14;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            text-wrap: balance;
             animation: heroFade 0.9s ease 0.2s both;
         }
-        .hero h1 .ht-line {
-            max-width: 100%;
-            font-size: clamp(18px, 2.9vw, 31px);
-            font-weight: 700;
-            line-height: 1.28;
-            letter-spacing: -0.02em;
-            color: var(--text-secondary);
-            text-wrap: balance;
+        .hero h1.hero-title .accent {
+            /* El morado marca justo la mitad que desactiva las objeciones. */
+            color: var(--purple-light);
         }
-        .hero h1 .ht-figure {
-            max-width: 100%;
-            font-size: clamp(44px, 12.5vw, 128px);
-            font-weight: 800;
-            line-height: 0.98;
-            letter-spacing: -0.045em;
-            /* Dorado en movimiento: el mismo oro del logo 1K, con un brillo
-               que recorre la cifra muy despacio. Nueve segundos y sin bucle
-               brusco — si se nota que se mueve, distrae de lo único que
-               importa en esta pantalla, que es el número. */
-            background: linear-gradient(100deg,
-                #E09B0B 0%, #F5C518 20%, #FFF3C4 38%, #F5C518 56%, #D9910A 100%);
-            background-size: 240% 100%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            color: transparent;
-            animation: heroOro 9s ease-in-out infinite;
-        }
-        @keyframes heroOro {
-            0%, 100% { background-position: 0% 50%; }
-            50%      { background-position: 100% 50%; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .hero h1 .ht-figure { animation: none; background-position: 32% 50%; }
-        }
+
         .hero-sub {
             margin: 26px auto 0;
             max-width: 560px;
@@ -1080,21 +1081,6 @@
             margin-top: 4px;
             font-style: italic;
         }
-        .plan-duration-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            font-family: var(--font-mono);
-            font-size: 12.5px;
-            font-weight: 500;
-            color: var(--purple-light);
-            background: rgba(124, 58, 237, 0.12);
-            border: 1px solid rgba(124, 58, 237, 0.28);
-            padding: 7px 13px;
-            border-radius: 999px;
-            margin-top: 16px;
-        }
-        .plan-why { font-size: 13.5px; line-height: 1.6; color: var(--text-muted); margin-top: 11px; }
         /* El precio es la cifra que decide la página, y estaba en mono a 30px
            y peso 500: tipografía de dato técnico, no de oferta. Pasa a la
            display, al doble de tamaño y con el "Desde" y el "USD" reducidos
@@ -1106,13 +1092,6 @@
             flex-wrap: wrap;
             margin: 26px 0 10px;
             font-family: var(--font-display);
-        }
-        .pp-from {
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--text-muted);
         }
         .pp-amount {
             font-size: clamp(40px, 5.2vw, 52px);
@@ -1133,7 +1112,6 @@
             color: var(--text-secondary);
             letter-spacing: 0.01em;
         }
-        .plan-price-alt { display: block; font-family: var(--font-mono); font-size: 12.5px; color: var(--text-muted); margin-top: 10px; }
         .plan-divider { height: 1px; background: var(--border); margin: 24px 0 18px; }
         .plan-includes {
             font-family: var(--font-mono);
@@ -1573,7 +1551,7 @@
             </a>
             <div class="nav-links">
                 <a href="#casos">Casos</a>
-                <a href="#programa">El programa</a>
+                <a href="#planes">Planes</a>
                 <a href="#sobre-mi">Sobre mí</a>
                 <a href="#faq">FAQ</a>
                 <a href="/recursos">Recursos</a>
@@ -1595,7 +1573,7 @@
     <!-- Menú móvil -->
     <div class="mobile-menu" id="mobileMenu">
         <a href="#casos">Casos</a>
-        <a href="#programa">El programa</a>
+        <a href="#planes">Planes</a>
         <a href="#sobre-mi">Sobre mí</a>
         <a href="#faq">FAQ</a>
         <a href="/recursos">Recursos</a>
@@ -1626,22 +1604,19 @@
                 <span>Solo 5 personas cada mes</span>
             </div>
 
-            <!-- La cifra ES el gráfico del hero. Las dos líneas que la enmarcan
-                 van pequeñas a propósito: de un vistazo se lee "$1.000 USD" y
-                 el resto es contexto. La segunda línea desactiva las dos
-                 objeciones de entrada —inventario y experiencia— ahí mismo,
-                 antes de que el visitante alcance a formularlas. -->
-            <h1>
-                <span class="ht-line">Factura tus primeros</span>
-                <span class="ht-figure">$1.000 USD</span>
-                <span class="ht-line">con tu propia tienda &mdash; sin inventario ni experiencia</span>
+            <!-- Una sola frase. La segunda mitad va en morado porque es la que
+                 desactiva las tres objeciones de entrada —inventario,
+                 experiencia y tiempo— antes de que el visitante alcance a
+                 formularlas. La cifra grande salió: competía con todo. -->
+            <h1 class="hero-title">
+                Monta tu tienda online y haz tus primeras ventas &mdash;
+                <span class="accent">sin inventario, sin experiencia y sin dejar lo que haces hoy.</span>
             </h1>
 
-            <!-- La promesa la carga la cifra; esta frase carga el porqué a mí
-                 y no a un curso. Es la diferencia que el visitante no puede
-                 deducir solo. -->
+            <!-- El titular dice QUÉ; esta frase dice POR QUÉ conmigo y no un
+                 curso. Es lo único que el visitante no puede deducir solo. -->
             <p class="hero-sub">
-                Tres meses conmigo al lado, uno a uno. No es un curso grabado:
+                Tres meses conmigo al lado. No es un curso grabado:
                 <strong>elegimos tu producto, montamos la tienda y lanzamos la pauta juntos.</strong>
             </p>
 
@@ -1709,83 +1684,6 @@
             </div>
         </div>
     </header>
-
-    <!-- ============ EL PROBLEMA ============ -->
-    <section class="section-dark">
-        <div class="container">
-            <div class="section-head reveal">
-                <h2 class="h2">¿Te suena <span class="accent">alguna</span> de estas?</h2>
-                <div class="head-beam"></div>
-            </div>
-
-            <div class="pain-grid">
-                <div class="pain-card reveal">
-                    <span class="pain-icon">📦</span>
-                    <p>"No sé qué producto vender"</p>
-                </div>
-                <div class="pain-card reveal reveal-d1">
-                    <span class="pain-icon">🛒</span>
-                    <p>"Intenté crear una tienda y me rendí"</p>
-                </div>
-                <div class="pain-card reveal reveal-d2">
-                    <span class="pain-icon">📱</span>
-                    <p>"Vi cientos de videos y no sé por dónde empezar"</p>
-                </div>
-                <div class="pain-card reveal">
-                    <span class="pain-icon">💸</span>
-                    <p>"Gasté en pauta y no vendí nada"</p>
-                </div>
-                <div class="pain-card reveal reveal-d1">
-                    <span class="pain-icon">😤</span>
-                    <p>"Compré cursos que nunca terminé"</p>
-                </div>
-                <div class="pain-card reveal reveal-d2">
-                    <span class="pain-icon">⏳</span>
-                    <p>"Quiero independencia pero no sé cómo llegar"</p>
-                </div>
-            </div>
-
-            <p class="pain-close reveal">
-                No es tu culpa. El problema no es la falta de información.
-                Es la falta de <strong>dirección, estructura y alguien que te acompañe</strong> en el proceso real.
-            </p>
-        </div>
-    </section>
-
-    <!-- ============ LA TRANSFORMACIÓN ============ -->
-    <section>
-        <div class="container">
-            <div class="section-head reveal">
-                <h2 class="h2">Lo que cambia cuando tienes<br><span class="accent">acompañamiento real</span></h2>
-                <div class="head-beam"></div>
-            </div>
-
-            <div class="transform-grid">
-                <div class="transform-col before reveal">
-                    <span class="transform-tag">Antes</span>
-                    <ul>
-                        <li><span class="mark-x">✗</span> Confusión total sobre qué vender</li>
-                        <li><span class="mark-x">✗</span> Tienda sin publicar hace semanas</li>
-                        <li><span class="mark-x">✗</span> Gastando en pauta sin resultados</li>
-                        <li><span class="mark-x">✗</span> Sin saber leer tus métricas</li>
-                        <li><span class="mark-x">✗</span> Abandonando cuando no ves ventas</li>
-                        <li><span class="mark-x">✗</span> Solo, sin nadie que te diga qué hacer</li>
-                    </ul>
-                </div>
-                <div class="transform-col after reveal reveal-d1">
-                    <span class="transform-tag">Después</span>
-                    <ul>
-                        <li><span class="mark-v">✓</span> Producto validado con criterio real</li>
-                        <li><span class="mark-v">✓</span> Tienda publicada y funcionando</li>
-                        <li><span class="mark-v">✓</span> Campañas activas con estructura</li>
-                        <li><span class="mark-v">✓</span> Entendiendo tus números</li>
-                        <li><span class="mark-v">✓</span> Sistema para seguir escalando</li>
-                        <li><span class="mark-v">✓</span> Acompañamiento real en cada paso</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- ============ CASOS REALES ============ -->
     <section id="casos" class="section-purple">
@@ -1861,171 +1759,67 @@
     </section>
 
     
-    <!-- ============ EL PROGRAMA + PLANES ============ -->
-    <section id="programa" class="section-dark">
-
-        <div class="container">
-            <div class="section-head reveal">
-                <span class="eyebrow">El programa</span>
-                <h2 class="h2">3 meses. Un negocio real.<br>Paso a paso <span class="accent">contigo.</span></h2>
-                <p class="section-sub">
-                    Un negocio no se construye en 30 días.
-                    Por eso el acompañamiento mínimo es de 3 meses — el tiempo real que toma ir de cero a resultados.
-                </p>
-            </div>
-
-            <div class="timeline-line reveal-line"></div>
-            <div class="timeline">
-                <div class="month-card reveal">
-                    <span class="month-num">01</span>
-                    <span class="month-label">Mes 1</span>
-                    <h3>Fundamentos</h3>
-                    <ul>
-                        <li>Mentalidad y plan financiero</li>
-                        <li>Producto validado</li>
-                        <li>Tienda construida</li>
-                    </ul>
-                </div>
-                <div class="month-card reveal reveal-d1">
-                    <span class="month-num">02</span>
-                    <span class="month-label">Mes 2</span>
-                    <h3>Lanzamiento</h3>
-                    <ul>
-                        <li>Creativos listos</li>
-                        <li>Primeras campañas</li>
-                        <li>Primeras ventas</li>
-                    </ul>
-                </div>
-                <div class="month-card reveal reveal-d2">
-                    <span class="month-num">03</span>
-                    <span class="month-label">Mes 3</span>
-                    <h3>Escalado</h3>
-                    <ul>
-                        <li>Optimización de pauta</li>
-                        <li>Sistema funcionando</li>
-                        <li>Plan de crecimiento</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Aquí se corta a propósito. El temario completo —las 6 fases,
-                 todo lo que incluye, los entregables— vive en /programa.
-                 Repetirlo aquí alargaba la página sin quitar una sola
-                 objeción, que es lo único que esta parte tiene que hacer. -->
-            <div class="program-more reveal">
-                <a href="/programa" class="btn-ghost">
-                    Ver el temario completo de los 3 meses <span class="arrow">&rarr;</span>
-                </a>
-                <p class="cta-note">Las 6 fases, los entregables y todo lo que incluye</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============ FILTRO: PARA QUIÉN ES ============ -->
-    <section id="filtro" class="section-dark">
-        <div class="container">
-            <div class="section-head reveal">
-                <span class="eyebrow">Filtro</span>
-                <h2 class="h2">No trabajo con <span class="accent">todo el mundo</span></h2>
-                <p class="section-sub">
-                    Son 5 cupos al mes y el acompañamiento es 1:1. Prefiero decirte antes
-                    si esto no es para ti, que perder tu tiempo y el mío en una llamada.
-                </p>
-                <div class="head-beam"></div>
-            </div>
-
-            <div class="fit-grid">
-                <div class="fit-col yes reveal">
-                    <span class="fit-tag">✅ Es para ti si</span>
-                    <ul>
-                        <li><span class="fit-mark">✓</span> Estás listo para trabajar duro 3 meses</li>
-                        <li><span class="fit-mark">✓</span> Tienes $100-200 USD para invertir en tu negocio</li>
-                        <li><span class="fit-mark">✓</span> Quieres construir algo real, no un side hustle</li>
-                        <li><span class="fit-mark">✓</span> Vas a ejecutar lo que aprendas, no solo mirar</li>
-                        <li><span class="fit-mark">✓</span> Estás dispuesto a fallar rápido y aprender más rápido</li>
-                    </ul>
-                </div>
-                <div class="fit-col no reveal reveal-d1">
-                    <span class="fit-tag">❌ No es para ti si</span>
-                    <ul>
-                        <li><span class="fit-mark">✗</span> Buscas dinero fácil o pasivo</li>
-                        <li><span class="fit-mark">✗</span> No quieres invertir capital para operar</li>
-                        <li><span class="fit-mark">✗</span> Vas a poner excusas por qué "no funciona en Colombia"</li>
-                        <li><span class="fit-mark">✗</span> Solo quieres ver clases sin ejecutar</li>
-                        <li><span class="fit-mark">✗</span> Esperas resultados en 2 semanas sin esfuerzo real</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- ============ OFERTA DE PLANES (tema claro) ============ -->
     <section id="planes" class="section-light">
         <span class="watermark" aria-hidden="true">ELITE</span>
 
         <div class="container">
-            <!-- Planes -->
+            <!-- Planes. Los dos son de 3 meses: lo que cambia no es el tiempo
+                 sino la intensidad del acompañamiento. Por eso la comparación
+                 va en "cuánto me ves a mí", no en "cuántos meses dura". -->
             <div class="plans-head reveal">
-                <h3>Elige tu nivel de <span class="accent">acompañamiento</span></h3>
-                <p>Ambos planes incluyen el sistema completo y trabajo 1:1 directo con Juan Felipe. La diferencia es cuánto tiempo caminamos juntos — y por eso el precio cambia.</p>
+                <h3>Dos formas de <span class="accent">hacerlo conmigo</span></h3>
+                <p>Los dos duran 3 meses y los dos incluyen sesiones 1:1 directas conmigo. Lo que cambia es cuánto nos vemos.</p>
             </div>
 
             <div class="plans">
                 <div class="plan reveal">
-                    <span class="plan-name">ELITE START</span>
-                    <p class="plan-for">Para lanzar tu negocio desde cero y lograr tus primeras ventas.</p>
-
-                    <span class="plan-duration-chip">📅 3 meses de acompañamiento</span>
-                    <p class="plan-why">El tiempo mínimo real para pasar de cero a tus primeras ventas — ni un mes menos.</p>
-
+                    <span class="plan-name">ELITE 1K</span>
+                    <p class="plan-for">Para montar tu tienda y hacer tus primeras ventas acompañado.</p>
                     <div class="plan-price">
-                        <span class="pp-from">Desde</span>
-                        <span class="pp-amount">$350</span>
+                        <span class="pp-amount">$400</span>
                         <span class="pp-cur">USD</span>
                     </div>
-                    <span class="plan-price-monthly">≈ $117 USD al mes · 3 meses</span>
-                    <span class="plan-price-alt">el precio final depende de tu caso, se confirma en la llamada</span>
+                    <span class="plan-price-monthly">3 meses &middot; &asymp; $133 USD al mes</span>
 
                     <div class="plan-divider"></div>
-                    <p class="plan-includes">Incluye</p>
+                    <p class="plan-includes">Cada semana</p>
                     <ul>
-                        <li><span class="mark-v">✓</span> Reuniones 1:1 semanales</li>
-                        <li><span class="mark-v">✓</span> Revisión constante de tu tienda</li>
-                        <li><span class="mark-v">✓</span> WhatsApp directo con Juan Felipe</li>
-                        <li><span class="mark-v">✓</span> Las 6 fases completas</li>
-                        <li><span class="mark-v">✓</span> Auditorías y correcciones sobre tu negocio</li>
-                        <li><span class="mark-v">✓</span> Plantillas y checklists de cada fase</li>
+                        <li><span class="mark-v">3&times;</span> Sesiones grupales en vivo</li>
+                        <li><span class="mark-v">1&times;</span> Sesión 1:1 conmigo</li>
                     </ul>
-                    <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-ghost">Agenda una llamada</a>
+                    <p class="plan-includes">Y además</p>
+                    <ul>
+                        <li><span class="mark-v">&check;</span> Acceso completo a la plataforma de la mentoría</li>
+                        <li><span class="mark-v">&check;</span> Beneficios con un proveedor de talla internacional</li>
+                        <li><span class="mark-v">&check;</span> WhatsApp directo conmigo</li>
+                    </ul>
+                    <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-ghost">Agenda tu llamada</a>
                 </div>
 
                 <div class="plan featured reveal reveal-d1">
-                    <span class="plan-badge">Más elegido</span>
-                    <span class="plan-name">ELITE GROWTH</span>
-                    <p class="plan-for">Para construir un negocio sólido y escalarlo en serio.</p>
-
-                    <span class="plan-duration-chip">📅 6 meses de acompañamiento</span>
-                    <p class="plan-why">3 meses extra para estabilizar lo que ya funciona y escalarlo con criterio.</p>
-
+                    <span class="plan-badge">Máxima intensidad</span>
+                    <span class="plan-name">ELITE INTENSIVO</span>
+                    <p class="plan-for">Para ir más rápido y con mi atención encima de tu negocio.</p>
                     <div class="plan-price">
-                        <span class="pp-from">Desde</span>
-                        <span class="pp-amount">$675</span>
+                        <span class="pp-amount">$650</span>
                         <span class="pp-cur">USD</span>
                     </div>
-                    <span class="plan-price-monthly">≈ $113 USD al mes · 6 meses</span>
-                    <span class="plan-price-alt">el precio final depende de tu caso, se confirma en la llamada</span>
+                    <span class="plan-price-monthly">3 meses &middot; &asymp; $217 USD al mes</span>
 
                     <div class="plan-divider"></div>
-                    <p class="plan-includes">Incluye</p>
+                    <p class="plan-includes">Cada semana</p>
                     <ul>
-                        <li><span class="mark-v">✓</span> Todo lo de Elite Start</li>
-                        <li><span class="mark-v">✓</span> 3 meses extra para estabilizar y escalar</li>
-                        <li><span class="mark-v">✓</span> Plan de crecimiento mes 4-6</li>
-                        <li><span class="mark-v">✓</span> Seguimiento del negocio a largo plazo</li>
-                        <li><span class="mark-v">✓</span> Prioridad en agenda y soporte</li>
-                        <li><span class="mark-v">✓</span> Cubre el ciclo completo: lanzar, estabilizar y escalar</li>
+                        <li><span class="mark-v">2&times;</span> Sesiones 1:1 conmigo &mdash; el doble</li>
+                        <li><span class="mark-v">3&times;</span> Sesiones grupales en vivo</li>
                     </ul>
-                    <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-cta">Agenda una llamada</a>
+                    <p class="plan-includes">Y además</p>
+                    <ul>
+                        <li><span class="mark-v">&check;</span> Todo lo del plan Elite 1K</li>
+                        <li><span class="mark-v">&check;</span> Auditoría de tu tienda y tus campañas</li>
+                        <li><span class="mark-v">&check;</span> Prioridad en agenda y en respuesta</li>
+                    </ul>
+                    <a href="https://calendly.com/juanfelipelopezlara3/30min" target="_blank" rel="noopener" class="btn-cta">Agenda tu llamada</a>
                 </div>
             </div>
 
@@ -2043,70 +1837,16 @@
         </div>
     </section>
 
-    <!-- ============ DIFERENCIAL (SECCIÓN CLARA) ============ -->
-    <section class="section-light">
+    <!-- ============ VER EL PROGRAMA COMPLETO ============ -->
+    <!-- Esta página se quedó corta a propósito: sólo lo que quita objeciones.
+         Quien quiera el detalle —las 6 fases, los entregables, mes a mes—
+         pasa por aquí. -->
+    <section class="section-dark band-program">
         <div class="container">
-            <div class="section-head reveal">
-                <h2 class="h2">No es <span class="accent">otro curso</span> más.</h2>
-                <div class="head-beam"></div>
-            </div>
-
-            <div class="compare-wrap reveal">
-                <table class="compare">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Curso online</th>
-                            <th>Mentoría grupal</th>
-                            <th class="col-elite">Generación 1K Elite</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Contenido grabado</td>
-                            <td class="yes">✓</td>
-                            <td class="yes">✓</td>
-                            <td class="col-elite no">✗</td>
-                        </tr>
-                        <tr>
-                            <td>Acompañamiento 1:1</td>
-                            <td class="no">✗</td>
-                            <td class="no">✗</td>
-                            <td class="col-elite yes">✓</td>
-                        </tr>
-                        <tr>
-                            <td>Adaptado a tu negocio</td>
-                            <td class="no">✗</td>
-                            <td class="partial">Parcial</td>
-                            <td class="col-elite yes">✓</td>
-                        </tr>
-                        <tr>
-                            <td>Revisión constante</td>
-                            <td class="no">✗</td>
-                            <td class="no">✗</td>
-                            <td class="col-elite yes">✓</td>
-                        </tr>
-                        <tr>
-                            <td>Siguiente paso siempre claro</td>
-                            <td class="no">✗</td>
-                            <td class="no">✗</td>
-                            <td class="col-elite yes">✓</td>
-                        </tr>
-                        <tr>
-                            <td>Implementación real</td>
-                            <td class="no">✗</td>
-                            <td class="partial">Parcial</td>
-                            <td class="col-elite yes">✓</td>
-                        </tr>
-                        <tr>
-                            <td>WhatsApp directo</td>
-                            <td class="no">✗</td>
-                            <td class="no">✗</td>
-                            <td class="col-elite yes">✓</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <span class="eyebrow">El temario</span>
+            <h2 class="band-title">¿Quieres ver <span class="accent">todo</span> lo que hacemos en los 3 meses?</h2>
+            <p class="band-sub">Las 6 fases completas, mes a mes, con todo lo que incluye y lo que te llevas.</p>
+            <a href="/programa" class="btn-ghost">Ver el programa completo <span class="arrow">&rarr;</span></a>
         </div>
     </section>
 
@@ -2172,40 +1912,6 @@
                     <strong>$156.891.536 COP</strong> en ventas y <strong>2.014 pedidos</strong>
                 </figcaption>
             </figure>
-        </div>
-    </section>
-
-    <!-- ============ EL PROCESO (SECCIÓN CLARA) ============ -->
-    <section class="section-light">
-        <div class="container">
-            <div class="section-head reveal">
-                <span class="eyebrow">El proceso</span>
-                <h2 class="h2">¿Cómo <span class="accent">empezamos</span>?</h2>
-                <div class="head-beam"></div>
-            </div>
-
-            <div class="steps">
-                <div class="step reveal">
-                    <span class="step-num">01</span>
-                    <h3>Agenda la llamada</h3>
-                    <p>30-40 min sin costo.</p>
-                </div>
-                <div class="step reveal reveal-d1">
-                    <span class="step-num">02</span>
-                    <h3>Evaluamos tu situación</h3>
-                    <p>Dónde estás, qué quieres, qué recursos tienes.</p>
-                </div>
-                <div class="step reveal reveal-d2">
-                    <span class="step-num">03</span>
-                    <h3>Diseñamos tu plan</h3>
-                    <p>Plan de trabajo personalizado.</p>
-                </div>
-                <div class="step reveal reveal-d3">
-                    <span class="step-num">04</span>
-                    <h3>Si es para ti, comenzamos</h3>
-                    <p>Arrancamos el mes 1 contigo.</p>
-                </div>
-            </div>
         </div>
     </section>
 

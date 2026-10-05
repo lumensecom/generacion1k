@@ -1,10 +1,13 @@
 // Los dos planes del programa, tal como se venden en la landing.
 //
-// `sesiones` es el TECHO de 1:1 del plan, no una cuota que se acumule: es UNA
-// por semana (ver CUPO_SEMANAL_1A1 en lib/reuniones.ts) durante los meses que
-// dure, y la que no se pide se pierde esa misma semana. Es el máximo al que
+// `sesiones` es el TECHO de 1:1 del plan, no una cuota que se acumule: son las
+// de cada semana (ver cupoSemanalDelPlan en lib/reuniones.ts) durante los meses
+// que dure, y la que no se pide se pierde esa misma semana. Es el máximo al que
 // puede llegar alguien que las use todas, y por eso sirve para prellenar
 // students.sessions_total.
+//
+// Los dos planes duran 3 meses: lo que cambia no es el tiempo sino cuántas 1:1
+// por semana trae cada uno — una el Elite 1K, dos el Intensivo.
 //
 // Las clases grupales van aparte y no cuentan aquí: son tres por semana y las
 // tiene todo el mundo, las pida o no.
@@ -24,19 +27,19 @@ export interface Plan {
 export const PLANES: Record<PlanId, Plan> = {
   start: {
     id: 'start',
-    nombre: 'Elite Start',
+    nombre: 'Elite 1K',
     meses: 3,
     sesiones: 12,
-    precioCents: 350_00,
-    descripcion: 'Lanzar desde cero hasta las primeras ventas.',
+    precioCents: 400_00,
+    descripcion: '3 grupales y una 1:1 por semana, durante 3 meses.',
   },
   growth: {
     id: 'growth',
-    nombre: 'Elite Growth',
-    meses: 6,
+    nombre: 'Elite Intensivo',
+    meses: 3,
     sesiones: 24,
-    precioCents: 675_00,
-    descripcion: 'Todo lo de Start más 3 meses para estabilizar y escalar.',
+    precioCents: 650_00,
+    descripcion: 'Lo mismo pero con dos 1:1 por semana y prioridad en agenda.',
   },
 };
 

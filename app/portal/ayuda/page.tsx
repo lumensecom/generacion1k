@@ -2,15 +2,20 @@ import { requireSession } from '@/app/portal/actions';
 import { PortalShell } from '@/components/portal/PortalShell';
 import { AnimatedDivider } from '@/components/animated/AnimatedDivider';
 import { AyudaCliente } from '@/components/portal/AyudaCliente';
-import { getPreguntasDeEstudiante, getReunionesDeEstudiante } from '@/lib/portal-data';
+import {
+  getPreguntasDeEstudiante,
+  getReunionesDeEstudiante,
+  getStudentById,
+} from '@/lib/portal-data';
 
 export const metadata = { title: 'Ayuda | Portal Generación 1K' };
 
 export default async function AyudaPage() {
   const session = await requireSession();
-  const [preguntas, reuniones] = await Promise.all([
+  const [preguntas, reuniones, estudiante] = await Promise.all([
     getPreguntasDeEstudiante(session.sid),
     getReunionesDeEstudiante(session.sid),
+    getStudentById(session.sid),
   ]);
 
   return (
@@ -25,7 +30,7 @@ export default async function AyudaPage() {
         <AnimatedDivider className="mt-4" />
       </div>
 
-      <AyudaCliente preguntas={preguntas} reuniones={reuniones} />
+      <AyudaCliente preguntas={preguntas} reuniones={reuniones} plan={estudiante?.plan ?? null} />
     </PortalShell>
   );
 }

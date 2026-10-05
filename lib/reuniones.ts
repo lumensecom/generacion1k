@@ -13,6 +13,16 @@ import type { MeetingRequest } from '@/lib/types';
 // reclamando ocho sesiones.
 
 export const CUPO_SEMANAL_1A1 = 1;
+
+/**
+ * El techo de 1:1 por semana según el plan. El Intensivo vende el doble de
+ * sesiones conmigo, así que dejarlo en 1 como todos haría imposible cumplir
+ * lo que dice la landing: el estudiante pediría una y el formulario le diría
+ * que ya no tiene cupo.
+ */
+export function cupoSemanalDelPlan(planId: string | null | undefined): number {
+  return planId === 'growth' ? 2 : CUPO_SEMANAL_1A1;
+}
 export const DURACION_1A1 = 60;
 
 export const GRUPAL_DURACION = 90;
@@ -51,8 +61,15 @@ export function solicitudesDeLaSemana(
   });
 }
 
-export function cupoRestante(solicitudes: MeetingRequest[], ahora: Date = new Date()): number {
-  return Math.max(0, CUPO_SEMANAL_1A1 - solicitudesDeLaSemana(solicitudes, ahora).length);
+export function cupoRestante(
+  solicitudes: MeetingRequest[],
+  ahora: Date = new Date(),
+  planId: string | null | undefined = null
+): number {
+  return Math.max(
+    0,
+    cupoSemanalDelPlan(planId) - solicitudesDeLaSemana(solicitudes, ahora).length
+  );
 }
 
 /** El domingo de esta semana a medianoche: cuándo se reinicia el cupo. */

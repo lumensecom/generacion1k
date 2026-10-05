@@ -133,7 +133,7 @@ export default async function InicioPage() {
       </div>
 
       <section className="mb-7">
-        <RitmoSemanal />
+        <RitmoSemanal plan={estudiante?.plan ?? null} />
       </section>
 
       <section className="mb-7">

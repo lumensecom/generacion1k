@@ -37,9 +37,12 @@ function fecha(iso: string | null) {
 export function AyudaCliente({
   preguntas,
   reuniones,
+  plan,
 }: {
   preguntas: StudentQuestion[];
   reuniones: MeetingRequest[];
+  /** El plan decide cuántos 1:1 por semana tiene. */
+  plan: string | null;
 }) {
   const [tab, setTab] = useState<'preguntas' | 'reunion'>('preguntas');
 
@@ -68,7 +71,7 @@ export function AyudaCliente({
       {tab === 'preguntas' ? (
         <Preguntas preguntas={preguntas} />
       ) : (
-        <Reuniones reuniones={reuniones} />
+        <Reuniones reuniones={reuniones} plan={plan} />
       )}
     </>
   );
@@ -192,10 +195,10 @@ function Preguntas({ preguntas }: { preguntas: StudentQuestion[] }) {
   );
 }
 
-function Reuniones({ reuniones }: { reuniones: MeetingRequest[] }) {
+function Reuniones({ reuniones, plan }: { reuniones: MeetingRequest[]; plan: string | null }) {
   // El cupo se calcula aquí y también en el servidor. Este es para que se vea
   // antes de escribir; el que manda es el del servidor.
-  const restante = cupoRestante(reuniones);
+  const restante = cupoRestante(reuniones, new Date(), plan);
   const sinCupo = restante <= 0;
 
   const [pregunta, setPregunta] = useState('');
