@@ -39,6 +39,12 @@ const MODOS: { id: Modo; etiqueta: string }[] = [
   { id: 'quiero', etiqueta: 'Quiero que me queden…' },
 ];
 
+/** Al paso del deslizador, para que el valor caiga en una marca redonda. */
+function redondear(n: number, paso: number): number {
+  if (!Number.isFinite(n) || paso <= 0) return 0;
+  return Math.round(n / paso) * paso;
+}
+
 export function Calculadora() {
   const [modo, setModo] = useState<Modo>('precio');
   const [monedaId, setMonedaId] = useState(MONEDA_POR_DEFECTO.id);
@@ -101,7 +107,26 @@ export function Calculadora() {
           <button
             key={x.id}
             type="button"
-            onClick={() => setModo(x.id)}
+            onClick={() => {
+              // Al entrar por primera vez a estas dos pestañas el campo estaba
+              // en cero y el veredicto decía "así no da" antes de que el
+              // estudiante escribiera nada. Se precargan con lo que la propia
+              // calculadora sugiere y desde ahí él lo mueve.
+              setV((p) => {
+                const sugerido = precioParaMargen(entrada, p.margenPct);
+                if (x.id === 'tengo' && p.precioManual === 0) {
+                  return { ...p, precioManual: redondear(sugerido, m.paso) };
+                }
+                if (x.id === 'quiero' && p.utilidadDeseada === 0) {
+                  return {
+                    ...p,
+                    utilidadDeseada: redondear(sugerido * (p.margenPct / 100), m.paso),
+                  };
+                }
+                return p;
+              });
+              setModo(x.id);
+            }}
             className={cn(
               'rounded-xl px-4 py-3 text-[13.5px] font-extrabold transition-colors',
               modo === x.id
