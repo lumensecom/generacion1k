@@ -262,6 +262,190 @@
         }
 
 
+
+        /* ============================================================
+           CÓMO FUNCIONA — el flujo del negocio, en 3D
+
+           La landing no decía en ningún lado qué es el modelo. Alguien que
+           llega frío lee "monta tu tienda" y no sabe si tiene que comprar
+           inventario. Estas cuatro tarjetas son la explicación, y el relieve
+           está para que se lean como pasos de un proceso y no como una lista.
+        ============================================================ */
+        .flow3d {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            perspective: 1400px;
+            perspective-origin: 50% 40%;
+        }
+        @media (min-width: 760px) {
+            .flow3d { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        }
+
+        .fcard {
+            position: relative;
+            transform-style: preserve-3d;
+            background: linear-gradient(160deg, #1A1527 0%, #141019 55%, #0E0E12 100%);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 20px;
+            padding: 30px 22px 24px;
+            /* La sombra hace de suelo: sin ella las tarjetas flotan sin peso. */
+            box-shadow:
+                0 1px 0 rgba(255, 255, 255, 0.07) inset,
+                0 24px 50px -24px rgba(0, 0, 0, 0.95),
+                0 0 0 1px rgba(124, 58, 237, 0.07);
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.45s ease;
+            /* Cada una entra girada un poco distinto: la fila deja de ser plana
+               y se lee como una secuencia que avanza hacia el fondo. */
+            transform: rotateX(5deg) rotateY(calc(var(--i) * -2.2deg))
+                       translateZ(calc(var(--i) * -14px));
+        }
+        @media (min-width: 760px) {
+            .fcard:hover {
+                transform: rotateX(0deg) rotateY(0deg) translateZ(34px);
+                border-color: rgba(168, 85, 247, 0.45);
+                box-shadow:
+                    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+                    0 40px 70px -28px rgba(0, 0, 0, 0.95),
+                    0 0 50px -8px rgba(124, 58, 237, 0.35);
+            }
+        }
+        /* Un brillo que recorre el borde superior, como una luz rasante. */
+        .fcard::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 1px;
+            border-radius: 20px 20px 0 0;
+            background: linear-gradient(90deg,
+                transparent, rgba(168, 85, 247, 0.65), transparent);
+        }
+
+        .fcard-num {
+            position: absolute;
+            top: -15px;
+            left: 22px;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            background: linear-gradient(145deg, var(--purple-light), var(--purple));
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 10px 22px -8px rgba(124, 58, 237, 0.9);
+            /* Despegado del plano de la tarjeta: es lo que hace que se vea 3D
+               de verdad y no un simple degradado. */
+            transform: translateZ(42px);
+        }
+
+        .fcard-icon { font-size: 26px; display: block; transform: translateZ(22px); }
+        .fcard h3 {
+            margin: 14px 0 7px;
+            font-family: var(--font-display);
+            font-size: 16.5px;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            transform: translateZ(16px);
+        }
+        .fcard p {
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            transform: translateZ(8px);
+        }
+        .fcard .nota {
+            display: block;
+            margin-top: 10px;
+            font-family: var(--font-mono);
+            font-size: 10.5px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--purple-light);
+        }
+
+        /* La línea de arranque: lo que de verdad hay que poner de bolsillo. */
+        .start-strip {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 10px 22px;
+            margin-top: 38px;
+            padding: 18px 24px;
+            border: 1px dashed rgba(168, 85, 247, 0.4);
+            border-radius: 16px;
+            background: rgba(124, 58, 237, 0.05);
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .start-strip strong { color: #fff; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .fcard, .fcard:hover { transform: none; transition: none; }
+        }
+
+
+        /* ---------- Para quién es (dos columnas enfrentadas) ---------- */
+        .filtro2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+            perspective: 1200px;
+        }
+        @media (min-width: 760px) { .filtro2 { grid-template-columns: 1fr 1fr; gap: 22px; } }
+
+        .fcol {
+            position: relative;
+            transform-style: preserve-3d;
+            border-radius: 22px;
+            padding: 28px 26px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
+        }
+        .fcol--si {
+            background: linear-gradient(160deg, rgba(16,185,129,0.10), rgba(10,10,10,0.4) 60%);
+            border-color: rgba(16, 185, 129, 0.28);
+            box-shadow: 0 26px 55px -30px rgba(16, 185, 129, 0.55);
+            transform: rotateY(2.5deg);
+        }
+        .fcol--no {
+            background: linear-gradient(160deg, rgba(248,113,113,0.08), rgba(10,10,10,0.4) 60%);
+            border-color: rgba(248, 113, 113, 0.22);
+            box-shadow: 0 26px 55px -30px rgba(0, 0, 0, 0.9);
+            transform: rotateY(-2.5deg);
+        }
+        @media (min-width: 760px) {
+            .fcol:hover { transform: rotateY(0deg) translateZ(26px); }
+        }
+        .fcol h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+            font-family: var(--font-display);
+            font-size: 17px;
+            font-weight: 800;
+            transform: translateZ(18px);
+        }
+        .fcol--si h3 { color: var(--success); }
+        .fcol--no h3 { color: var(--danger); }
+        .fcol ul { list-style: none; display: flex; flex-direction: column; gap: 12px; transform: translateZ(10px); }
+        .fcol li { display: flex; gap: 11px; font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
+        .fcol li span { flex-shrink: 0; font-weight: 700; }
+        .fcol--si li span { color: var(--success); }
+        .fcol--no li span { color: var(--danger); }
+
+        @media (prefers-reduced-motion: reduce) {
+            .fcol, .fcol:hover { transform: none; transition: none; }
+        }
+
         /* ---------- Scroll reveal ---------- */
         .reveal {
             opacity: 0;
@@ -1686,6 +1870,62 @@
         </div>
     </header>
 
+    <!-- ============ CÓMO FUNCIONA EL NEGOCIO ============ -->
+    <!-- Va aquí, inmediatamente después del hero: el titular promete una
+         cifra y lo primero que pregunta cualquiera es "¿vendiendo qué?".
+         Sin esto la página nunca dice cuál es el modelo. -->
+    <section id="como-funciona" class="section-dark">
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">Cómo funciona</span>
+                <h2 class="h2">Vendes <span class="accent">sin comprar inventario</span></h2>
+                <p class="section-sub">
+                    Se llama pago contra entrega. El cliente paga cuando el paquete llega a su
+                    puerta, y tú nunca tocas el producto.
+                </p>
+                <div class="head-beam"></div>
+            </div>
+
+            <div class="flow3d">
+                <article class="fcard reveal" style="--i:0">
+                    <span class="fcard-num">1</span>
+                    <span class="fcard-icon">📣</span>
+                    <h3>Pones el anuncio</h3>
+                    <p>Un video corto en Facebook o TikTok llevando a tu tienda. Esto es lo único que pagas por adelantado.</p>
+                </article>
+
+                <article class="fcard reveal reveal-d1" style="--i:1">
+                    <span class="fcard-num">2</span>
+                    <span class="fcard-icon">🛒</span>
+                    <h3>El cliente pide</h3>
+                    <p>Deja su nombre y su dirección en tu tienda. No paga nada todavía, y por eso compra gente que no usa tarjeta.</p>
+                    <span class="nota">Sin pasarelas de pago</span>
+                </article>
+
+                <article class="fcard reveal reveal-d2" style="--i:2">
+                    <span class="fcard-num">3</span>
+                    <span class="fcard-icon">📦</span>
+                    <h3>El proveedor despacha</h3>
+                    <p>Dropi empaca y envía por ti. No compras inventario, no tienes bodega y no manejas logística.</p>
+                    <span class="nota">Tú no tocas producto</span>
+                </article>
+
+                <article class="fcard reveal reveal-d3" style="--i:3">
+                    <span class="fcard-num">4</span>
+                    <span class="fcard-icon">💵</span>
+                    <h3>Paga al recibir</h3>
+                    <p>El dinero entra a tu cuenta. Lo que queda entre lo que cobraste y lo que costó es tuyo.</p>
+                </article>
+            </div>
+
+            <!-- La pregunta que nadie respondía: con cuánta plata se arranca. -->
+            <div class="start-strip reveal">
+                <span>🚀 Para arrancar necesitas entre <strong>$100 y $200 USD</strong> para la pauta y las primeras pruebas.</span>
+                <span>La mentoría va aparte &mdash; y eso te lo digo antes, no después.</span>
+            </div>
+        </div>
+    </section>
+
     <!-- ============ CASOS REALES ============ -->
     <section id="casos" class="section-purple">
         <div class="container">
@@ -1833,6 +2073,44 @@
                         te lo decimos de frente — y de todas formas sales con claridad sobre tu situación y tu siguiente paso.
                         <strong>La llamada cuesta $0.</strong>
                     </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ PARA QUIÉN ES ============ -->
+    <!-- Filtrar antes de la llamada le ahorra tiempo a los dos. Va justo
+         después de los planes, cuando ya vio el precio: ahí es cuando se
+         pregunta "¿pero esto es para mí?". -->
+    <section id="filtro" class="section-dark">
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">Sé honesto contigo</span>
+                <h2 class="h2">Esto no es <span class="accent">para todo el mundo</span></h2>
+                <div class="head-beam"></div>
+            </div>
+
+            <div class="filtro2">
+                <div class="fcol fcol--si reveal">
+                    <h3>✅ Es para ti si</h3>
+                    <ul>
+                        <li><span>✓</span> Puedes dedicarle 1 o 2 horas al día, de verdad</li>
+                        <li><span>✓</span> Tienes entre $100 y $200 USD para la pauta inicial</li>
+                        <li><span>✓</span> Estás dispuesto a hacer las tareas cada semana</li>
+                        <li><span>✓</span> Quieres construir un negocio, no un ingreso extra de un mes</li>
+                        <li><span>✓</span> Te sirve que te corrijan sin adornos</li>
+                    </ul>
+                </div>
+
+                <div class="fcol fcol--no reveal reveal-d1">
+                    <h3>🚫 No es para ti si</h3>
+                    <ul>
+                        <li><span>✗</span> Buscas dinero rápido o algo que funcione solo</li>
+                        <li><span>✗</span> No tienes nada para invertir en pauta</li>
+                        <li><span>✗</span> Esperas que yo haga el trabajo por ti</li>
+                        <li><span>✗</span> No vas a abrir la plataforma entre sesión y sesión</li>
+                        <li><span>✗</span> Quieres el material pero no el acompañamiento</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -1996,18 +2274,23 @@
 
 
             <div class="honest-box reveal">
-                <span class="hb-icon">🤝</span>
-                <h4>Lo que no te voy a prometer</h4>
+                <span class="hb-icon">🛡️</span>
+                <h4>La garantía, con todas sus letras</h4>
                 <p>
-                    No vendo magia. <strong>No te puedo garantizar que vas a ganar dinero</strong> —
-                    eso depende de cuánto ejecutes tú, y no lo controlo yo. Nadie que te prometa
-                    una cifra fija te está diciendo la verdad.
+                    Si no facturas tus primeros <strong>$1.000 USD</strong> en los 3 meses,
+                    <strong>te devuelvo lo que pagaste</strong>. Así de simple.
                 </p>
                 <p>
-                    Lo que sí te garantizo: <strong>un sistema que ya funciona</strong>, probado en mi
-                    propia tienda y en la primera generación, y que <strong>voy a estar ahí cada semana</strong>
-                    hasta que tu tienda esté vendiendo. Si haces el trabajo, esto funciona.
-                    Si esperas resultados sin ejecutar, ningún programa del mundo te sirve — ni el mío.
+                    Y así de exigente: aplica si cumpliste <strong>al menos el 80% de lo que te
+                    pedí</strong> — las tareas de cada semana, las sesiones y los tiempos de entrega.
+                    Se mide en la plataforma, así que los dos vemos el mismo número y no hay
+                    discusión al final.
+                </p>
+                <p>
+                    <strong>No es fácil, y no debería serlo.</strong> Yo puedo responder por mi parte
+                    porque el sistema ya está probado; de la tuya respondes tú. Si vienes a ver si
+                    funciona sin hacer el trabajo, ni esta garantía ni ningún programa del mundo
+                    te sirven.
                 </p>
             </div>
         </div>
@@ -2044,8 +2327,10 @@
             <p class="disclaimer">
                 Este sitio no es parte de Meta, Facebook, TikTok ni Google.
                 No prometemos hacerte millonario ni ingresos en 24 horas.
-                Los casos mostrados son estudiantes reales, pero no son resultados típicos ni garantizados:
-                dependen de la dedicación, la ejecución y el contexto de cada persona.
+                Los casos mostrados son estudiantes reales y no son resultados típicos: dependen de la
+                dedicación, la ejecución y el contexto de cada persona. La garantía de devolución
+                aplica bajo las condiciones descritas arriba — haber cumplido al menos el 80% de lo
+                asignado durante los 3 meses.
             </p>
             <a class="ig" href="https://instagram.com/juanflopezzz" target="_blank" rel="noopener noreferrer">@juanflopezzz</a>
             <p style="margin-top: 18px;">
